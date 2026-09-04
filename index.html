@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Climate Pulse tracks climate-related hazards and emerging signals around the world.">
+  <title>Climate Pulse</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <h1>Climate Pulse</h1>
+        <p>Tracking climate-related events and emerging environmental signals around the world.</p>
+      </div>
+      <span class="updated" id="lastUpdated">Loading current events…</span>
+    </header>
+
+    <section class="toolbar" aria-label="Map controls">
+      <div class="mode-switch" id="modeSwitch">
+        <button class="mode active" data-mode="standard">Standard events</button>
+        <button class="mode" data-mode="emerging">Emerging signals</button>
+      </div>
+      <div class="filters" id="filters"></div>
+      <button class="refresh" id="refreshBtn">Refresh</button>
+    </section>
+
+    <div class="source-status" id="sourceStatus" aria-live="polite"></div>
+
+    <section class="layout">
+      <article class="panel map-panel">
+        <div class="panel-head">
+          <div>
+            <h2 id="mapTitle">Live Standard Events</h2>
+            <p id="mapSubtitle">Authoritative feed candidates. Prime meridian is centered.</p>
+          </div>
+          <span class="count" id="visibleCount">0 events</span>
+        </div>
+        <div class="map-wrap" id="mapWrap">
+          <svg id="worldMap" viewBox="0 0 1200 600" role="img" aria-label="World climate-event map">
+            <image href="assets/world.svg" width="1200" height="600"></image>
+            <g class="grid">
+              <line x1="200" y1="0" x2="200" y2="600"></line><line x1="400" y1="0" x2="400" y2="600"></line>
+              <line class="prime" x1="600" y1="0" x2="600" y2="600"></line><line x1="800" y1="0" x2="800" y2="600"></line><line x1="1000" y1="0" x2="1000" y2="600"></line>
+              <line x1="0" y1="200" x2="1200" y2="200"></line><line class="equator" x1="0" y1="300" x2="1200" y2="300"></line><line x1="0" y1="400" x2="1200" y2="400"></line>
+              <text x="610" y="24">0°</text>
+            </g>
+            <g id="markers"></g>
+          </svg>
+          <div class="map-popup" id="mapPopup"></div>
+        </div>
+        <p class="map-note">Tap a marker → preview → <strong>View event</strong>. Major GDACS wildfires require burned area ≥ 10,000 ha.</p>
+      </article>
+
+      <aside class="panel detail" id="detailPanel">
+        <div class="empty">Select an event on the map or in the feed.</div>
+      </aside>
+    </section>
+
+    <section class="panel feed-panel" id="feedPanel">
+      <div class="panel-head">
+        <div><h2 id="feedTitle">Standard Event Feed</h2><p id="feedSubtitle">Expand a card for full source and update details.</p></div>
+        <span class="count" id="feedCount"></span>
+      </div>
+      <div class="event-list" id="eventList"></div>
+      <div class="load-more" id="loadMore"></div>
+    </section>
+
+    <footer>
+      <p>Climate context and event attribution are kept separate. Source ingestion does not imply endorsement or causal attribution.</p>
+      <p><a href="README.md">Project & data architecture</a></p>
+    </footer>
+  </main>
+  <script src="assets/sources.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
