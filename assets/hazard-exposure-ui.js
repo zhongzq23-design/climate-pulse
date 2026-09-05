@@ -41,14 +41,14 @@
 
     const x = e.exposure || {};
     if (e.type === 'Wildfire') {
-      if (hasNum(x.population_direct)) rows.push(['Population in burned footprint', fmtPop(x.population_direct)]);
-      if (hasNum(x.population_within_5km)) rows.push(['Population within footprint + 5 km', fmtPop(x.population_within_5km)]);
-      if (hasNum(x.population_5km_ring)) rows.push(['Additional population in 5 km ring', fmtPop(x.population_5km_ring)]);
-      if (hasNum(x.population_direct_member_sum)) rows.push(['Direct exposure · member sum', fmtPop(x.population_direct_member_sum)]);
-      if (hasNum(x.population_within_5km_member_sum)) rows.push(['Within 5 km · member sum', fmtPop(x.population_within_5km_member_sum)]);
+      if (hasNum(x.population_direct)) rows.push(['Direct exposure', `${fmtPop(x.population_direct)} people`]);
+      if (hasNum(x.population_5km_ring)) rows.push(['Nearby exposure (≤5 km)', `${fmtPop(x.population_5km_ring)} people`]);
+      if (hasNum(x.population_within_5km)) rows.push(['Total potential exposure', `${fmtPop(x.population_within_5km)} people`]);
+      if (hasNum(x.population_direct_member_sum)) rows.push(['Direct exposure · member sum', `${fmtPop(x.population_direct_member_sum)} people`]);
+      if (hasNum(x.population_within_5km_member_sum)) rows.push(['Total exposure · member sum', `${fmtPop(x.population_within_5km_member_sum)} people`]);
     } else if (e.type === 'Storm') {
-      if (hasNum(x.population_ts_or_impact_footprint)) rows.push(['Population in TC impact footprint', fmtPop(x.population_ts_or_impact_footprint)]);
-      if (hasNum(x.population_within_300km_of_center)) rows.push(['Population within 300 km · screening', fmtPop(x.population_within_300km_of_center)]);
+      if (hasNum(x.population_ts_or_impact_footprint)) rows.push(['Population in TC impact footprint', `${fmtPop(x.population_ts_or_impact_footprint)} people`]);
+      if (hasNum(x.population_within_300km_of_center)) rows.push(['Population within 300 km · screening', `${fmtPop(x.population_within_300km_of_center)} people`]);
     }
     return cellGrid(rows);
   };
@@ -57,10 +57,13 @@
     const x = e?.exposure || {};
     if (e?.type === 'Wildfire') {
       if (hasNum(x.population_direct) || hasNum(x.population_within_5km)) {
-        return `GHSL 2025 population screening: ${fmtPop(x.population_direct)} people in the mapped burned footprint; ${fmtPop(x.population_within_5km)} in the footprint plus 5 km. Exposure does not mean observed harm.`;
+        const direct = fmtPop(x.population_direct);
+        const nearby = fmtPop(x.population_5km_ring);
+        const total = fmtPop(x.population_within_5km);
+        return `GHSL 2025 population screening: ${direct} people in the mapped wildfire footprint (direct exposure), ${nearby} additional people within 5 km (nearby exposure), and ${total} people in total across the footprint plus 5 km. Exposure does not mean observed harm.`;
       }
       if (hasNum(x.population_within_5km_member_sum)) {
-        return `Grouped-fire screening: ${fmtPop(x.population_within_5km_member_sum)} population-exposures across member 5 km buffers. Member buffers may overlap, so this is not a unique-person count.`;
+        return `Grouped-fire screening: ${fmtPop(x.population_within_5km_member_sum)} population-exposures across member footprint-plus-5-km areas. Member areas may overlap, so this is not a unique-person count.`;
       }
     }
     if (e?.type === 'Storm') {
@@ -91,8 +94,9 @@
       const x = m.exposure || {};
       const metrics = [];
       if (m.type === 'Wildfire' && hasNum(m.burned_area_ha)) metrics.push(fmtHa(m.burned_area_ha));
-      if (hasNum(x.population_direct)) metrics.push(`${fmtPop(x.population_direct)} direct pop.`);
-      if (hasNum(x.population_within_5km)) metrics.push(`${fmtPop(x.population_within_5km)} within +5 km`);
+      if (hasNum(x.population_direct)) metrics.push(`${fmtPop(x.population_direct)} direct`);
+      if (hasNum(x.population_5km_ring)) metrics.push(`${fmtPop(x.population_5km_ring)} nearby ≤5 km`);
+      if (hasNum(x.population_within_5km)) metrics.push(`${fmtPop(x.population_within_5km)} total potential`);
       return `<div class="cell" style="margin-top:7px"><b>${i + 1}. ${esc(m.source)}</b>${esc(m.title)}<br><span class="region">${esc(m.updated)}${metrics.length ? ` · ${esc(metrics.join(' · '))}` : ''}</span></div>`;
     }).join('')}`;
   };
