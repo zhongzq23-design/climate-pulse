@@ -1,42 +1,237 @@
 'use strict';
-const CP_SOURCE_URLS={
-  eonet:'https://eonet.gsfc.nasa.gov/api/v3/events',
-  gdacs:'https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH',
-  cems:'https://mapping.emergency.copernicus.eu/activations/api/activations/'
+
+const CP_SOURCE_URLS = {
+  eonet: 'https://eonet.gsfc.nasa.gov/api/v3/events',
+  gdacs: 'https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH',
+  cems: 'https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations-info/'
 };
-const CP_WILDFIRE_MIN_HA=10000;
+const CP_CEMS_DETAIL_URL = 'https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/';
+const CP_WILDFIRE_MIN_HA = 10000;
 
-function cpCentroid(g){
-  if(!g)return null;
-  if(g.type==='Point'&&Array.isArray(g.coordinates))return{lon:+g.coordinates[0],lat:+g.coordinates[1]};
-  const pts=[];(function walk(v){if(!Array.isArray(v))return;if(v.length>=2&&typeof v[0]==='number'&&typeof v[1]==='number'){pts.push([+v[0],+v[1]]);return}v.forEach(walk)})(g.coordinates);
-  if(!pts.length)return null;return{lon:pts.reduce((a,p)=>a+p[0],0)/pts.length,lat:pts.reduce((a,p)=>a+p[1],0)/pts.length};
+function cpCentroid(g) {
+  if (!g) return null;
+  if (g.type === 'Point' && Array.isArray(g.coordinates)) return { lon: +g.coordinates[0], lat: +g.coordinates[1] };
+  const pts = [];
+  (function walk(v) {
+    if (!Array.isArray(v)) return;
+    if (v.length >= 2 && typeof v[0] === 'number' && typeof v[1] === 'number') {
+      pts.push([+v[0], +v[1]]);
+      return;
+    }
+    v.forEach(walk);
+  })(g.coordinates);
+  if (!pts.length) return null;
+  return {
+    lon: pts.reduce((a, p) => a + p[0], 0) / pts.length,
+    lat: pts.reduce((a, p) => a + p[1], 0) / pts.length
+  };
 }
-function cpValid(p){return p&&Number.isFinite(p.lon)&&Number.isFinite(p.lat)&&Math.abs(p.lon)<=180&&Math.abs(p.lat)<=90}
-function cpPointWkt(s){const m=String(s||'').match(/POINT\s*\(\s*([-+0-9.eE]+)\s+([-+0-9.eE]+)\s*\)/i);return m?{lon:+m[1],lat:+m[2]}:null}
-function cpCategoryEonet(c){const s=String(c?.id||c?.title||'').toLowerCase();if(s.includes('severestorm'))return'Storm';if(s.includes('flood'))return'Flood';if(s.includes('drought'))return'Drought';if(s.includes('tempextreme')||s.includes('temperature'))return'Heat';if(s.includes('landslide'))return'Landslide';return null}
-function cpCategoryCems(c){const s=String(c?.slug||c?.name||'').toLowerCase();if(s.includes('fire'))return'Wildfire';if(s.includes('flood'))return'Flood';if(s.includes('storm'))return'Storm';if(s.includes('drought'))return'Drought';if(s.includes('landslide')||s.includes('mass'))return'Landslide';if(s.includes('heat'))return'Heat';return null}
-function cpCategoryGdacs(c){return({FL:'Flood',TC:'Storm',WF:'Wildfire',DR:'Drought'})[String(c||'').toUpperCase()]||null}
-function cpDateLabel(d){const t=new Date(d||0);if(Number.isNaN(t.getTime()))return'Update time unavailable';const h=Math.max(0,Math.round((Date.now()-t)/36e5));if(h<1)return'Updated <1 hour ago';if(h<24)return`Updated ${h} h ago`;const x=Math.round(h/24);return`Updated ${x} day${x===1?'':'s'} ago`}
-function cpTruncate(s,n=480){s=String(s||'').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1)+'…':s}
-function cpParseHa(v){if(v===null||v===undefined||v==='')return null;if(typeof v==='number'&&Number.isFinite(v))return v>=1000?v:null;const s=String(v);const m=s.match(/([0-9][0-9.,\s]*)\s*(?:ha|hectares?)/i);if(m){const n=+m[1].replace(/[\s,]/g,'');return Number.isFinite(n)?n:null}const n=+s.replace(/,/g,'');return Number.isFinite(n)&&n>=1000?n:null}
-function cpBurnedHa(p){const s=p?.severitydata||{};for(const v of[p?.ha,p?.hectares,p?.burnedarea,p?.burnedArea,p?.burned_area,p?.burnedarea_ha,p?.burnedAreaHa,p?.area_ha,s?.ha,s?.hectares,s?.burnedarea,s?.burnedArea,s?.severitytext,s?.severity]){const n=cpParseHa(v);if(Number.isFinite(n))return n}return cpParseHa(JSON.stringify(s))}
-function cpPriority(level){const s=String(level||'').toLowerCase();return s==='red'?'High':s==='orange'?'Medium':'Standard'}
+function cpValid(p) { return p && Number.isFinite(p.lon) && Number.isFinite(p.lat) && Math.abs(p.lon) <= 180 && Math.abs(p.lat) <= 90; }
+function cpPointWkt(s) {
+  const m = String(s || '').match(/POINT\s*\(\s*([-+0-9.eE]+)\s+([-+0-9.eE]+)\s*\)/i);
+  return m ? { lon: +m[1], lat: +m[2] } : null;
+}
+function cpCategoryEonet(c) {
+  const s = String(c?.id || c?.title || '').toLowerCase();
+  if (s.includes('severestorm')) return 'Storm';
+  if (s.includes('flood')) return 'Flood';
+  if (s.includes('drought')) return 'Drought';
+  if (s.includes('tempextreme') || s.includes('temperature')) return 'Heat';
+  if (s.includes('landslide')) return 'Landslide';
+  return null;
+}
+function cpCategoryCems(c) {
+  const s = String(typeof c === 'string' ? c : (c?.slug || c?.name || c?.title || '')).toLowerCase();
+  if (s.includes('fire')) return 'Wildfire';
+  if (s.includes('flood')) return 'Flood';
+  if (s.includes('storm') || s.includes('cyclone') || s.includes('hurricane') || s.includes('typhoon')) return 'Storm';
+  if (s.includes('drought')) return 'Drought';
+  if (s.includes('landslide') || s.includes('mass movement')) return 'Landslide';
+  if (s.includes('heat') || s.includes('temperature')) return 'Heat';
+  return null;
+}
+function cpCategoryGdacs(c) { return ({ FL: 'Flood', TC: 'Storm', WF: 'Wildfire', DR: 'Drought' })[String(c || '').toUpperCase()] || null; }
+function cpDateLabel(d) {
+  const t = new Date(d || 0);
+  if (Number.isNaN(t.getTime())) return 'Update time unavailable';
+  const h = Math.max(0, Math.round((Date.now() - t) / 36e5));
+  if (h < 1) return 'Updated <1 hour ago';
+  if (h < 24) return `Updated ${h} h ago`;
+  const x = Math.round(h / 24);
+  return `Updated ${x} day${x === 1 ? '' : 's'} ago`;
+}
+function cpTruncate(s, n = 480) {
+  s = String(s || '').replace(/\s+/g, ' ').trim();
+  return s.length > n ? s.slice(0, n - 1) + '…' : s;
+}
+function cpParseHa(v) {
+  if (v === null || v === undefined || v === '') return null;
+  if (typeof v === 'number' && Number.isFinite(v)) return v >= 1000 ? v : null;
+  const s = String(v);
+  const m = s.match(/([0-9][0-9.,\s]*)\s*(?:ha|hectares?)/i);
+  if (m) {
+    const n = +m[1].replace(/[\s,]/g, '');
+    return Number.isFinite(n) ? n : null;
+  }
+  const n = +s.replace(/,/g, '');
+  return Number.isFinite(n) && n >= 1000 ? n : null;
+}
+function cpBurnedHa(p) {
+  const s = p?.severitydata || {};
+  for (const v of [p?.ha, p?.hectares, p?.burnedarea, p?.burnedArea, p?.burned_area, p?.burnedarea_ha, p?.burnedAreaHa, p?.area_ha, s?.ha, s?.hectares, s?.burnedarea, s?.burnedArea, s?.severitytext, s?.severity]) {
+    const n = cpParseHa(v);
+    if (Number.isFinite(n)) return n;
+  }
+  return cpParseHa(JSON.stringify(s));
+}
+function cpPriority(level) {
+  const s = String(level || '').toLowerCase();
+  return s === 'red' ? 'High' : s === 'orange' ? 'Medium' : 'Standard';
+}
 
-function cpParseEonet(data){return(Array.isArray(data?.events)?data.events:[]).map(e=>{const type=cpCategoryEonet(e.categories?.[0]);if(!type)return null;const g=e.geometry?.[e.geometry.length-1],p=cpCentroid(g);if(!cpValid(p))return null;const url=e.sources?.find(x=>x.url)?.url||e.link||CP_SOURCE_URLS.eonet;return{id:`eonet-${e.id}`,source_id:String(e.id),origin:'eonet',title:e.title||`${type} event`,type,region:`${p.lat.toFixed(2)}°, ${p.lon.toFixed(2)}°`,lat:p.lat,lon:p.lon,status:'Open',updated:cpDateLabel(g?.date),priority:'Standard',climate_link:'Not assessed',summary:cpTruncate(e.description||`${type} event tracked by NASA EONET.`),source:'NASA EONET',source_url:url,event_date:g?.date||null}}).filter(Boolean)}
-function cpParseCems(data){return(Array.isArray(data?.results)?data.results:[]).map(e=>{if(e.closed)return null;const type=cpCategoryCems(e.category),p=cpPointWkt(e.centroid);if(!type||!cpValid(p))return null;const region=(e.countries||[]).map(x=>x.short_name).filter(Boolean).join(' · ')||`${p.lat.toFixed(2)}°, ${p.lon.toFixed(2)}°`;return{id:`cems-${e.code}`,source_id:e.code,origin:'cems',title:e.name||`${type} activation`,type,region,lat:p.lat,lon:p.lon,status:'Active',updated:cpDateLabel(e.lastUpdate||e.activationTime),priority:'Review',climate_link:'Not assessed',summary:cpTruncate(e.search_snippet||`Copernicus EMS Rapid Mapping activation ${e.code}.`),source:'Copernicus CEMS',source_url:CP_SOURCE_URLS.cems,event_date:e.lastUpdate||e.activationTime||null}}).filter(Boolean)}
-function cpParseGdacs(data,diag){return(Array.isArray(data?.features)?data.features:[]).map(f=>{const p=cpCentroid(f.geometry),q=f.properties||{},type=cpCategoryGdacs(q.eventtype);if(!type||!cpValid(p))return null;let ha=null;if(type==='Wildfire'){diag.raw++;ha=cpBurnedHa(q);if(Number.isFinite(ha))diag.withArea++;if(!Number.isFinite(ha)){diag.unknown++;return null}if(ha<CP_WILDFIRE_MIN_HA){diag.small++;return null}diag.major++}const id=String(q.eventid??`${p.lat.toFixed(2)}-${p.lon.toFixed(2)}-${q.todate||''}`),region=q.country||q.iso3||`${p.lat.toFixed(2)}°, ${p.lon.toFixed(2)}°`,sev=q.severitydata?.severitytext||q.severitydata?.severity||'';return{id:`gdacs-${q.eventtype||'EV'}-${id}`,source_id:id,origin:'gdacs',title:q.name||`${type} in ${region}`,type,region:String(region),lat:p.lat,lon:p.lon,status:'Recent',updated:cpDateLabel(q.todate||q.fromdate),priority:cpPriority(q.alertlevel),climate_link:'Not assessed',summary:cpTruncate(`${Number.isFinite(ha)?`Burned area: ${Math.round(ha).toLocaleString()} ha. `:''}${sev||`${type} event tracked by GDACS.`}${q.alertlevel?` Alert level: ${q.alertlevel}.`:''}`),source:`GDACS${q.alertlevel?` · ${q.alertlevel}`:''}`,source_url:`https://www.gdacs.org/report.aspx?eventid=${encodeURIComponent(id)}&eventtype=${encodeURIComponent(q.eventtype||'')}`,event_date:q.todate||q.fromdate||null,burned_area_ha:ha}}).filter(Boolean)}
+function cpParseEonet(data) {
+  return (Array.isArray(data?.events) ? data.events : []).map(e => {
+    const type = cpCategoryEonet(e.categories?.[0]);
+    if (!type) return null;
+    const g = e.geometry?.[e.geometry.length - 1], p = cpCentroid(g);
+    if (!cpValid(p)) return null;
+    const url = e.sources?.find(x => x.url)?.url || e.link || CP_SOURCE_URLS.eonet;
+    return {
+      id: `eonet-${e.id}`, source_id: String(e.id), origin: 'eonet', title: e.title || `${type} event`, type,
+      region: `${p.lat.toFixed(2)}°, ${p.lon.toFixed(2)}°`, lat: p.lat, lon: p.lon, status: 'Open', updated: cpDateLabel(g?.date),
+      priority: 'Standard', climate_link: 'Not assessed', summary: cpTruncate(e.description || `${type} event tracked by NASA EONET.`),
+      source: 'NASA EONET', source_url: url, event_date: g?.date || null
+    };
+  }).filter(Boolean);
+}
+function cpCountryName(x) {
+  if (typeof x === 'string') return x;
+  return x?.short_name || x?.name || x?.title || '';
+}
+function cpParseCems(data) {
+  return (Array.isArray(data?.results) ? data.results : []).map(e => {
+    if (e.closed) return null;
+    const type = cpCategoryCems(e.category), p = cpPointWkt(e.centroid);
+    if (!type || !cpValid(p)) return null;
+    const region = (e.countries || []).map(cpCountryName).filter(Boolean).join(' · ') || `${p.lat.toFixed(2)}°, ${p.lon.toFixed(2)}°`;
+    const code = String(e.code || '');
+    const detailUrl = code ? `${CP_CEMS_DETAIL_URL}?code=${encodeURIComponent(code)}` : CP_SOURCE_URLS.cems;
+    return {
+      id: `cems-${code || `${p.lat.toFixed(2)}-${p.lon.toFixed(2)}`}`, source_id: code || 'unknown', origin: 'cems',
+      title: e.name || `${type} activation`, type, region, lat: p.lat, lon: p.lon, status: 'Active',
+      updated: cpDateLabel(e.lastUpdate || e.activationTime || e.eventTime), priority: 'Review', climate_link: 'Not assessed',
+      summary: cpTruncate(`Copernicus EMS Rapid Mapping activation${code ? ` ${code}` : ''}.${e.gdacsId ? ` Linked GDACS ID: ${e.gdacsId}.` : ''}`),
+      source: 'Copernicus CEMS', source_url: detailUrl, event_date: e.lastUpdate || e.activationTime || e.eventTime || null,
+      gdacs_id: e.gdacsId || null
+    };
+  }).filter(Boolean);
+}
+function cpParseGdacs(data, diag) {
+  return (Array.isArray(data?.features) ? data.features : []).map(f => {
+    const p = cpCentroid(f.geometry), q = f.properties || {}, type = cpCategoryGdacs(q.eventtype);
+    if (!type || !cpValid(p)) return null;
+    let ha = null;
+    if (type === 'Wildfire') {
+      diag.raw++;
+      ha = cpBurnedHa(q);
+      if (Number.isFinite(ha)) diag.withArea++;
+      if (!Number.isFinite(ha)) { diag.unknown++; return null; }
+      if (ha < CP_WILDFIRE_MIN_HA) { diag.small++; return null; }
+      diag.major++;
+    }
+    const id = String(q.eventid ?? `${p.lat.toFixed(2)}-${p.lon.toFixed(2)}-${q.todate || ''}`);
+    const region = q.country || q.iso3 || `${p.lat.toFixed(2)}°, ${p.lon.toFixed(2)}°`, sev = q.severitydata?.severitytext || q.severitydata?.severity || '';
+    return {
+      id: `gdacs-${q.eventtype || 'EV'}-${id}`, source_id: id, origin: 'gdacs', title: q.name || `${type} in ${region}`, type,
+      region: String(region), lat: p.lat, lon: p.lon, status: 'Recent', updated: cpDateLabel(q.todate || q.fromdate),
+      priority: cpPriority(q.alertlevel), climate_link: 'Not assessed',
+      summary: cpTruncate(`${Number.isFinite(ha) ? `Burned area: ${Math.round(ha).toLocaleString()} ha. ` : ''}${sev || `${type} event tracked by GDACS.`}${q.alertlevel ? ` Alert level: ${q.alertlevel}.` : ''}`),
+      source: `GDACS${q.alertlevel ? ` · ${q.alertlevel}` : ''}`,
+      source_url: `https://www.gdacs.org/report.aspx?eventid=${encodeURIComponent(id)}&eventtype=${encodeURIComponent(q.eventtype || '')}`,
+      event_date: q.todate || q.fromdate || null, burned_area_ha: ha
+    };
+  }).filter(Boolean);
+}
 
-function cpDistance(a,b){const r=6371,d=Math.PI/180,dl=(b.lat-a.lat)*d,dn=(b.lon-a.lon)*d,l1=a.lat*d,l2=b.lat*d,x=Math.sin(dl/2)**2+Math.cos(l1)*Math.cos(l2)*Math.sin(dn/2)**2;return 2*r*Math.asin(Math.min(1,Math.sqrt(x)))}
-function cpDayGap(a,b){const x=new Date(a.event_date||0),y=new Date(b.event_date||0);return Number.isNaN(x)||Number.isNaN(y)?999:Math.abs(x-y)/864e5}
-function cpDedupe(events){const out=[];for(const e of[...events].sort((a,b)=>new Date(b.event_date||0)-new Date(a.event_date||0))){const m=out.find(x=>x.type===e.type&&cpDistance(x,e)<80&&cpDayGap(x,e)<=5);if(!m){out.push({...e,source_urls:[e.source_url].filter(Boolean)});continue}m.source=[...new Set([m.source,e.source])].join(' · ');m.source_urls=[...new Set([...(m.source_urls||[]),e.source_url].filter(Boolean))];if((e.summary||'').length>(m.summary||'').length)m.summary=e.summary;if(Number.isFinite(+e.burned_area_ha)&&(!Number.isFinite(+m.burned_area_ha)||+e.burned_area_ha>+m.burned_area_ha))m.burned_area_ha=+e.burned_area_ha}return out}
-function cpClusterFires(events,radius=180){const other=events.filter(e=>e.type!=='Wildfire'),fires=events.filter(e=>e.type==='Wildfire'),groups=[];for(const f of fires){let g=groups.find(x=>cpDistance({lat:x.reduce((a,m)=>a+m.lat,0)/x.length,lon:x.reduce((a,m)=>a+m.lon,0)/x.length},f)<=radius&&cpDayGap(x[0],f)<=7);g?g.push(f):groups.push([f])}const clustered=groups.map((g,i)=>{if(g.length===1)return g[0];const latest=[...g].sort((a,b)=>new Date(b.event_date||0)-new Date(a.event_date||0))[0],lat=g.reduce((a,m)=>a+m.lat,0)/g.length,lon=g.reduce((a,m)=>a+m.lon,0)/g.length;return{id:`wf-cluster-${i}-${lat.toFixed(2)}-${lon.toFixed(2)}`,source_id:g.map(x=>x.source_id).join(','),origin:'cluster',title:`Regional wildfire cluster · ${g.length} reports`,type:'Wildfire',region:[...new Set(g.map(x=>x.region))].slice(0,3).join(' · '),lat,lon,status:'Clustered',updated:latest.updated,priority:g.some(x=>x.priority==='High')?'High':g.some(x=>x.priority==='Medium')?'Medium':'Standard',climate_link:'Not assessed',summary:`${g.length} nearby major-wildfire records are grouped for the world overview. Expand this event to inspect individual source records.`,source:[...new Set(g.map(x=>x.source.split(' · ')[0]))].join(' · '),source_url:g[0].source_url,source_urls:[...new Set(g.map(x=>x.source_url).filter(Boolean))],event_date:latest.event_date,burned_area_ha:g.reduce((a,x)=>a+(Number.isFinite(+x.burned_area_ha)?+x.burned_area_ha:0),0)||null,member_count:g.length,members:g}});return[...other,...clustered].sort((a,b)=>new Date(b.event_date||0)-new Date(a.event_date||0))}
+function cpDistance(a, b) {
+  const r = 6371, d = Math.PI / 180, dl = (b.lat - a.lat) * d, dn = (b.lon - a.lon) * d, l1 = a.lat * d, l2 = b.lat * d;
+  const x = Math.sin(dl / 2) ** 2 + Math.cos(l1) * Math.cos(l2) * Math.sin(dn / 2) ** 2;
+  return 2 * r * Math.asin(Math.min(1, Math.sqrt(x)));
+}
+function cpDayGap(a, b) {
+  const x = new Date(a.event_date || 0), y = new Date(b.event_date || 0);
+  return Number.isNaN(x) || Number.isNaN(y) ? 999 : Math.abs(x - y) / 864e5;
+}
+function cpDedupe(events) {
+  const out = [];
+  for (const e of [...events].sort((a, b) => new Date(b.event_date || 0) - new Date(a.event_date || 0))) {
+    const m = out.find(x => x.type === e.type && cpDistance(x, e) < 80 && cpDayGap(x, e) <= 5);
+    if (!m) { out.push({ ...e, source_urls: [e.source_url].filter(Boolean) }); continue; }
+    m.source = [...new Set([m.source, e.source])].join(' · ');
+    m.source_urls = [...new Set([...(m.source_urls || []), e.source_url].filter(Boolean))];
+    if ((e.summary || '').length > (m.summary || '').length) m.summary = e.summary;
+    if (Number.isFinite(+e.burned_area_ha) && (!Number.isFinite(+m.burned_area_ha) || +e.burned_area_ha > +m.burned_area_ha)) m.burned_area_ha = +e.burned_area_ha;
+  }
+  return out;
+}
+function cpClusterFires(events, radius = 180) {
+  const other = events.filter(e => e.type !== 'Wildfire'), fires = events.filter(e => e.type === 'Wildfire'), groups = [];
+  for (const f of fires) {
+    let g = groups.find(x => cpDistance({ lat: x.reduce((a, m) => a + m.lat, 0) / x.length, lon: x.reduce((a, m) => a + m.lon, 0) / x.length }, f) <= radius && cpDayGap(x[0], f) <= 7);
+    g ? g.push(f) : groups.push([f]);
+  }
+  const clustered = groups.map((g, i) => {
+    if (g.length === 1) return g[0];
+    const latest = [...g].sort((a, b) => new Date(b.event_date || 0) - new Date(a.event_date || 0))[0];
+    const lat = g.reduce((a, m) => a + m.lat, 0) / g.length, lon = g.reduce((a, m) => a + m.lon, 0) / g.length;
+    return {
+      id: `wf-cluster-${i}-${lat.toFixed(2)}-${lon.toFixed(2)}`, source_id: g.map(x => x.source_id).join(','), origin: 'cluster',
+      title: `Regional wildfire cluster · ${g.length} reports`, type: 'Wildfire', region: [...new Set(g.map(x => x.region))].slice(0, 3).join(' · '),
+      lat, lon, status: 'Clustered', updated: latest.updated,
+      priority: g.some(x => x.priority === 'High') ? 'High' : g.some(x => x.priority === 'Medium') ? 'Medium' : 'Standard',
+      climate_link: 'Not assessed', summary: `${g.length} nearby major-wildfire records are grouped for the world overview. Expand this event to inspect individual source records.`,
+      source: [...new Set(g.map(x => x.source.split(' · ')[0]))].join(' · '), source_url: g[0].source_url,
+      source_urls: [...new Set(g.map(x => x.source_url).filter(Boolean))], event_date: latest.event_date,
+      burned_area_ha: g.reduce((a, x) => a + (Number.isFinite(+x.burned_area_ha) ? +x.burned_area_ha : 0), 0) || null,
+      member_count: g.length, members: g
+    };
+  });
+  return [...other, ...clustered].sort((a, b) => new Date(b.event_date || 0) - new Date(a.event_date || 0));
+}
 
-async function cpFetchJson(url,timeout=15000){const c=new AbortController(),t=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store',signal:c.signal});if(!r.ok)throw new Error(`HTTP ${r.status}`);return await r.json()}finally{clearTimeout(t)}}
-async function cpLoadRepositorySnapshot(){try{const r=await fetch('data/events/latest.json',{cache:'no-store'});if(!r.ok)return null;const j=await r.json();return Array.isArray(j.events)&&j.events.length?j:null}catch{return null}}
-async function cpLoadLive(setStatus){const now=new Date(),from=new Date(now-7*864e5),d=x=>x.toISOString().slice(0,10),diag={raw:0,withArea:0,major:0,small:0,unknown:0};
-  const urls={eonet:`${CP_SOURCE_URLS.eonet}?status=open&days=7&limit=200&category=severeStorms,floods,drought,tempExtremes,landslides`,gdacs1:`${CP_SOURCE_URLS.gdacs}?fromDate=${d(from)}&toDate=${d(now)}&eventlist=FL,TC,DR&alertlevel=Green;Orange;Red`,gdacs2:`${CP_SOURCE_URLS.gdacs}?fromDate=${d(from)}&toDate=${d(now)}&eventlist=WF&alertlevel=Green;Orange;Red`,cems:`${CP_SOURCE_URLS.cems}?limit=100`};
-  const safe=async(key,fn)=>{setStatus(key,'loading',0);try{const v=await fn();setStatus(key,'live',v.length);return v}catch(e){setStatus(key,'failed',0,e?.name==='AbortError'?'timeout':String(e?.message||e).slice(0,45));return[]}};
-  const [eonet,gdacs,cems]=await Promise.all([safe('eonet',async()=>cpParseEonet(await cpFetchJson(urls.eonet))),safe('gdacs',async()=>[...cpParseGdacs(await cpFetchJson(urls.gdacs1),diag),...cpParseGdacs(await cpFetchJson(urls.gdacs2),diag)]),safe('cems',async()=>cpParseCems(await cpFetchJson(urls.cems)))]);
-  return{events:cpClusterFires(cpDedupe([...eonet,...gdacs,...cems])),diagnostics:diag,generated_at:new Date().toISOString()};
+async function cpFetchJson(url, timeout = 15000) {
+  const c = new AbortController(), t = setTimeout(() => c.abort(), timeout);
+  try {
+    const r = await fetch(url, { headers: { Accept: 'application/json' }, cache: 'no-store', signal: c.signal });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+async function cpLoadRepositorySnapshot() {
+  try {
+    const r = await fetch('data/events/latest.json', { cache: 'no-store' });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return Array.isArray(j.events) && j.events.length ? j : null;
+  } catch { return null; }
+}
+async function cpLoadLive(setStatus) {
+  const now = new Date(), from = new Date(now - 7 * 864e5), d = x => x.toISOString().slice(0, 10), diag = { raw: 0, withArea: 0, major: 0, small: 0, unknown: 0 };
+  const urls = {
+    eonet: `${CP_SOURCE_URLS.eonet}?status=open&days=7&limit=200&category=severeStorms,floods,drought,tempExtremes,landslides`,
+    gdacs1: `${CP_SOURCE_URLS.gdacs}?fromDate=${d(from)}&toDate=${d(now)}&eventlist=FL,TC,DR&alertlevel=Green;Orange;Red`,
+    gdacs2: `${CP_SOURCE_URLS.gdacs}?fromDate=${d(from)}&toDate=${d(now)}&eventlist=WF&alertlevel=Green;Orange;Red`,
+    cems: `${CP_SOURCE_URLS.cems}?limit=1000`
+  };
+  const safe = async (key, fn) => {
+    setStatus(key, 'loading', 0);
+    try { const v = await fn(); setStatus(key, 'live', v.length); return v; }
+    catch (e) { setStatus(key, 'failed', 0, e?.name === 'AbortError' ? 'timeout' : String(e?.message || e).slice(0, 45)); return []; }
+  };
+  const [eonet, gdacs, cems] = await Promise.all([
+    safe('eonet', async () => cpParseEonet(await cpFetchJson(urls.eonet))),
+    safe('gdacs', async () => [...cpParseGdacs(await cpFetchJson(urls.gdacs1), diag), ...cpParseGdacs(await cpFetchJson(urls.gdacs2), diag)]),
+    safe('cems', async () => cpParseCems(await cpFetchJson(urls.cems)))
+  ]);
+  return { events: cpClusterFires(cpDedupe([...eonet, ...gdacs, ...cems])), diagnostics: diag, generated_at: new Date().toISOString() };
 }
