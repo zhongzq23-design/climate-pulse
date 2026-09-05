@@ -17,11 +17,12 @@
 
     <header>
       <h1 class="methods-title">Methods & definitions</h1>
-      <p class="methods-lead">Climate Pulse is designed to be transparent about how events are selected and how population exposure is estimated. This page explains the operational rules in plain language and simple formulas. It is a methods summary, not raw source code.</p>
+      <p class="methods-lead">Climate Pulse is designed to be transparent about how events are selected and how population exposure and local climate context are estimated. This page explains the operational rules in plain language and simple formulas. It is a methods summary, not raw source code.</p>
       <div class="badge-row">
         <span class="method-badge">3× daily monitoring</span>
         <span class="method-badge">Source-aware event records</span>
         <span class="method-badge">GHSL 2025 population</span>
+        <span class="method-badge">CRU-TS v4.10 climate</span>
         <span class="method-badge">Exposure ≠ observed harm</span>
       </div>
     </header>
@@ -111,28 +112,59 @@
       </article>
 
       <article class="method-card">
-        <h2>9. Climate context is separate from attribution</h2>
-        <p>Climate Pulse plans to show local long-term temperature context using CRU and/or ERA5-derived series at event locations. A local warming trend can provide context, but it does not by itself establish that climate change caused a particular wildfire, flood, storm or other event.</p>
+        <h2>9. CRU climate context and VPD</h2>
+        <p>For long-term local climate context, Climate Pulse uses the current <strong>CRU-TS v4.10</strong> release from the Climatic Research Unit, University of East Anglia. CRU-TS v4.10 covers <strong>1901–2025</strong> over global land areas except Antarctica on a <strong>0.5° × 0.5°</strong> grid. The repository stores one compact annual NetCDF file per year containing temperature, precipitation, actual vapour pressure and derived VPD.</p>
+
+        <div class="definition-grid">
+          <div class="definition"><b>Temperature · tmp</b><span>Annual calendar-day-weighted mean of monthly mean temperature (°C).</span></div>
+          <div class="definition"><b>Precipitation · pre</b><span>Annual sum of monthly precipitation totals (mm/year).</span></div>
+          <div class="definition"><b>Actual vapour pressure · vap</b><span>Annual calendar-day-weighted mean of monthly CRU vapour pressure (hPa).</span></div>
+          <div class="definition"><b>VPD</b><span>Calculated from each month first, then calendar-day-weighted to an annual mean (hPa).</span></div>
+        </div>
+
+        <h3>Monthly VPD calculation</h3>
+        <p>CRU provides actual vapour pressure (<strong>AVP</strong>) directly as the monthly <code>vap</code> variable in hPa. Saturation vapour pressure (<strong>SVP</strong>) is calculated from CRU monthly mean temperature <strong>T</strong> in °C, and monthly VPD is then calculated before annual aggregation.</p>
+        <div class="formula">VPD = SVP − AVP</div>
+        <div class="formula">SVP = 6.1078 × exp(aT / (T + b)) &nbsp; [hPa]</div>
+        <p>For <strong>T ≥ 0°C</strong>, <code>a = 17.269</code> and <code>b = 237.3</code>. For <strong>T &lt; 0°C</strong>, <code>a = 21.875</code> and <code>b = 265.5</code>. AVP is the CRU monthly <code>vap</code> value. The derived VPD is not artificially clipped before annual aggregation.</p>
+
+        <h3>Annual aggregation</h3>
+        <div class="formula">Annual mean X = Σ(Xₘ × daysₘ) / Σ(daysₘ), for X = tmp, vap, VPD</div>
+        <div class="formula">Annual precipitation = Σ monthly precipitation</div>
+
+        <div class="method-warning method-note"><strong>Temporal-resolution limitation:</strong> the Climate Pulse CRU VPD product calculates SVP from <em>monthly-mean</em> temperature. Because saturation vapour pressure is nonlinear in temperature, SVP calculated from a monthly mean is not equivalent to the mean of SVP calculated from sub-daily temperatures. The product therefore omits effects of the diurnal temperature cycle and sub-daily asymmetric warming. It should be interpreted as coarse long-term climate context rather than a high-frequency VPD estimate.</div>
+
+        <p>This limitation is especially relevant to the role of asymmetric daytime/nighttime warming discussed by <a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener"><strong>Zhong et al. (2025), “Sub-diurnal asymmetric warming has amplified atmospheric dryness since the 1980s,” Nature Communications 16, 8247</strong> ↗</a>.</p>
+        <p>CRU source and background: <a href="https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/" target="_blank" rel="noopener">CRU-TS v4.10 ↗</a> · <a href="https://doi.org/10.1038/s41597-020-0453-3" target="_blank" rel="noopener">Harris et al. (2020) ↗</a>.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>10. Climate context is separate from attribution</h2>
+        <p>Climate Pulse can show local long-term temperature, precipitation, vapour-pressure and VPD context at event locations. A local long-term trend can provide context, but it does not by itself establish that climate change caused a particular wildfire, flood, storm or other event.</p>
         <div class="method-note">The site therefore keeps <strong>event detection</strong>, <strong>population exposure</strong>, <strong>local climate context</strong> and <strong>event attribution</strong> as separate concepts.</div>
       </article>
 
       <article class="method-card">
-        <h2>10. Main limitations</h2>
+        <h2>11. Main limitations</h2>
         <ul>
           <li>Hazard polygons can change as an event evolves and can contain mapping uncertainty.</li>
           <li>Population is represented by a gridded residential estimate, not real-time human presence.</li>
           <li>Cross-source deduplication and map clustering use operational distance/time heuristics.</li>
           <li>Exposure does not measure vulnerability, damage, mortality, evacuation or economic loss.</li>
           <li>Different hazards require different footprints and should not be forced into one universal radius.</li>
+          <li>CRU VPD is derived from monthly means and does not retain sub-daily or diurnal temperature variability.</li>
         </ul>
       </article>
 
       <article class="method-card">
-        <h2>11. Source documentation</h2>
+        <h2>12. Source documentation</h2>
         <ul>
           <li><a href="https://eonet.gsfc.nasa.gov/docs/v3" target="_blank" rel="noopener">NASA EONET API documentation ↗</a></li>
           <li><a href="https://www.gdacs.org/" target="_blank" rel="noopener">GDACS ↗</a></li>
           <li><a href="https://mapping.emergency.copernicus.eu/" target="_blank" rel="noopener">Copernicus Emergency Management Service ↗</a></li>
+          <li><a href="https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/" target="_blank" rel="noopener">CRU-TS v4.10 ↗</a></li>
+          <li><a href="https://doi.org/10.1038/s41597-020-0453-3" target="_blank" rel="noopener">Harris et al. (2020), CRU-TS v4 description ↗</a></li>
+          <li><a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener">Zhong et al. (2025), VPD and sub-diurnal asymmetric warming ↗</a></li>
           <li><a href="https://github.com/zhongzq23-design/climate-pulse" target="_blank" rel="noopener">Climate Pulse public repository ↗</a></li>
         </ul>
         <p>This methods page will evolve with the product. When a rule changes materially, the implementation and public definition should be updated together.</p>
