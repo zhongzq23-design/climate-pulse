@@ -29,13 +29,16 @@ jobs:
         shell: bash
         run: |
           rm -rf _site
-          mkdir -p _site/data/events
+          mkdir -p _site/data/events _site/data/climate/event_timeseries
           cp index.html methods.html README.md _site/
           cp -R assets _site/assets
           cp data/events/latest.json _site/data/events/latest.json
-          # Large scientific reference rasters/NetCDF files remain accessible
-          # through the public GitHub repository / raw.githubusercontent.com,
-          # but are intentionally excluded from every Pages deployment.
+          if [ -d data/climate/event_timeseries ]; then
+            cp -R data/climate/event_timeseries/. _site/data/climate/event_timeseries/
+          fi
+          # Large scientific NetCDF/raster reference files remain in the public
+          # GitHub repository and are intentionally excluded from each Pages build.
+          # Only compact browser-facing event climate JSON is deployed.
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

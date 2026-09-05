@@ -10,8 +10,11 @@ on:
       - 'scripts/monitor_events.py'
       - 'scripts/enrich_hazard_exposure.py'
       - 'scripts/run_hazard_enrichment.py'
+      - 'scripts/enrich_climate_context.py'
       - '.github/workflows/monitor-events.yml'
       - 'data/reference/population/metadata.json'
+      - 'data/reference/climate/cru_ts_4.10/monthly/metadata.json'
+      - 'data/reference/climate/cru_ts_4.10/annual/index.json'
 
 permissions:
   contents: write
@@ -23,7 +26,7 @@ concurrency:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -40,10 +43,9 @@ jobs:
         with:
           path: ~/.cache/climate-pulse/population
           key: ghsl-wup-pop-r2025a-e2025-1km-v1
-          save-always: true
 
-      - name: Install geospatial dependencies
-        run: python -m pip install --disable-pip-version-check numpy rasterio shapely
+      - name: Install scientific dependencies
+        run: python -m pip install --disable-pip-version-check numpy rasterio shapely netCDF4
 
       - name: Fetch, normalize, deduplicate and archive events
         run: python scripts/monitor_events.py
@@ -53,15 +55,19 @@ jobs:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
         run: python scripts/run_hazard_enrichment.py
 
-      - name: Commit data snapshot and exposure products
+      - name: Enrich event climate context
+        run: python scripts/enrich_climate_context.py
+
+      - name: Commit event, exposure and climate-context products
         shell: bash
         run: |
           git config user.name "climate-pulse-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/events data/exposure/population
+          git add data/events data/exposure/population data/climate/event_timeseries
           if git diff --cached --quiet; then
             echo "No data changes to commit."
             exit 0
           fi
-          git commit -m "data: refresh climate events and exposure $(date -u +'%Y-%m-%dT%H:%MZ')"
-          git push
+          git commit -m "data: refresh events, exposure and climate context $(date -u +'%Y-%m-%dT%H:%MZ')"
+          git pull --rebase origin main
+          git push origin main
