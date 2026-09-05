@@ -9,6 +9,7 @@ on:
     paths:
       - 'scripts/monitor_events.py'
       - 'scripts/enrich_hazard_exposure.py'
+      - 'scripts/run_hazard_enrichment.py'
       - '.github/workflows/monitor-events.yml'
       - 'data/reference/population/metadata.json'
 
@@ -39,6 +40,7 @@ jobs:
         with:
           path: ~/.cache/climate-pulse/population
           key: ghsl-wup-pop-r2025a-e2025-1km-v1
+          save-always: true
 
       - name: Install geospatial dependencies
         run: python -m pip install --disable-pip-version-check numpy rasterio shapely
@@ -49,7 +51,7 @@ jobs:
       - name: Enrich wildfire and cyclone exposure
         env:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
-        run: python scripts/enrich_hazard_exposure.py
+        run: python scripts/run_hazard_enrichment.py
 
       - name: Commit data snapshot and exposure products
         shell: bash
