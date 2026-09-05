@@ -1,6 +1,6 @@
 {
   "schema_version": "1.4",
-  "generated_at": "2026-09-05T11:47:03Z",
+  "generated_at": "2026-09-05T16:25:45Z",
   "monitor": {
     "cadence": "3x daily",
     "schedule_utc": [
@@ -14,6 +14,11 @@
     "storm_display_rule": "CEMS activation OR GDACS Orange/Red OR populated GDACS TC footprint; EONET-only fallback uses populated 300 km center buffer",
     "population_reference": "GHSL GHS-WUP-POP R2025A E2025 ~1 km",
     "drought_exposure_rule": "GHSL 2025 population inside the latest GDACS drought event polygon; no radius buffer",
+    "event_footprints": {
+      "source": "GDACS polygons already associated with enriched events",
+      "public_geometry": "topology-preserving simplified browser outline",
+      "no_polygon_behavior": "do not display a footprint panel"
+    },
     "climate_context": {
       "dataset": "CRU-TS v4.10",
       "annual_period": [
@@ -33,9 +38,9 @@
       "error": null
     },
     "gdacs": {
-      "status": "ok",
+      "status": "stale_carry_forward",
       "relevant_count": 66,
-      "error": null
+      "error": "TimeoutError: The read operation timed out"
     },
     "cems": {
       "status": "ok",
@@ -44,10 +49,10 @@
     }
   },
   "diagnostics": {
-    "wildfire_raw": 100,
-    "wildfire_with_area": 100,
-    "wildfire_major": 23,
-    "wildfire_below_threshold": 77,
+    "wildfire_raw": 0,
+    "wildfire_with_area": 0,
+    "wildfire_major": 0,
+    "wildfire_below_threshold": 0,
     "wildfire_area_unknown": 0
   },
   "source_events": [
@@ -61,7 +66,7 @@
       "lat": 21.1,
       "lon": -119.3,
       "status": "Open",
-      "updated": "Updated 6 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -97,7 +102,7 @@
       "lat": 27.8,
       "lon": 126.7,
       "status": "Open",
-      "updated": "Updated 12 h ago",
+      "updated": "Updated 16 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -115,7 +120,7 @@
       "lat": 23.8,
       "lon": 117.4,
       "status": "Open",
-      "updated": "Updated 2 days ago",
+      "updated": "Updated 3 days ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -133,7 +138,7 @@
       "lat": 21.2,
       "lon": -142.2,
       "status": "Open",
-      "updated": "Updated 6 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -151,7 +156,7 @@
       "lat": 13.3,
       "lon": -161.7,
       "status": "Open",
-      "updated": "Updated 6 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -1423,7 +1428,7 @@
       "lat": 45.164037169774694,
       "lon": 10.08183610452019,
       "status": "Active",
-      "updated": "Updated 23 h ago",
+      "updated": "Updated 1 day ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR928.",
@@ -1442,7 +1447,7 @@
       "lat": 28.212231792029492,
       "lon": 85.35376299877846,
       "status": "Active",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 7 h ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
@@ -1467,7 +1472,7 @@
       "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
       "source": "Copernicus CEMS",
       "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
-      "event_date": "2026-09-05T11:40:48.387336",
+      "event_date": "2026-09-05T16:01:49.452001",
       "gdacs_id": null
     },
     {
@@ -1526,7 +1531,7 @@
       "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
       "source": "Copernicus CEMS",
       "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
-      "event_date": "2026-09-05T11:40:48.387336",
+      "event_date": "2026-09-05T16:01:49.452001",
       "gdacs_id": null,
       "source_urls": [
         "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922"
@@ -1548,7 +1553,7 @@
       "lat": 28.212231792029492,
       "lon": 85.35376299877846,
       "status": "Active",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 7 h ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
@@ -1601,13 +1606,19 @@
       "exposure": {
         "hazard": "tropical_cyclone",
         "gdacs_event_id": "1001314",
-        "gdacs_episode_id": 36,
+        "gdacs_episode_id": null,
         "footprint_method": "gdacs_wind_polygon",
         "population_ts_or_impact_footprint": 0,
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": false
+      "display_eligible": false,
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-TC-1001314.json",
+        "source": "GDACS",
+        "method": "gdacs_wind_polygon"
+      }
     },
     {
       "id": "gdacs-TC-1001315",
@@ -1642,15 +1653,13 @@
         }
       ],
       "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001315",
-        "gdacs_episode_id": 37,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 181,
-        "quality": "high"
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 0,
+        "quality": "screening"
       },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true
+      "display_rule": "eonet_center_within_300km_of_populated_land",
+      "display_eligible": false
     },
     {
       "id": "gdacs-TC-1001317",
@@ -1685,14 +1694,12 @@
         }
       ],
       "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001317",
-        "gdacs_episode_id": null,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 0,
-        "quality": "high"
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 0,
+        "quality": "screening"
       },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
+      "display_rule": "eonet_center_within_300km_of_populated_land",
       "display_eligible": false
     },
     {
@@ -1723,14 +1730,12 @@
         }
       ],
       "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001319",
-        "gdacs_episode_id": null,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 0,
-        "quality": "high"
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 0,
+        "quality": "screening"
       },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
+      "display_rule": "eonet_center_within_300km_of_populated_land",
       "display_eligible": false
     },
     {
@@ -1761,14 +1766,12 @@
         }
       ],
       "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001318",
-        "gdacs_episode_id": null,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 28257788,
-        "quality": "high"
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 1575046,
+        "quality": "screening"
       },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
+      "display_rule": "eonet_center_within_300km_of_populated_land",
       "display_eligible": true
     },
     {
@@ -1865,7 +1868,7 @@
       "lat": 27.8,
       "lon": 126.7,
       "status": "Open",
-      "updated": "Updated 12 h ago",
+      "updated": "Updated 16 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -1920,12 +1923,18 @@
       "exposure": {
         "hazard": "wildfire",
         "gdacs_event_id": "1031489",
-        "gdacs_episode_id": 11,
+        "gdacs_episode_id": null,
         "footprint_method": "GDACS burned-area/event polygon",
         "population_direct": 0,
         "population_within_5km": 0,
         "population_5km_ring": 0,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031489.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -1960,16 +1969,7 @@
           "source_id": "1031325"
         }
       ],
-      "exposure": {
-        "hazard": "wildfire",
-        "gdacs_event_id": "1031402",
-        "gdacs_episode_id": 9,
-        "footprint_method": "GDACS burned-area/event polygon",
-        "population_direct": 0,
-        "population_within_5km": 0,
-        "population_5km_ring": 0,
-        "quality": "high_spatial_reference"
-      }
+      "exposure_status": "wildfire_polygon_unavailable"
     },
     {
       "id": "gdacs-WF-1031467",
@@ -2007,6 +2007,12 @@
         "population_within_5km": 728,
         "population_5km_ring": 601,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031467.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2055,6 +2061,12 @@
         "population_within_5km": 6018,
         "population_5km_ring": 4548,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031523.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2093,6 +2105,12 @@
         "population_within_5km": 45,
         "population_5km_ring": 45,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031382.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2131,6 +2149,12 @@
         "population_within_5km": 28,
         "population_5km_ring": 28,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031448.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2174,6 +2198,12 @@
         "population_within_5km": 2,
         "population_5km_ring": 2,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031504.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2212,6 +2242,12 @@
         "population_within_5km": 102,
         "population_5km_ring": 91,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031551.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2250,6 +2286,12 @@
         "population_within_5km": 6,
         "population_5km_ring": 5,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031549.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2282,12 +2324,18 @@
       "exposure": {
         "hazard": "wildfire",
         "gdacs_event_id": "1031545",
-        "gdacs_episode_id": 8,
+        "gdacs_episode_id": null,
         "footprint_method": "GDACS burned-area/event polygon",
         "population_direct": 0,
         "population_within_5km": 0,
         "population_5km_ring": 0,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031545.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2300,7 +2348,7 @@
       "lat": 45.164037169774694,
       "lon": 10.08183610452019,
       "status": "Active",
-      "updated": "Updated 23 h ago",
+      "updated": "Updated 1 day ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR928.",
@@ -2412,6 +2460,12 @@
         "population_within_5km": 4,
         "population_5km_ring": 4,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031598.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2460,6 +2514,12 @@
         "population_within_5km": 44747,
         "population_5km_ring": 41796,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031605.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2498,6 +2558,12 @@
         "population_within_5km": 27187,
         "population_5km_ring": 25303,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031502.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2536,6 +2602,12 @@
         "population_within_5km": 2643,
         "population_5km_ring": 1375,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031449.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2574,6 +2646,12 @@
         "population_within_5km": 122,
         "population_5km_ring": 122,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031451.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2612,6 +2690,12 @@
         "population_within_5km": 1795,
         "population_5km_ring": 1722,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031582.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2650,6 +2734,12 @@
         "population_within_5km": 31253,
         "population_5km_ring": 28371,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031623.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       }
     },
     {
@@ -2688,7 +2778,13 @@
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true
+      "display_eligible": true,
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-TC-1001316.json",
+        "source": "GDACS",
+        "method": "gdacs_wind_polygon"
+      }
     },
     {
       "id": "gdacs-FL-1104132",
@@ -2840,7 +2936,7 @@
       "lat": 23.8,
       "lon": 117.4,
       "status": "Open",
-      "updated": "Updated 2 days ago",
+      "updated": "Updated 3 days ago",
       "priority": "Medium",
       "climate_link": "Not assessed",
       "summary": "Tropical Storm (maximum wind speed of 213 km/h) Alert level: Orange.",
@@ -2864,13 +2960,19 @@
       "exposure": {
         "hazard": "tropical_cyclone",
         "gdacs_event_id": "1001305",
-        "gdacs_episode_id": 47,
+        "gdacs_episode_id": null,
         "footprint_method": "gdacs_wind_polygon",
         "population_ts_or_impact_footprint": 155572490,
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true
+      "display_eligible": true,
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/eonet-EONET_22926.json",
+        "source": "GDACS",
+        "method": "gdacs_wind_polygon"
+      }
     },
     {
       "id": "gdacs-DR-1027575",
@@ -2908,7 +3010,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027575.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1018545",
@@ -2937,7 +3045,22 @@
           "source_id": "1018545"
         }
       ],
-      "exposure_status": "drought_gdacs_polygon_unavailable"
+      "exposure": {
+        "hazard": "drought",
+        "gdacs_event_id": "1018545",
+        "gdacs_episode_id": 13,
+        "footprint_method": "GDACS drought event polygon",
+        "population_in_drought_footprint": 148668723,
+        "quality": "mapped_event_footprint",
+        "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
+      },
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018545.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1027448",
@@ -2969,13 +3092,19 @@
       "exposure": {
         "hazard": "drought",
         "gdacs_event_id": "1027448",
-        "gdacs_episode_id": null,
+        "gdacs_episode_id": 7,
         "footprint_method": "GDACS drought event polygon",
         "population_in_drought_footprint": 15136965,
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027448.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1018546",
@@ -3013,7 +3142,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018546.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1018344",
@@ -3051,7 +3186,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018344.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1023877",
@@ -3089,7 +3230,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1023877.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1027491",
@@ -3127,7 +3274,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027491.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1018431",
@@ -3165,7 +3318,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018431.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1018332",
@@ -3203,7 +3362,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018332.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "gdacs-DR-1027449",
@@ -3241,7 +3406,13 @@
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
-      "exposure_status": "ready"
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027449.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      }
     },
     {
       "id": "cems-EMSR914",
@@ -3622,7 +3793,13 @@
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": false
+      "display_eligible": false,
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-TC-1001312.json",
+        "source": "GDACS",
+        "method": "gdacs_wind_polygon"
+      }
     },
     {
       "id": "gdacs-TC-1001311",
@@ -3660,7 +3837,13 @@
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": false
+      "display_eligible": false,
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-TC-1001311.json",
+        "source": "GDACS",
+        "method": "gdacs_wind_polygon"
+      }
     },
     {
       "id": "gdacs-FL-1104130",
@@ -3820,7 +4003,7 @@
       "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
       "source": "Copernicus CEMS",
       "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
-      "event_date": "2026-09-05T11:40:48.387336",
+      "event_date": "2026-09-05T16:01:49.452001",
       "gdacs_id": null,
       "source_urls": [
         "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922"
@@ -3854,7 +4037,7 @@
       "lat": 28.212231792029492,
       "lon": 85.35376299877846,
       "status": "Active",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 7 h ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
@@ -3881,57 +4064,6 @@
         "grid_lat": 28.25,
         "grid_lon": 85.25,
         "grid_distance_km": 11.0
-      }
-    },
-    {
-      "id": "gdacs-TC-1001315",
-      "source_id": "1001315",
-      "origin": "gdacs",
-      "title": "Tropical Cyclone LOWELL-26",
-      "type": "Storm",
-      "region": "United States",
-      "lat": 13.3,
-      "lon": -161.9,
-      "status": "Recent",
-      "updated": "Updated 3 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 259 km/h) Alert level: Green.",
-      "source": "GDACS · Green · NASA EONET",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
-      "event_date": "2026-09-05T09:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
-        "https://www.metoc.navy.mil/jtwc/products/ep1226.tcw"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1001315"
-        },
-        {
-          "origin": "eonet",
-          "source_id": "EONET_23612"
-        }
-      ],
-      "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001315",
-        "gdacs_episode_id": 37,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 181,
-        "quality": "high"
-      },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true,
-      "climate_context": {
-        "status": "unavailable",
-        "reason": "No valid CRU land grid cell within 500 km of the reported coordinate",
-        "variables": [
-          "tmp",
-          "pre"
-        ]
       }
     },
     {
@@ -3962,14 +4094,12 @@
         }
       ],
       "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001318",
-        "gdacs_episode_id": null,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 28257788,
-        "quality": "high"
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 1575046,
+        "quality": "screening"
       },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
+      "display_rule": "eonet_center_within_300km_of_populated_land",
       "display_eligible": true,
       "climate_context": {
         "status": "ready",
@@ -4110,7 +4240,7 @@
       "lat": 27.8,
       "lon": 126.7,
       "status": "Open",
-      "updated": "Updated 12 h ago",
+      "updated": "Updated 16 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -4200,7 +4330,7 @@
           "exposure": {
             "hazard": "wildfire",
             "gdacs_event_id": "1031489",
-            "gdacs_episode_id": 11,
+            "gdacs_episode_id": null,
             "footprint_method": "GDACS burned-area/event polygon",
             "population_direct": 0,
             "population_within_5km": 0,
@@ -4238,7 +4368,7 @@
           "exposure": {
             "hazard": "wildfire",
             "gdacs_event_id": "1031545",
-            "gdacs_episode_id": 8,
+            "gdacs_episode_id": null,
             "footprint_method": "GDACS burned-area/event polygon",
             "population_direct": 0,
             "population_within_5km": 0,
@@ -4324,16 +4454,7 @@
               "source_id": "1031325"
             }
           ],
-          "exposure": {
-            "hazard": "wildfire",
-            "gdacs_event_id": "1031402",
-            "gdacs_episode_id": 9,
-            "footprint_method": "GDACS burned-area/event polygon",
-            "population_direct": 0,
-            "population_within_5km": 0,
-            "population_5km_ring": 0,
-            "quality": "high_spatial_reference"
-          }
+          "exposure_status": "wildfire_polygon_unavailable"
         },
         {
           "id": "gdacs-WF-1031382",
@@ -4600,6 +4721,12 @@
         "population_5km_ring": 4548,
         "quality": "high_spatial_reference"
       },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031523.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1031523.json",
@@ -4655,6 +4782,12 @@
         "population_5km_ring": 2,
         "quality": "high_spatial_reference"
       },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031504.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1031504.json",
@@ -4704,6 +4837,12 @@
         "population_within_5km": 102,
         "population_5km_ring": 91,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031551.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       },
       "climate_context": {
         "status": "ready",
@@ -4755,6 +4894,12 @@
         "population_5km_ring": 5,
         "quality": "high_spatial_reference"
       },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031549.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1031549.json",
@@ -4778,7 +4923,7 @@
       "lat": 45.164037169774694,
       "lon": 10.08183610452019,
       "status": "Active",
-      "updated": "Updated 23 h ago",
+      "updated": "Updated 1 day ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR928.",
@@ -4923,6 +5068,12 @@
         "population_within_5km": 4,
         "population_5km_ring": 4,
         "quality": "high_spatial_reference"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031598.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
       },
       "climate_context": {
         "status": "ready",
@@ -5105,6 +5256,12 @@
         "population_5km_ring": 122,
         "quality": "high_spatial_reference"
       },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1031451.json",
+        "source": "GDACS",
+        "method": "GDACS burned-area/event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1031451.json",
@@ -5276,6 +5433,12 @@
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
       "display_eligible": true,
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-TC-1001316.json",
+        "source": "GDACS",
+        "method": "gdacs_wind_polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-TC-1001316.json",
@@ -5493,7 +5656,7 @@
       "lat": 23.8,
       "lon": 117.4,
       "status": "Open",
-      "updated": "Updated 2 days ago",
+      "updated": "Updated 3 days ago",
       "priority": "Medium",
       "climate_link": "Not assessed",
       "summary": "Tropical Storm (maximum wind speed of 213 km/h) Alert level: Orange.",
@@ -5517,13 +5680,19 @@
       "exposure": {
         "hazard": "tropical_cyclone",
         "gdacs_event_id": "1001305",
-        "gdacs_episode_id": 47,
+        "gdacs_episode_id": null,
         "footprint_method": "gdacs_wind_polygon",
         "population_ts_or_impact_footprint": 155572490,
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
       "display_eligible": true,
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/eonet-EONET_22926.json",
+        "source": "GDACS",
+        "method": "gdacs_wind_polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/eonet-EONET_22926.json",
@@ -5573,6 +5742,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027575.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1027575.json",
@@ -5613,7 +5788,22 @@
           "source_id": "1018545"
         }
       ],
-      "exposure_status": "drought_gdacs_polygon_unavailable",
+      "exposure": {
+        "hazard": "drought",
+        "gdacs_event_id": "1018545",
+        "gdacs_episode_id": 13,
+        "footprint_method": "GDACS drought event polygon",
+        "population_in_drought_footprint": 148668723,
+        "quality": "mapped_event_footprint",
+        "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
+      },
+      "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018545.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1018545.json",
@@ -5657,13 +5847,19 @@
       "exposure": {
         "hazard": "drought",
         "gdacs_event_id": "1027448",
-        "gdacs_episode_id": null,
+        "gdacs_episode_id": 7,
         "footprint_method": "GDACS drought event polygon",
         "population_in_drought_footprint": 15136965,
         "quality": "mapped_event_footprint",
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027448.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1027448.json",
@@ -5714,6 +5910,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018546.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1018546.json",
@@ -5764,6 +5966,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018344.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1018344.json",
@@ -5814,6 +6022,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1023877.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1023877.json",
@@ -5864,6 +6078,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027491.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1027491.json",
@@ -5914,6 +6134,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018431.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1018431.json",
@@ -5964,6 +6190,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1018332.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1018332.json",
@@ -6014,6 +6246,12 @@
         "interpretation": "Potential residential population exposure inside the mapped drought footprint; not observed impact or people actually affected."
       },
       "exposure_status": "ready",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-DR-1027449.json",
+        "source": "GDACS",
+        "method": "GDACS drought event polygon"
+      },
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-DR-1027449.json",
@@ -6701,21 +6939,34 @@
     }
   ],
   "hazard_exposure": {
-    "calculated_at": "2026-09-05T11:59:41Z",
+    "calculated_at": "2026-09-05T16:44:16Z",
     "population_dataset": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025, authoritative ~1 km source",
     "wildfire_rule": "burned area >= 10,000 ha; population in burned polygon and within 5 km",
     "storm_rule": "CEMS activation OR GDACS Orange/Red OR populated GDACS TC footprint; EONET-only fallback uses populated 300 km center buffer",
     "interpretation": "Potential population exposure; not observed impact, casualties, attribution, or loss",
     "diagnostics": {
-      "wildfire_enriched": 17,
-      "wildfire_polygon_missing": 0,
+      "wildfire_enriched": 16,
+      "wildfire_polygon_missing": 1,
       "storm_enriched": 11,
-      "storm_visible": 7,
-      "storm_hidden_remote_or_unpopulated": 5,
+      "storm_visible": 6,
+      "storm_hidden_remote_or_unpopulated": 6,
       "drought_candidates": 10,
-      "drought_enriched": 9,
-      "drought_polygon_missing": 1
+      "drought_enriched": 10,
+      "drought_polygon_missing": 0
     },
     "drought_rule": "GHSL 2025 population inside the latest GDACS drought event polygon; no radius buffer"
+  },
+  "footprint_diagnostics": {
+    "canonical": {
+      "eligible": 31,
+      "ready": 31,
+      "missing": 0
+    },
+    "display": {
+      "eligible": 18,
+      "ready": 18,
+      "missing": 0
+    },
+    "unique_source_geometries": 31
   }
 }
