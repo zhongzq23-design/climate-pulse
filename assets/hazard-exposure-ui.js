@@ -1,10 +1,19 @@
 'use strict';
 
-// Hazard-specific UI layer. Kept separate from app.js so the exposure pipeline can
-// evolve without coupling ingestion logic to the base map interactions.
+// Hazard-specific UI layer. Exposure means spatial/economic screening, not
+// observed harm. Drought deliberately no longer displays population exposure.
 (() => {
   const hasNum = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
   const fmtPop = v => hasNum(v) ? Math.round(Number(v)).toLocaleString() : '–';
+  const fmtArea = v => hasNum(v) ? `${Number(v).toLocaleString(undefined, { maximumFractionDigits: 1 })} km²` : '–';
+  const fmtGDP = v => {
+    if (!hasNum(v)) return '–';
+    const x = Number(v), ax = Math.abs(x);
+    if (ax >= 1e12) return `$${(x / 1e12).toFixed(ax >= 10e12 ? 1 : 2)}T`;
+    if (ax >= 1e9) return `$${(x / 1e9).toFixed(ax >= 10e9 ? 1 : 2)}B`;
+    if (ax >= 1e6) return `$${(x / 1e6).toFixed(ax >= 10e6 ? 1 : 2)}M`;
+    return `$${Math.round(x).toLocaleString()}`;
+  };
   const cellGrid = rows => `<div class="detail-grid">${rows.map(r => `<div class="cell"><b>${esc(r[0])}</b>${esc(r[1])}</div>`).join('')}</div>`;
 
   const baseRenderSourceStatus = renderSourceStatus;
@@ -34,50 +43,65 @@
     ];
     if (e.priority) rows.push(['Priority', e.priority]);
 
-    if (e.type === 'Wildfire' && hasNum(e.burned_area_ha)) {
-      rows.push(['Burned area', fmtHa(e.burned_area_ha)]);
-    }
+    if (e.type === 'Wildfire' && hasNum(e.burned_area_ha)) rows.push(['Burned area', fmtHa(e.burned_area_ha)]);
 
     const x = e.exposure || {};
     if (e.type === 'Wildfire') {
-      if (hasNum(x.population_direct)) rows.push(['Direct exposure', `${fmtPop(x.population_direct)} people`]);
-      if (hasNum(x.population_5km_ring)) rows.push(['Nearby exposure (≤5 km)', `${fmtPop(x.population_5km_ring)} people`]);
-      if (hasNum(x.population_within_5km)) rows.push(['Total potential exposure', `${fmtPop(x.population_within_5km)} people`]);
-      if (hasNum(x.population_direct_member_sum)) rows.push(['Direct exposure · member sum', `${fmtPop(x.population_direct_member_sum)} people`]);
-      if (hasNum(x.population_within_5km_member_sum)) rows.push(['Total exposure · member sum', `${fmtPop(x.population_within_5km_member_sum)} people`]);
+      if (hasNum(x.forest_area_in_wildfire_footprint_km2)) rows.push(['Forest within mapped fire footprint', fmtArea(x.forest_area_in_wildfire_footprint_km2)]);
+      if (hasNum(x.forest_area_member_sum_km2)) rows.push(['Forest overlap · member sum', fmtArea(x.forest_area_member_sum_km2)]);
+      if (hasNum(x.population_direct)) rows.push(['Direct population exposure', `${fmtPop(x.population_direct)} people`]);
+      if (hasNum(x.population_5km_ring)) rows.push(['Nearby population (≤5 km)', `${fmtPop(x.population_5km_ring)} people`]);
+      if (hasNum(x.population_within_5km)) rows.push(['Total potential population exposure', `${fmtPop(x.population_within_5km)} people`]);
+      if (hasNum(x.population_direct_member_sum)) rows.push(['Direct population · member sum', `${fmtPop(x.population_direct_member_sum)} people`]);
+      if (hasNum(x.population_within_5km_member_sum)) rows.push(['Total population · member sum', `${fmtPop(x.population_within_5km_member_sum)} people`]);
     } else if (e.type === 'Storm') {
+      if (hasNum(x.potential_gdp_exposure_proxy_usd)) rows.push(['Potential GDP exposure proxy · 2024', fmtGDP(x.potential_gdp_exposure_proxy_usd)]);
       if (hasNum(x.population_ts_or_impact_footprint)) rows.push(['Population in TC impact footprint', `${fmtPop(x.population_ts_or_impact_footprint)} people`]);
       if (hasNum(x.population_within_300km_of_center)) rows.push(['Population within 300 km · screening', `${fmtPop(x.population_within_300km_of_center)} people`]);
+    } else if (e.type === 'Flood') {
+      if (hasNum(x.potential_gdp_exposure_proxy_usd)) rows.push(['Potential GDP exposure proxy · 2024', fmtGDP(x.potential_gdp_exposure_proxy_usd)]);
     } else if (e.type === 'Drought') {
-      if (hasNum(x.population_in_drought_footprint)) rows.push(['Population in drought footprint', `${fmtPop(x.population_in_drought_footprint)} people`]);
+      if (hasNum(x.mapped_footprint_area_km2)) rows.push(['Mapped drought footprint', fmtArea(x.mapped_footprint_area_km2)]);
+      if (hasNum(x.land_area_in_footprint_km2)) rows.push(['Land within footprint', fmtArea(x.land_area_in_footprint_km2)]);
+      if (hasNum(x.forest_area_in_footprint_km2)) rows.push(['Forest within footprint', fmtArea(x.forest_area_in_footprint_km2)]);
+      if (hasNum(x.crop_area_in_footprint_km2)) rows.push(['Crop area within footprint', fmtArea(x.crop_area_in_footprint_km2)]);
     }
     return cellGrid(rows);
   };
 
+  function gdpText(x) {
+    if (!hasNum(x.potential_gdp_exposure_proxy_usd)) return '';
+    const coverage = hasNum(x.gdp_proxy_population_coverage_pct) ? `; WDI coverage ${Number(x.gdp_proxy_population_coverage_pct).toFixed(0)}% of the country-split population basis` : '';
+    return `${fmtGDP(x.potential_gdp_exposure_proxy_usd)} potential GDP exposure proxy using World Bank WDI 2024 GDP per capita × GHSL 2025 residential population inside the mapped footprint${coverage}. It is not observed economic loss or local gridded GDP.`;
+  }
+
   function exposureSummary(e) {
     const x = e?.exposure || {};
+    if (e?.type === 'Drought') {
+      const bits = [];
+      if (hasNum(x.mapped_footprint_area_km2)) bits.push(`${fmtArea(x.mapped_footprint_area_km2)} mapped drought footprint`);
+      if (hasNum(x.land_area_in_footprint_km2)) bits.push(`${fmtArea(x.land_area_in_footprint_km2)} land`);
+      if (hasNum(x.forest_area_in_footprint_km2)) bits.push(`${fmtArea(x.forest_area_in_footprint_km2)} forest (MODIS 2024)`);
+      if (hasNum(x.crop_area_in_footprint_km2)) bits.push(`${fmtArea(x.crop_area_in_footprint_km2)} crop physical area (FAO CROPGRIDS 2020)`);
+      if (bits.length) return `Spatial overlap within the GDACS drought polygon: ${bits.join(', ')}. These are potentially exposed areas, not verified ecological or agricultural damage.`;
+      return '';
+    }
     if (e?.type === 'Wildfire') {
-      if (hasNum(x.population_direct) || hasNum(x.population_within_5km)) {
-        const direct = fmtPop(x.population_direct);
-        const nearby = fmtPop(x.population_5km_ring);
-        const total = fmtPop(x.population_within_5km);
-        return `GHSL 2025 population screening: ${direct} people in the mapped wildfire footprint, ${nearby} additional people within 5 km, and ${total} people in total across the footprint plus 5 km. Exposure does not mean observed harm.`;
-      }
-      if (hasNum(x.population_within_5km_member_sum)) {
-        return `Grouped-fire screening: ${fmtPop(x.population_within_5km_member_sum)} population-exposures across member footprint-plus-5-km areas. Member areas may overlap, so this is not a unique-person count.`;
-      }
+      const bits = [];
+      if (hasNum(x.forest_area_in_wildfire_footprint_km2)) bits.push(`${fmtArea(x.forest_area_in_wildfire_footprint_km2)} MODIS-2024 forest within the mapped fire footprint`);
+      if (hasNum(x.forest_area_member_sum_km2)) bits.push(`${fmtArea(x.forest_area_member_sum_km2)} forest across member footprints (overlaps may be counted twice)`);
+      if (hasNum(x.population_direct) || hasNum(x.population_within_5km)) bits.push(`${fmtPop(x.population_direct)} people in the footprint and ${fmtPop(x.population_5km_ring)} additional people within 5 km`);
+      if (hasNum(x.population_within_5km_member_sum)) bits.push(`${fmtPop(x.population_within_5km_member_sum)} population-exposures across member footprint-plus-5-km areas`);
+      return bits.length ? `${bits.join('; ')}. Spatial exposure does not mean confirmed forest loss, smoke exposure or observed harm.` : '';
     }
     if (e?.type === 'Storm') {
-      if (hasNum(x.population_ts_or_impact_footprint)) {
-        return `GHSL 2025 screening within the GDACS tropical-cyclone impact footprint: ${fmtPop(x.population_ts_or_impact_footprint)} people. This is potential exposure, not damage.`;
-      }
-      if (hasNum(x.population_within_300km_of_center)) {
-        return `Fallback screening: ${fmtPop(x.population_within_300km_of_center)} people live within 300 km of the reported storm centre. This is a proximity screen, not a wind-impact estimate.`;
-      }
+      const bits = [];
+      const gt = gdpText(x); if (gt) bits.push(gt);
+      if (hasNum(x.population_ts_or_impact_footprint)) bits.push(`${fmtPop(x.population_ts_or_impact_footprint)} people in the GDACS tropical-cyclone impact footprint`);
+      else if (hasNum(x.population_within_300km_of_center)) bits.push(`${fmtPop(x.population_within_300km_of_center)} people within 300 km of the reported centre (proximity screen only)`);
+      return bits.join(' ');
     }
-    if (e?.type === 'Drought' && hasNum(x.population_in_drought_footprint)) {
-      return `GHSL 2025 population inside the latest mapped GDACS drought footprint: ${fmtPop(x.population_in_drought_footprint)} people. This is potential spatial exposure, not a count of people actually affected or needing assistance.`;
-    }
+    if (e?.type === 'Flood') return gdpText(x);
     return '';
   }
 
@@ -87,9 +111,7 @@
     const e = chosen();
     const text = exposureSummary(e);
     const p = $('detailPanel');
-    if (p && text) {
-      p.insertAdjacentHTML('beforeend', `<div class="section-label">Potential population exposure</div><div class="climate-box">${esc(text)}</div>`);
-    }
+    if (p && text) p.insertAdjacentHTML('beforeend', `<div class="section-label">Potential exposure</div><div class="climate-box">${esc(text)}</div>`);
   };
 
   memberHtml = function (e) {
@@ -98,9 +120,10 @@
       const x = m.exposure || {};
       const metrics = [];
       if (m.type === 'Wildfire' && hasNum(m.burned_area_ha)) metrics.push(fmtHa(m.burned_area_ha));
-      if (hasNum(x.population_direct)) metrics.push(`${fmtPop(x.population_direct)} direct`);
+      if (hasNum(x.forest_area_in_wildfire_footprint_km2)) metrics.push(`${fmtArea(x.forest_area_in_wildfire_footprint_km2)} forest overlap`);
+      if (hasNum(x.population_direct)) metrics.push(`${fmtPop(x.population_direct)} direct population`);
       if (hasNum(x.population_5km_ring)) metrics.push(`${fmtPop(x.population_5km_ring)} nearby ≤5 km`);
-      if (hasNum(x.population_within_5km)) metrics.push(`${fmtPop(x.population_within_5km)} total potential`);
+      if (hasNum(x.population_within_5km)) metrics.push(`${fmtPop(x.population_within_5km)} total potential population`);
       return `<div class="cell" style="margin-top:7px"><b>${i + 1}. ${esc(m.source)}</b>${esc(m.title)}<br><span class="region">${esc(m.updated)}${metrics.length ? ` · ${esc(metrics.join(' · '))}` : ''}</span></div>`;
     }).join('')}`;
   };
