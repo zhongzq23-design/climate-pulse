@@ -1,0 +1,60 @@
+name: Probe MSN current temperature and VPD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - experiment/msn-weather-current-vpd-v1
+    paths:
+      - 'scripts/enrich_current_weather_msn.py'
+      - 'docs/MSN_WEATHER_CURRENT_VPD_POC.md'
+      - '.github/workflows/probe-msn-current-weather.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Syntax check
+        run: python -m py_compile scripts/enrich_current_weather_msn.py
+
+      - name: Formula and response-parser self test
+        run: python scripts/enrich_current_weather_msn.py --self-test
+
+      - name: Probe live MSN bridge when configured
+        env:
+          MSN_WEATHER_BRIDGE_URL: ${{ secrets.MSN_WEATHER_BRIDGE_URL }}
+          MSN_WEATHER_BRIDGE_TOKEN: ${{ secrets.MSN_WEATHER_BRIDGE_TOKEN }}
+          MSN_WEATHER_MAX_EVENTS: '80'
+          MSN_WEATHER_MIN_INTERVAL_SECONDS: '8'
+        run: python scripts/enrich_current_weather_msn.py
+
+      - name: Commit probe output when live bridge is configured
+        shell: bash
+        run: |
+          if [ ! -f data/current_weather/msn/latest.json ]; then
+            exit 0
+          fi
+          if grep -q '"status": "not_configured"' data/current_weather/msn/latest.json; then
+            echo "MSN bridge is not configured; self-test only."
+            exit 0
+          fi
+          git config user.name "climate-pulse-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/current_weather/msn/latest.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "data: probe MSN current temperature and VPD"
+          git push
