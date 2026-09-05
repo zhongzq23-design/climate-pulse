@@ -1,0 +1,49 @@
+name: Monitor climate events
+
+on:
+  schedule:
+    - cron: '17 0,8,16 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/monitor_events.py'
+      - '.github/workflows/monitor-events.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: climate-event-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch, normalize, deduplicate and archive events
+        run: python scripts/monitor_events.py
+
+      - name: Commit data snapshot
+        shell: bash
+        run: |
+          git config user.name "climate-pulse-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/events
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+            exit 0
+          fi
+          git commit -m "data: refresh climate events $(date -u +'%Y-%m-%dT%H:%MZ')"
+          git push
