@@ -2,8 +2,9 @@
 """Compatibility runner for hazard enrichment.
 
 GDACS polygons can contain self-intersections or overlapping invalid rings. This
-runner repairs individual geometries before unioning them and expands the GHSL
-cache path correctly on GitHub-hosted runners.
+runner repairs individual geometries before unioning them, expands the GHSL
+cache path correctly on GitHub-hosted runners, and preserves GDACS cyclone alert
+priority when a canonical event has been source-deduplicated with EONET/CEMS.
 """
 from __future__ import annotations
 
@@ -74,9 +75,43 @@ def safe_polygons_union(features, predicate=None):
     return unary_union(parts)
 
 
-# Monkey-patch only the geometry normalization layer; the scientific rules stay
-# in enrich_hazard_exposure.py.
+def promote_gdacs_alert(event):
+    """Recover Orange/Red priority if dedupe kept another source as primary."""
+    text = " ".join(
+        str(x or "")
+        for x in (
+            event.get("source"),
+            event.get("summary"),
+            *(event.get("source_urls") or []),
+        )
+    ).lower()
+    if "gdacs" in text and "red" in text:
+        event["priority"] = "High"
+    elif "gdacs" in text and "orange" in text and event.get("priority") != "High":
+        event["priority"] = "Medium"
+    return event
+
+
+# Monkey-patch only normalization/compatibility behavior; the core scientific
+# rules remain in enrich_hazard_exposure.py.
 h.polygons_union = safe_polygons_union
+_original_enrich_storm = h.enrich_storm
+
+
+def safe_enrich_storm(event, src):
+    event = promote_gdacs_alert(dict(event))
+    out, eligible = _original_enrich_storm(event, src)
+    out = promote_gdacs_alert(out)
+    # Explicit GDACS Orange/Red remains visible even if a source-deduplicated
+    # canonical event inherited Standard priority before enrichment.
+    if out.get("priority") in {"Medium", "High"}:
+        eligible = True
+        out["display_eligible"] = True
+        out["display_rule"] = "gdacs_orange_red_or_populated_tc_footprint"
+    return out, eligible
+
+
+h.enrich_storm = safe_enrich_storm
 cache_root = Path(os.environ.get("CLIMATE_PULSE_CACHE_DIR", Path.home() / ".cache" / "climate-pulse")).expanduser()
 h.CACHE_ROOT = cache_root
 h.CACHE_POP = cache_root / "population" / "ghsl_wup_2025_1km.tif"
