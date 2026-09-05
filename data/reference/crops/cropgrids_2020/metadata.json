@@ -13,7 +13,15 @@
   "figshare_file_bytes": 806855203,
   "figshare_file_md5": "2773d0b1f83518cf7a4e271a73e62a57",
   "derived_path": "data/reference/crops/cropgrids_2020/crop_area_ha_0p05.tif",
-  "status": "reference_registered_pending_derivative",
+  "status": "ready",
   "interpretation": "Used only to estimate crop physical area spatially overlapping a mapped drought footprint; this is not crop damage or yield loss.",
-  "caveat": "Although CROPGRIDS constrains total crop area by available land, temporary crop physical area can still overestimate distinct cropland where different crops occupy the same land during a year."
+  "caveat": "Although CROPGRIDS constrains total crop area by available land, temporary crop physical area can still overestimate distinct cropland where different crops occupy the same land during a year.",
+  "generated_at": "2026-09-05T19:00:08Z",
+  "crop_maps_summed": 173,
+  "derived_grid": "EPSG:4326, 0.05 degree, 3600x7200, uint16 hectares",
+  "derived_bytes": 4268169,
+  "derived_sha256": "f64dd69dc9fe7807722ec294b0b02e8e65d541383a63b5df7050665232ba6660",
+  "max_cell_crop_area_ha": 3090.81,
+  "aggregation": "sum of CROPGRIDS croparea (physical area) across all distributed crop NetCDF files; values rounded to nearest hectare",
+  "boundary_use": "event overlay uses grid-cell-centre inclusion; source polygon remains unsimplified"
 }
