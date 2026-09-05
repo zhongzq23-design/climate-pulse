@@ -1,0 +1,17 @@
+.metric-source {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 5px;
+  padding-top: 2px;
+  border-top: 1px solid rgba(96, 120, 137, .12);
+  color: #607889;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.metric-source::before { content: "↳ "; }
+.source-first-box { border-left: 3px solid #7b9bac; }
+.source-first-grid .metric-source { opacity: .95; transition: opacity .15s ease; }
+.source-first-grid .cell:hover .metric-source { opacity: 1; }

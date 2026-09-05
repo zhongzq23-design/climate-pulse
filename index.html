@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="assets/styles.css">
   <link rel="stylesheet" href="assets/climate-context.css">
   <link rel="stylesheet" href="assets/footprint.css">
+  <link rel="stylesheet" href="assets/source-first.css">
 </head>
 <body>
   <main class="app">
@@ -38,7 +39,7 @@
         <div class="panel-head">
           <div>
             <h2 id="mapTitle">Live Standard Events</h2>
-            <p id="mapSubtitle">Authoritative feed candidates. Prime meridian is centered.</p>
+            <p id="mapSubtitle">Authoritative source metrics are preferred; Climate Pulse estimates are explicitly labelled.</p>
           </div>
           <span class="count" id="visibleCount">0 events</span>
         </div>
@@ -55,7 +56,7 @@
           </svg>
           <div class="map-popup" id="mapPopup"></div>
         </div>
-        <p class="map-note">Tap a marker → preview → <strong>View event</strong>. Major GDACS wildfires require burned area ≥ 10,000 ha.</p>
+        <p class="map-note">Tap a marker → preview → <strong>View event</strong>. For wildfire population, GDACS/GWIS values are used first; Climate Pulse calculates a GHSH fallback only when the equivalent source value is unavailable. Green wildfire display additionally requires ≥10,000 ha and &gt;10,000 people within 5 km; Orange/Red remain visible.</p>
       </article>
 
       <aside class="panel detail" id="detailPanel">
@@ -65,7 +66,7 @@
 
     <section class="panel feed-panel" id="feedPanel">
       <div class="panel-head">
-        <div><h2 id="feedTitle">Standard Event Feed</h2><p id="feedSubtitle">Expand a card for mapped footprint, exposure, sources and long-term climate background.</p></div>
+        <div><h2 id="feedTitle">Standard Event Feed</h2><p id="feedSubtitle">Expand a card for source-first hazard metrics, mapped footprint, clearly labelled supplemental exposure, sources and long-term climate background.</p></div>
         <span class="count" id="feedCount"></span>
       </div>
       <div class="event-list" id="eventList"></div>
@@ -73,6 +74,7 @@
     </section>
 
     <footer>
+      <p><strong>Terminology matters:</strong> exposed population is not affected population. Climate Pulse uses “affected” or “displaced” only when a source reports an actual impact; derived spatial counts are labelled estimates.</p>
       <p>Climate context and event attribution are kept separate. Source ingestion does not imply endorsement or causal attribution.</p>
       <p><a href="methods.html">Methods & definitions</a> · <a href="README.md">Project & data architecture</a></p>
     </footer>
