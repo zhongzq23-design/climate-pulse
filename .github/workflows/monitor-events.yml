@@ -8,7 +8,9 @@ on:
     branches: [main]
     paths:
       - 'scripts/monitor_events.py'
+      - 'scripts/enrich_hazard_exposure.py'
       - '.github/workflows/monitor-events.yml'
+      - 'data/reference/population/metadata.json'
 
 permissions:
   contents: write
@@ -20,7 +22,7 @@ concurrency:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -32,18 +34,32 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Restore GHSL population cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/climate-pulse/population
+          key: ghsl-wup-pop-r2025a-e2025-1km-v1
+
+      - name: Install geospatial dependencies
+        run: python -m pip install --disable-pip-version-check numpy rasterio shapely
+
       - name: Fetch, normalize, deduplicate and archive events
         run: python scripts/monitor_events.py
 
-      - name: Commit data snapshot
+      - name: Enrich wildfire and cyclone exposure
+        env:
+          CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
+        run: python scripts/enrich_hazard_exposure.py
+
+      - name: Commit data snapshot and exposure products
         shell: bash
         run: |
           git config user.name "climate-pulse-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/events
+          git add data/events data/exposure/population
           if git diff --cached --quiet; then
             echo "No data changes to commit."
             exit 0
           fi
-          git commit -m "data: refresh climate events $(date -u +'%Y-%m-%dT%H:%MZ')"
+          git commit -m "data: refresh climate events and exposure $(date -u +'%Y-%m-%dT%H:%MZ')"
           git push
