@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Methods and operational definitions used by Climate Pulse.">
+  <title>Methods & definitions · Climate Pulse</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/methods.css">
+</head>
+<body>
+  <main class="methods-shell">
+    <nav class="methods-nav" aria-label="Methods navigation">
+      <a href="index.html">← Back to Climate Pulse</a>
+      <a href="https://github.com/zhongzq23-design/climate-pulse" target="_blank" rel="noopener">Public repository ↗</a>
+    </nav>
+
+    <header>
+      <h1 class="methods-title">Methods & definitions</h1>
+      <p class="methods-lead">Climate Pulse is designed to be transparent about how events are selected and how population exposure is estimated. This page explains the operational rules in plain language and simple formulas. It is a methods summary, not raw source code.</p>
+      <div class="badge-row">
+        <span class="method-badge">3× daily monitoring</span>
+        <span class="method-badge">Source-aware event records</span>
+        <span class="method-badge">GHSL 2025 population</span>
+        <span class="method-badge">Exposure ≠ observed harm</span>
+      </div>
+    </header>
+
+    <section class="methods-grid">
+      <article class="method-card">
+        <h2>1. Monitoring and source data</h2>
+        <p>The backend checks the current Standard Event sources three times per day, at approximately 00:17, 08:17 and 16:17 UTC. New and updated records are normalized into a common event structure, archived, and then used by the public map.</p>
+        <ul>
+          <li><strong>NASA EONET</strong> — natural-event discovery and event metadata.</li>
+          <li><strong>GDACS</strong> — disaster events, alert levels, wildfire and tropical-cyclone geometry.</li>
+          <li><strong>Copernicus CEMS Rapid Mapping</strong> — human-triggered emergency mapping activations.</li>
+        </ul>
+        <p>Source ingestion does not mean that Climate Pulse independently confirms every impact statement in the source record.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>2. Event normalization and deduplication</h2>
+        <p>Each source keeps its original source ID and source link. To reduce obvious cross-source duplication, the current prototype may merge two records when they describe the same hazard type, occur within about 80 km, and are no more than 5 days apart.</p>
+        <div class="formula">candidate duplicate if: same hazard type AND distance &lt; 80 km AND |date₁ − date₂| ≤ 5 days</div>
+        <p>This is an operational heuristic, not a claim that all nearby events are physically identical. Source IDs and links are retained so the merged record remains auditable.</p>
+
+        <h3>Map-level wildfire clustering</h3>
+        <p>Nearby major wildfire records may also be grouped visually on the world map when they occur within roughly 180 km and 7 days. This reduces map clutter. The underlying events are not deleted.</p>
+        <div class="method-note">A cluster number such as “3” means three event records are grouped for display. It is not a severity score.</div>
+      </article>
+
+      <article class="method-card">
+        <h2>3. Wildfire selection</h2>
+        <p>For GDACS wildfire candidates, the main-map gate is currently <strong>burned area ≥ 10,000 hectares</strong>. Smaller GDACS fires remain outside the main map. Copernicus CEMS wildfire activations may still be retained because they are already human-triggered emergency mapping cases.</p>
+        <div class="formula">GDACS major wildfire: burned area ≥ 10,000 ha</div>
+        <p>The threshold is a display and monitoring rule. It does not imply that a smaller fire cannot be locally severe.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>4. Wildfire population exposure</h2>
+        <p>For a wildfire with a usable GDACS polygon, Climate Pulse overlays the mapped wildfire footprint with the European Commission JRC <strong>GHSL GHS-WUP-POP R2025A</strong> 2025 population grid at approximately 1 km resolution.</p>
+
+        <div class="definition-grid">
+          <div class="definition"><b>Direct exposure</b><span>Population inside the mapped wildfire footprint.</span></div>
+          <div class="definition"><b>Nearby exposure (≤5 km)</b><span>Additional population outside the footprint but within 5 km of its boundary.</span></div>
+          <div class="definition"><b>Total potential exposure</b><span>Population inside the footprint plus the surrounding 5 km buffer.</span></div>
+        </div>
+
+        <div class="formula">P(A) = Σ pᵢ for GHSL population cells selected inside area A</div>
+        <div class="formula">Direct = P(F)</div>
+        <div class="formula">Nearby ≤5 km = P(F ⊕ 5 km) − P(F)</div>
+        <div class="formula">Total potential exposure = P(F ⊕ 5 km)</div>
+        <p>Here, <strong>F</strong> is the mapped wildfire footprint and <strong>⊕ 5 km</strong> means the footprint is expanded outward by 5 km before population is summed. The buffer is calculated in a metric projected coordinate system.</p>
+        <div class="method-warning method-note"><strong>Important:</strong> population exposure is not the same as casualties, evacuations, smoke exposure, property loss, or confirmed personal harm. It describes where people live relative to the mapped hazard footprint.</div>
+      </article>
+
+      <article class="method-card">
+        <h2>5. Tropical cyclones and storms</h2>
+        <p>Storms are treated differently from wildfires because a storm centre point alone does not describe the impact area.</p>
+        <ul>
+          <li><strong>GDACS tropical cyclone:</strong> use a tropical-storm/wind polygon when available and overlay it with GHSL population.</li>
+          <li><strong>GDACS Orange or Red:</strong> retain on the main map even when the current population estimate is zero.</li>
+          <li><strong>GDACS Green:</strong> retain when the mapped cyclone footprint intersects populated cells.</li>
+          <li><strong>EONET-only storm:</strong> when no standard wind footprint is available, use a 300 km population proximity screen around the reported centre.</li>
+          <li><strong>CEMS storm activation:</strong> retain because it is already a human-triggered emergency mapping activation.</li>
+        </ul>
+        <div class="formula">TC potential exposure = P(mapped tropical-cyclone wind / impact footprint)</div>
+        <div class="formula">EONET fallback screen = P(circle of radius 300 km around reported centre)</div>
+        <p>The 300 km fallback is explicitly labelled <strong>screening</strong>. It is not presented as a wind-impact estimate.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>6. Alerts and Climate Pulse priority</h2>
+        <p>A source alert and the Climate Pulse display priority are related but not identical concepts. For GDACS records, Green / Orange / Red are source alert levels. Climate Pulse currently maps these approximately to Standard / Medium / High display priority while retaining the original source alert.</p>
+        <p>Priority affects presentation. It should not be interpreted as a universal physical severity scale across different hazard types.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>7. Population data</h2>
+        <p>The default population reference is the European Commission Joint Research Centre <strong>GHSL GHS-WUP-POP R2025A, epoch 2025</strong>. Event exposure calculations use the authoritative approximately 1 km source raster in the backend. A lighter 0.1° derivative is stored in the repository for rapid screening and visualization.</p>
+        <p><a href="https://human-settlement.emergency.copernicus.eu/ghs_wup_pop_r2025a.php" target="_blank" rel="noopener">GHSL population product ↗</a></p>
+        <p>Using one population epoch provides a consistent global reference, but it cannot represent temporary travel, evacuations, commuting, seasonal population change, or local population change after 2025.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>8. Grouped events and double counting</h2>
+        <p>When multiple wildfire records are grouped, Climate Pulse may show a <em>member sum</em>. A member sum adds the exposure values of the individual records.</p>
+        <div class="formula">member-sum exposure = exposure₁ + exposure₂ + … + exposureₙ</div>
+        <p>If event footprints or 5 km buffers overlap, the same population can be counted more than once. Therefore a member sum is a <strong>population-exposure count</strong>, not a unique-person count.</p>
+        <p>Future weekly, monthly and annual “unique population exposed” products should instead spatially union the relevant hazard footprints before population is summed.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>9. Climate context is separate from attribution</h2>
+        <p>Climate Pulse plans to show local long-term temperature context using CRU and/or ERA5-derived series at event locations. A local warming trend can provide context, but it does not by itself establish that climate change caused a particular wildfire, flood, storm or other event.</p>
+        <div class="method-note">The site therefore keeps <strong>event detection</strong>, <strong>population exposure</strong>, <strong>local climate context</strong> and <strong>event attribution</strong> as separate concepts.</div>
+      </article>
+
+      <article class="method-card">
+        <h2>10. Main limitations</h2>
+        <ul>
+          <li>Hazard polygons can change as an event evolves and can contain mapping uncertainty.</li>
+          <li>Population is represented by a gridded residential estimate, not real-time human presence.</li>
+          <li>Cross-source deduplication and map clustering use operational distance/time heuristics.</li>
+          <li>Exposure does not measure vulnerability, damage, mortality, evacuation or economic loss.</li>
+          <li>Different hazards require different footprints and should not be forced into one universal radius.</li>
+        </ul>
+      </article>
+
+      <article class="method-card">
+        <h2>11. Source documentation</h2>
+        <ul>
+          <li><a href="https://eonet.gsfc.nasa.gov/docs/v3" target="_blank" rel="noopener">NASA EONET API documentation ↗</a></li>
+          <li><a href="https://www.gdacs.org/" target="_blank" rel="noopener">GDACS ↗</a></li>
+          <li><a href="https://mapping.emergency.copernicus.eu/" target="_blank" rel="noopener">Copernicus Emergency Management Service ↗</a></li>
+          <li><a href="https://github.com/zhongzq23-design/climate-pulse" target="_blank" rel="noopener">Climate Pulse public repository ↗</a></li>
+        </ul>
+        <p>This methods page will evolve with the product. When a rule changes materially, the implementation and public definition should be updated together.</p>
+      </article>
+    </section>
+
+    <footer class="methods-footer">
+      <strong>Climate Pulse</strong> · Public methods summary. Potential exposure is a spatial screening metric and should not be interpreted as observed harm or causal climate attribution.
+    </footer>
+  </main>
+</body>
+</html>
