@@ -150,9 +150,9 @@ def self_test() -> None:
         "units": {"temperature": "C"},
     }
     x = parse_bridge_response(official)
-    assert abs(x["vpd_hpa"] - 18.92) < 0.1, x
+    assert abs(x["vpd_hpa"] - 19.044) < 0.01, x
     simple = parse_bridge_response({"temperature_c": 25, "dewpoint_c": 15})
-    assert 11.7 < simple["vpd_hpa"] < 12.0, simple
+    assert abs(simple["vpd_hpa"] - 14.622) < 0.01, simple
     print(json.dumps({"status": "self_test_ok", "official_shape": x, "simple_shape": simple}, indent=2))
 
 
