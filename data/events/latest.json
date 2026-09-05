@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.2",
-  "generated_at": "2026-09-05T08:26:07Z",
+  "schema_version": "1.3",
+  "generated_at": "2026-09-05T09:31:31Z",
   "monitor": {
     "cadence": "3x daily",
     "schedule_utc": [
@@ -12,7 +12,23 @@
     "wildfire_min_burned_area_ha": 10000.0,
     "cems_endpoint": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations-info/",
     "storm_display_rule": "CEMS activation OR GDACS Orange/Red OR populated GDACS TC footprint; EONET-only fallback uses populated 300 km center buffer",
-    "population_reference": "GHSL GHS-WUP-POP R2025A E2025 ~1 km"
+    "population_reference": "GHSL GHS-WUP-POP R2025A E2025 ~1 km",
+    "climate_context": {
+      "dataset": "CRU-TS v4.10",
+      "annual_period": [
+        1901,
+        2025
+      ],
+      "same_month_normal": [
+        1981,
+        2010
+      ],
+      "same_month_recent": [
+        2016,
+        2025
+      ],
+      "note": "Same-month comparison is seasonally matched recent climate context, not the actual 2026 event-month anomaly."
+    }
   },
   "source_status": {
     "eonet": {
@@ -49,7 +65,7 @@
       "lat": 20.6,
       "lon": -118.7,
       "status": "Open",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -85,7 +101,7 @@
       "lat": 27.8,
       "lon": 126.7,
       "status": "Open",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -121,7 +137,7 @@
       "lat": 20.6,
       "lon": -141.6,
       "status": "Open",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -139,7 +155,7 @@
       "lat": 13.2,
       "lon": -161.1,
       "status": "Open",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -148,22 +164,60 @@
       "event_date": "2026-09-05T00:00:00Z"
     },
     {
-      "id": "gdacs-TC-1001318",
-      "source_id": "1001318",
+      "id": "gdacs-TC-1001314",
+      "source_id": "1001314",
       "origin": "gdacs",
-      "title": "Tropical Cyclone KROVANH-26",
+      "title": "Tropical Cyclone KARINA-26",
       "type": "Storm",
-      "region": "Japan",
-      "lat": 26.2,
-      "lon": 127.5,
+      "region": "21.40°, -142.50°",
+      "lat": 21.4,
+      "lon": -142.5,
       "status": "Recent",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 1 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
-      "summary": "Tropical Storm (maximum wind speed of 83 km/h) Alert level: Green.",
+      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 231 km/h) Alert level: Green.",
       "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001318&eventtype=TC",
-      "event_date": "2026-09-05T06:00:00",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001314&eventtype=TC",
+      "event_date": "2026-09-05T09:00:00",
+      "burned_area_ha": null
+    },
+    {
+      "id": "gdacs-TC-1001315",
+      "source_id": "1001315",
+      "origin": "gdacs",
+      "title": "Tropical Cyclone LOWELL-26",
+      "type": "Storm",
+      "region": "United States",
+      "lat": 13.3,
+      "lon": -161.9,
+      "status": "Recent",
+      "updated": "Updated 1 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 259 km/h) Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
+      "event_date": "2026-09-05T09:00:00",
+      "burned_area_ha": null
+    },
+    {
+      "id": "gdacs-TC-1001317",
+      "source_id": "1001317",
+      "origin": "gdacs",
+      "title": "Tropical Cyclone MARIE-26",
+      "type": "Storm",
+      "region": "Mexico",
+      "lat": 21.4,
+      "lon": -119.7,
+      "status": "Recent",
+      "updated": "Updated 1 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 157 km/h) Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001317&eventtype=TC",
+      "event_date": "2026-09-05T09:00:00",
       "burned_area_ha": null
     },
     {
@@ -176,7 +230,7 @@
       "lat": 27.6,
       "lon": 135.2,
       "status": "Recent",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 4 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Tropical Depression (maximum wind speed of 74 km/h) Alert level: Green.",
@@ -186,79 +240,22 @@
       "burned_area_ha": null
     },
     {
-      "id": "gdacs-TC-1001317",
-      "source_id": "1001317",
+      "id": "gdacs-TC-1001318",
+      "source_id": "1001318",
       "origin": "gdacs",
-      "title": "Tropical Cyclone MARIE-26",
+      "title": "Tropical Cyclone KROVANH-26",
       "type": "Storm",
-      "region": "Mexico",
-      "lat": 20.8,
-      "lon": -119.0,
+      "region": "Japan",
+      "lat": 26.2,
+      "lon": 127.5,
       "status": "Recent",
-      "updated": "Updated 5 h ago",
+      "updated": "Updated 4 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 157 km/h) Alert level: Green.",
+      "summary": "Tropical Storm (maximum wind speed of 83 km/h) Alert level: Green.",
       "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001317&eventtype=TC",
-      "event_date": "2026-09-05T03:00:00",
-      "burned_area_ha": null
-    },
-    {
-      "id": "gdacs-TC-1001314",
-      "source_id": "1001314",
-      "origin": "gdacs",
-      "title": "Tropical Cyclone KARINA-26",
-      "type": "Storm",
-      "region": "20.70°, -141.90°",
-      "lat": 20.7,
-      "lon": -141.9,
-      "status": "Recent",
-      "updated": "Updated 5 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 231 km/h) Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001314&eventtype=TC",
-      "event_date": "2026-09-05T03:00:00",
-      "burned_area_ha": null
-    },
-    {
-      "id": "gdacs-TC-1001315",
-      "source_id": "1001315",
-      "origin": "gdacs",
-      "title": "Tropical Cyclone LOWELL-26",
-      "type": "Storm",
-      "region": "United States",
-      "lat": 13.3,
-      "lon": -161.4,
-      "status": "Recent",
-      "updated": "Updated 5 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 269 km/h) Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
-      "event_date": "2026-09-05T03:00:00",
-      "burned_area_ha": null
-    },
-    {
-      "id": "gdacs-FL-1104122",
-      "source_id": "1104122",
-      "origin": "gdacs",
-      "title": "Flood in Thailand",
-      "type": "Flood",
-      "region": "Thailand",
-      "lat": 18.68,
-      "lon": 99.7333,
-      "status": "Recent",
-      "updated": "Updated 7 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL",
-      "event_date": "2026-09-05T01:00:00",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001318&eventtype=TC",
+      "event_date": "2026-09-05T06:00:00",
       "burned_area_ha": null
     },
     {
@@ -271,7 +268,7 @@
       "lat": 36.6468,
       "lon": 137.2184,
       "status": "Recent",
-      "updated": "Updated 7 h ago",
+      "updated": "Updated 9 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Magnitude 0 Alert level: Green.",
@@ -290,12 +287,31 @@
       "lat": 13.9738,
       "lon": 107.9996,
       "status": "Recent",
-      "updated": "Updated 7 h ago",
+      "updated": "Updated 9 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Magnitude 0 Alert level: Green.",
       "source": "GDACS · Green",
       "source_url": "https://www.gdacs.org/report.aspx?eventid=1104141&eventtype=FL",
+      "event_date": "2026-09-05T01:00:00",
+      "burned_area_ha": null
+    },
+    {
+      "id": "gdacs-FL-1104122",
+      "source_id": "1104122",
+      "origin": "gdacs",
+      "title": "Flood in Thailand",
+      "type": "Flood",
+      "region": "Thailand",
+      "lat": 18.68,
+      "lon": 99.7333,
+      "status": "Recent",
+      "updated": "Updated 9 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL",
       "event_date": "2026-09-05T01:00:00",
       "burned_area_ha": null
     },
@@ -376,6 +392,25 @@
       "burned_area_ha": null
     },
     {
+      "id": "gdacs-FL-1104142",
+      "source_id": "1104142",
+      "origin": "gdacs",
+      "title": "Flood in Haiti",
+      "type": "Flood",
+      "region": "Haiti",
+      "lat": 19.4461,
+      "lon": -72.6884,
+      "status": "Recent",
+      "updated": "Updated 2 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104142&eventtype=FL",
+      "event_date": "2026-09-03T01:00:00",
+      "burned_area_ha": null
+    },
+    {
       "id": "gdacs-FL-1104011",
       "source_id": "1104011",
       "origin": "gdacs",
@@ -410,25 +445,6 @@
       "summary": "Magnitude 0 Alert level: Green.",
       "source": "GDACS · Green",
       "source_url": "https://www.gdacs.org/report.aspx?eventid=1104099&eventtype=FL",
-      "event_date": "2026-09-03T01:00:00",
-      "burned_area_ha": null
-    },
-    {
-      "id": "gdacs-FL-1104142",
-      "source_id": "1104142",
-      "origin": "gdacs",
-      "title": "Flood in Haiti",
-      "type": "Flood",
-      "region": "Haiti",
-      "lat": 19.4461,
-      "lon": -72.6884,
-      "status": "Recent",
-      "updated": "Updated 2 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104142&eventtype=FL",
       "event_date": "2026-09-03T01:00:00",
       "burned_area_ha": null
     },
@@ -661,6 +677,25 @@
       "burned_area_ha": null
     },
     {
+      "id": "gdacs-FL-1104136",
+      "source_id": "1104136",
+      "origin": "gdacs",
+      "title": "Flood in Pakistan",
+      "type": "Flood",
+      "region": "Pakistan",
+      "lat": 31.0,
+      "lon": 72.0,
+      "status": "Recent",
+      "updated": "Updated 3 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104136&eventtype=FL",
+      "event_date": "2026-09-02T01:00:00",
+      "burned_area_ha": null
+    },
+    {
       "id": "gdacs-FL-1104138",
       "source_id": "1104138",
       "origin": "gdacs",
@@ -714,25 +749,6 @@
       "summary": "Magnitude 0 Alert level: Orange.",
       "source": "GDACS · Orange",
       "source_url": "https://www.gdacs.org/report.aspx?eventid=1104121&eventtype=FL",
-      "event_date": "2026-09-02T01:00:00",
-      "burned_area_ha": null
-    },
-    {
-      "id": "gdacs-FL-1104136",
-      "source_id": "1104136",
-      "origin": "gdacs",
-      "title": "Flood in Pakistan",
-      "type": "Flood",
-      "region": "Pakistan",
-      "lat": 31.0,
-      "lon": 72.0,
-      "status": "Recent",
-      "updated": "Updated 3 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104136&eventtype=FL",
       "event_date": "2026-09-02T01:00:00",
       "burned_area_ha": null
     },
@@ -974,7 +990,7 @@
       "lat": 65.7025,
       "lon": 118.8572,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 17,159 ha. Green impact for forestfire in 17159 ha Alert level: Green.",
@@ -993,7 +1009,7 @@
       "lat": -17.3809,
       "lon": 20.2821,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 13,074 ha. Green impact for forestfire in 13074 ha Alert level: Green.",
@@ -1012,7 +1028,7 @@
       "lat": -10.1042,
       "lon": 28.9435,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 11,346 ha. Green impact for forestfire in 11346 ha Alert level: Green.",
@@ -1031,7 +1047,7 @@
       "lat": -11.3123,
       "lon": 31.3314,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 12,896 ha. Green impact for forestfire in 12896 ha Alert level: Green.",
@@ -1050,7 +1066,7 @@
       "lat": -17.0438,
       "lon": 20.3585,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 31,030 ha. Green impact for forestfire in 31030 ha Alert level: Green.",
@@ -1069,7 +1085,7 @@
       "lat": -11.8229,
       "lon": 31.1316,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 32,324 ha. Green impact for forestfire in 32324 ha Alert level: Green.",
@@ -1088,7 +1104,7 @@
       "lat": -18.4216,
       "lon": 19.6183,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 12,569 ha. Green impact for forestfire in 12569 ha Alert level: Green.",
@@ -1107,7 +1123,7 @@
       "lat": -19.3277,
       "lon": 20.2537,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 19,263 ha. Green impact for forestfire in 19263 ha Alert level: Green.",
@@ -1126,7 +1142,7 @@
       "lat": -17.2042,
       "lon": 18.0414,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 13,577 ha. Green impact for forestfire in 13577 ha Alert level: Green.",
@@ -1145,7 +1161,7 @@
       "lat": -16.7422,
       "lon": 18.3858,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 11,255 ha. Green impact for forestfire in 11255 ha Alert level: Green.",
@@ -1430,7 +1446,7 @@
       "lat": 45.164037169774694,
       "lon": 10.08183610452019,
       "status": "Active",
-      "updated": "Updated 19 h ago",
+      "updated": "Updated 20 h ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR928.",
@@ -1449,13 +1465,13 @@
       "lat": 28.212231792029492,
       "lon": 85.35376299877846,
       "status": "Active",
-      "updated": "Updated 21 h ago",
+      "updated": "Updated <1 hour ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
       "source": "Copernicus CEMS",
       "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927",
-      "event_date": "2026-09-04T11:48:47.889715",
+      "event_date": "2026-09-05T09:23:04.065227",
       "gdacs_id": "FL1104124"
     },
     {
@@ -1468,13 +1484,13 @@
       "lat": 42.53850346175422,
       "lon": 18.90526453608507,
       "status": "Active",
-      "updated": "Updated 11 h ago",
+      "updated": "Updated <1 hour ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
       "source": "Copernicus CEMS",
       "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
-      "event_date": "2026-09-04T21:30:41.473411",
+      "event_date": "2026-09-05T09:05:38.114682",
       "gdacs_id": null
     },
     {
@@ -1518,42 +1534,174 @@
   ],
   "canonical_events": [
     {
-      "id": "gdacs-TC-1001318",
-      "source_id": "1001318",
+      "id": "cems-EMSR927",
+      "source_id": "EMSR927",
+      "origin": "cems",
+      "title": "Flood in Nepal",
+      "type": "Flood",
+      "region": "Nepal",
+      "lat": 28.212231792029492,
+      "lon": 85.35376299877846,
+      "status": "Active",
+      "updated": "Updated <1 hour ago",
+      "priority": "Review",
+      "climate_link": "Not assessed",
+      "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
+      "source": "Copernicus CEMS",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927",
+      "event_date": "2026-09-05T09:23:04.065227",
+      "gdacs_id": "FL1104124",
+      "source_urls": [
+        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927"
+      ],
+      "source_members": [
+        {
+          "origin": "cems",
+          "source_id": "EMSR927"
+        }
+      ]
+    },
+    {
+      "id": "cems-EMSR922",
+      "source_id": "EMSR922",
+      "origin": "cems",
+      "title": "Wildfire in Montenegro and Bosnia and Herzegovina",
+      "type": "Wildfire",
+      "region": "Bosnia and Herzegovina · Montenegro",
+      "lat": 42.53850346175422,
+      "lon": 18.90526453608507,
+      "status": "Active",
+      "updated": "Updated <1 hour ago",
+      "priority": "Review",
+      "climate_link": "Not assessed",
+      "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
+      "source": "Copernicus CEMS",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
+      "event_date": "2026-09-05T09:05:38.114682",
+      "gdacs_id": null,
+      "source_urls": [
+        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922"
+      ],
+      "source_members": [
+        {
+          "origin": "cems",
+          "source_id": "EMSR922"
+        }
+      ]
+    },
+    {
+      "id": "gdacs-TC-1001314",
+      "source_id": "1001314",
       "origin": "gdacs",
-      "title": "Tropical Cyclone KROVANH-26",
+      "title": "Tropical Cyclone KARINA-26",
       "type": "Storm",
-      "region": "Japan",
-      "lat": 26.2,
-      "lon": 127.5,
+      "region": "21.40°, -142.50°",
+      "lat": 21.4,
+      "lon": -142.5,
       "status": "Recent",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 1 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
-      "summary": "Tropical Storm (maximum wind speed of 83 km/h) Alert level: Green.",
+      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 231 km/h) Alert level: Green.",
       "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001318&eventtype=TC",
-      "event_date": "2026-09-05T06:00:00",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001314&eventtype=TC",
+      "event_date": "2026-09-05T09:00:00",
       "burned_area_ha": null,
       "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1001318&eventtype=TC"
+        "https://www.gdacs.org/report.aspx?eventid=1001314&eventtype=TC"
       ],
       "source_members": [
         {
           "origin": "gdacs",
-          "source_id": "1001318"
+          "source_id": "1001314"
         }
       ],
       "exposure": {
         "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001318",
-        "gdacs_episode_id": 17,
+        "gdacs_event_id": "1001314",
+        "gdacs_episode_id": 36,
         "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 28257788,
+        "population_ts_or_impact_footprint": 0,
+        "quality": "high"
+      },
+      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
+      "display_eligible": false
+    },
+    {
+      "id": "gdacs-TC-1001315",
+      "source_id": "1001315",
+      "origin": "gdacs",
+      "title": "Tropical Cyclone LOWELL-26",
+      "type": "Storm",
+      "region": "United States",
+      "lat": 13.3,
+      "lon": -161.9,
+      "status": "Recent",
+      "updated": "Updated 1 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 259 km/h) Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
+      "event_date": "2026-09-05T09:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1001315"
+        }
+      ],
+      "exposure": {
+        "hazard": "tropical_cyclone",
+        "gdacs_event_id": "1001315",
+        "gdacs_episode_id": 37,
+        "footprint_method": "gdacs_wind_polygon",
+        "population_ts_or_impact_footprint": 181,
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
       "display_eligible": true
+    },
+    {
+      "id": "gdacs-TC-1001317",
+      "source_id": "1001317",
+      "origin": "gdacs",
+      "title": "Tropical Cyclone MARIE-26",
+      "type": "Storm",
+      "region": "Mexico",
+      "lat": 21.4,
+      "lon": -119.7,
+      "status": "Recent",
+      "updated": "Updated 1 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 157 km/h) Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001317&eventtype=TC",
+      "event_date": "2026-09-05T09:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1001317&eventtype=TC"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1001317"
+        }
+      ],
+      "exposure": {
+        "hazard": "tropical_cyclone",
+        "gdacs_event_id": "1001317",
+        "gdacs_episode_id": 17,
+        "footprint_method": "gdacs_wind_polygon",
+        "population_ts_or_impact_footprint": 0,
+        "quality": "high"
+      },
+      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
+      "display_eligible": false
     },
     {
       "id": "gdacs-TC-1001319",
@@ -1565,7 +1713,7 @@
       "lat": 27.6,
       "lon": 135.2,
       "status": "Recent",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 4 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Tropical Depression (maximum wind speed of 74 km/h) Alert level: Green.",
@@ -1594,161 +1742,42 @@
       "display_eligible": false
     },
     {
-      "id": "gdacs-TC-1001317",
-      "source_id": "1001317",
+      "id": "gdacs-TC-1001318",
+      "source_id": "1001318",
       "origin": "gdacs",
-      "title": "Tropical Cyclone MARIE-26",
+      "title": "Tropical Cyclone KROVANH-26",
       "type": "Storm",
-      "region": "Mexico",
-      "lat": 20.8,
-      "lon": -119.0,
+      "region": "Japan",
+      "lat": 26.2,
+      "lon": 127.5,
       "status": "Recent",
-      "updated": "Updated 5 h ago",
+      "updated": "Updated 4 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 157 km/h) Alert level: Green.",
-      "source": "GDACS · Green · NASA EONET",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001317&eventtype=TC",
-      "event_date": "2026-09-05T03:00:00",
+      "summary": "Tropical Storm (maximum wind speed of 83 km/h) Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001318&eventtype=TC",
+      "event_date": "2026-09-05T06:00:00",
       "burned_area_ha": null,
       "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1001317&eventtype=TC",
-        "https://www.metoc.navy.mil/jtwc/products/ep1326.tcw"
+        "https://www.gdacs.org/report.aspx?eventid=1001318&eventtype=TC"
       ],
       "source_members": [
         {
           "origin": "gdacs",
-          "source_id": "1001317"
-        },
-        {
-          "origin": "eonet",
-          "source_id": "EONET_23800"
+          "source_id": "1001318"
         }
       ],
       "exposure": {
         "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001317",
-        "gdacs_episode_id": 16,
+        "gdacs_event_id": "1001318",
+        "gdacs_episode_id": 17,
         "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 0,
-        "quality": "high"
-      },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": false
-    },
-    {
-      "id": "gdacs-TC-1001314",
-      "source_id": "1001314",
-      "origin": "gdacs",
-      "title": "Tropical Cyclone KARINA-26",
-      "type": "Storm",
-      "region": "20.70°, -141.90°",
-      "lat": 20.7,
-      "lon": -141.9,
-      "status": "Recent",
-      "updated": "Updated 5 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 231 km/h) Alert level: Green.",
-      "source": "GDACS · Green · NASA EONET",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001314&eventtype=TC",
-      "event_date": "2026-09-05T03:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1001314&eventtype=TC",
-        "https://www.metoc.navy.mil/jtwc/products/ep1126.tcw"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1001314"
-        },
-        {
-          "origin": "eonet",
-          "source_id": "EONET_23611"
-        }
-      ],
-      "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001314",
-        "gdacs_episode_id": 35,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 0,
-        "quality": "high"
-      },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": false
-    },
-    {
-      "id": "gdacs-TC-1001315",
-      "source_id": "1001315",
-      "origin": "gdacs",
-      "title": "Tropical Cyclone LOWELL-26",
-      "type": "Storm",
-      "region": "United States",
-      "lat": 13.3,
-      "lon": -161.4,
-      "status": "Recent",
-      "updated": "Updated 5 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 269 km/h) Alert level: Green.",
-      "source": "GDACS · Green · NASA EONET",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
-      "event_date": "2026-09-05T03:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
-        "https://www.metoc.navy.mil/jtwc/products/ep1226.tcw"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1001315"
-        },
-        {
-          "origin": "eonet",
-          "source_id": "EONET_23612"
-        }
-      ],
-      "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001315",
-        "gdacs_episode_id": 36,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 179,
+        "population_ts_or_impact_footprint": 28257788,
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
       "display_eligible": true
-    },
-    {
-      "id": "gdacs-FL-1104122",
-      "source_id": "1104122",
-      "origin": "gdacs",
-      "title": "Flood in Thailand",
-      "type": "Flood",
-      "region": "Thailand",
-      "lat": 18.68,
-      "lon": 99.7333,
-      "status": "Recent",
-      "updated": "Updated 7 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL",
-      "event_date": "2026-09-05T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104122"
-        }
-      ]
     },
     {
       "id": "gdacs-FL-1104140",
@@ -1760,7 +1789,7 @@
       "lat": 36.6468,
       "lon": 137.2184,
       "status": "Recent",
-      "updated": "Updated 7 h ago",
+      "updated": "Updated 9 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Magnitude 0 Alert level: Green.",
@@ -1788,7 +1817,7 @@
       "lat": 13.9738,
       "lon": 107.9996,
       "status": "Recent",
-      "updated": "Updated 7 h ago",
+      "updated": "Updated 9 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Magnitude 0 Alert level: Green.",
@@ -1807,6 +1836,69 @@
       ]
     },
     {
+      "id": "gdacs-FL-1104122",
+      "source_id": "1104122",
+      "origin": "gdacs",
+      "title": "Flood in Thailand",
+      "type": "Flood",
+      "region": "Thailand",
+      "lat": 18.68,
+      "lon": 99.7333,
+      "status": "Recent",
+      "updated": "Updated 9 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL",
+      "event_date": "2026-09-05T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104122"
+        }
+      ]
+    },
+    {
+      "id": "eonet-EONET_23800",
+      "source_id": "EONET_23800",
+      "origin": "eonet",
+      "title": "Hurricane Marie",
+      "type": "Storm",
+      "region": "20.60°, -118.70°",
+      "lat": 20.6,
+      "lon": -118.7,
+      "status": "Open",
+      "updated": "Updated 10 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Storm event tracked by NASA EONET.",
+      "source": "NASA EONET",
+      "source_url": "https://www.metoc.navy.mil/jtwc/products/ep1326.tcw",
+      "event_date": "2026-09-05T00:00:00Z",
+      "source_urls": [
+        "https://www.metoc.navy.mil/jtwc/products/ep1326.tcw"
+      ],
+      "source_members": [
+        {
+          "origin": "eonet",
+          "source_id": "EONET_23800"
+        }
+      ],
+      "exposure": {
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 0,
+        "quality": "screening"
+      },
+      "display_rule": "eonet_center_within_300km_of_populated_land",
+      "display_eligible": false
+    },
+    {
       "id": "eonet-EONET_23738",
       "source_id": "EONET_23738",
       "origin": "eonet",
@@ -1816,7 +1908,7 @@
       "lat": 27.8,
       "lon": 126.7,
       "status": "Open",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -1842,6 +1934,76 @@
       "display_eligible": true
     },
     {
+      "id": "eonet-EONET_23611",
+      "source_id": "EONET_23611",
+      "origin": "eonet",
+      "title": "Hurricane Karina",
+      "type": "Storm",
+      "region": "20.60°, -141.60°",
+      "lat": 20.6,
+      "lon": -141.6,
+      "status": "Open",
+      "updated": "Updated 10 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Storm event tracked by NASA EONET.",
+      "source": "NASA EONET",
+      "source_url": "https://www.metoc.navy.mil/jtwc/products/ep1126.tcw",
+      "event_date": "2026-09-05T00:00:00Z",
+      "source_urls": [
+        "https://www.metoc.navy.mil/jtwc/products/ep1126.tcw"
+      ],
+      "source_members": [
+        {
+          "origin": "eonet",
+          "source_id": "EONET_23611"
+        }
+      ],
+      "exposure": {
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 0,
+        "quality": "screening"
+      },
+      "display_rule": "eonet_center_within_300km_of_populated_land",
+      "display_eligible": false
+    },
+    {
+      "id": "eonet-EONET_23612",
+      "source_id": "EONET_23612",
+      "origin": "eonet",
+      "title": "Hurricane Lowell",
+      "type": "Storm",
+      "region": "13.20°, -161.10°",
+      "lat": 13.2,
+      "lon": -161.1,
+      "status": "Open",
+      "updated": "Updated 10 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Storm event tracked by NASA EONET.",
+      "source": "NASA EONET",
+      "source_url": "https://www.metoc.navy.mil/jtwc/products/ep1226.tcw",
+      "event_date": "2026-09-05T00:00:00Z",
+      "source_urls": [
+        "https://www.metoc.navy.mil/jtwc/products/ep1226.tcw"
+      ],
+      "source_members": [
+        {
+          "origin": "eonet",
+          "source_id": "EONET_23612"
+        }
+      ],
+      "exposure": {
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 0,
+        "quality": "screening"
+      },
+      "display_rule": "eonet_center_within_300km_of_populated_land",
+      "display_eligible": false
+    },
+    {
       "id": "gdacs-WF-1031489",
       "source_id": "1031489",
       "origin": "gdacs",
@@ -1851,7 +2013,7 @@
       "lat": 65.7025,
       "lon": 118.8572,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 17,159 ha. Green impact for forestfire in 17159 ha Alert level: Green.",
@@ -1889,7 +2051,7 @@
       "lat": -17.3809,
       "lon": 20.2821,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 13,074 ha. Green impact for forestfire in 13074 ha Alert level: Green.",
@@ -1932,7 +2094,7 @@
       "lat": -10.1042,
       "lon": 28.9435,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 11,346 ha. Green impact for forestfire in 11346 ha Alert level: Green.",
@@ -1970,7 +2132,7 @@
       "lat": -11.3123,
       "lon": 31.3314,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 12,896 ha. Green impact for forestfire in 12896 ha Alert level: Green.",
@@ -2018,7 +2180,7 @@
       "lat": -18.4216,
       "lon": 19.6183,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 12,569 ha. Green impact for forestfire in 12569 ha Alert level: Green.",
@@ -2056,7 +2218,7 @@
       "lat": -19.3277,
       "lon": 20.2537,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 19,263 ha. Green impact for forestfire in 19263 ha Alert level: Green.",
@@ -2094,7 +2256,7 @@
       "lat": -17.2042,
       "lon": 18.0414,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 13,577 ha. Green impact for forestfire in 13577 ha Alert level: Green.",
@@ -2128,34 +2290,6 @@
       }
     },
     {
-      "id": "cems-EMSR922",
-      "source_id": "EMSR922",
-      "origin": "cems",
-      "title": "Wildfire in Montenegro and Bosnia and Herzegovina",
-      "type": "Wildfire",
-      "region": "Bosnia and Herzegovina · Montenegro",
-      "lat": 42.53850346175422,
-      "lon": 18.90526453608507,
-      "status": "Active",
-      "updated": "Updated 11 h ago",
-      "priority": "Review",
-      "climate_link": "Not assessed",
-      "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
-      "source": "Copernicus CEMS",
-      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
-      "event_date": "2026-09-04T21:30:41.473411",
-      "gdacs_id": null,
-      "source_urls": [
-        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922"
-      ],
-      "source_members": [
-        {
-          "origin": "cems",
-          "source_id": "EMSR922"
-        }
-      ]
-    },
-    {
       "id": "cems-EMSR928",
       "source_id": "EMSR928",
       "origin": "cems",
@@ -2165,7 +2299,7 @@
       "lat": 45.164037169774694,
       "lon": 10.08183610452019,
       "status": "Active",
-      "updated": "Updated 19 h ago",
+      "updated": "Updated 20 h ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR928.",
@@ -2184,34 +2318,6 @@
       ],
       "display_rule": "cems_activation",
       "display_eligible": true
-    },
-    {
-      "id": "cems-EMSR927",
-      "source_id": "EMSR927",
-      "origin": "cems",
-      "title": "Flood in Nepal",
-      "type": "Flood",
-      "region": "Nepal",
-      "lat": 28.212231792029492,
-      "lon": 85.35376299877846,
-      "status": "Active",
-      "updated": "Updated 21 h ago",
-      "priority": "Review",
-      "climate_link": "Not assessed",
-      "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
-      "source": "Copernicus CEMS",
-      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927",
-      "event_date": "2026-09-04T11:48:47.889715",
-      "gdacs_id": "FL1104124",
-      "source_urls": [
-        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927"
-      ],
-      "source_members": [
-        {
-          "origin": "cems",
-          "source_id": "EMSR927"
-        }
-      ]
     },
     {
       "id": "gdacs-FL-1104105",
@@ -2299,7 +2405,7 @@
       "exposure": {
         "hazard": "wildfire",
         "gdacs_event_id": "1031545",
-        "gdacs_episode_id": null,
+        "gdacs_episode_id": 7,
         "footprint_method": "GDACS burned-area/event polygon",
         "population_direct": 0,
         "population_within_5km": 0,
@@ -2661,7 +2767,7 @@
       "exposure": {
         "hazard": "tropical_cyclone",
         "gdacs_event_id": "1001316",
-        "gdacs_episode_id": null,
+        "gdacs_episode_id": 12,
         "footprint_method": "gdacs_wind_polygon",
         "population_ts_or_impact_footprint": 657778,
         "quality": "high"
@@ -2694,6 +2800,34 @@
         {
           "origin": "gdacs",
           "source_id": "1104132"
+        }
+      ]
+    },
+    {
+      "id": "gdacs-FL-1104142",
+      "source_id": "1104142",
+      "origin": "gdacs",
+      "title": "Flood in Haiti",
+      "type": "Flood",
+      "region": "Haiti",
+      "lat": 19.4461,
+      "lon": -72.6884,
+      "status": "Recent",
+      "updated": "Updated 2 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104142&eventtype=FL",
+      "event_date": "2026-09-03T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104142&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104142"
         }
       ]
     },
@@ -2750,34 +2884,6 @@
         {
           "origin": "gdacs",
           "source_id": "1104099"
-        }
-      ]
-    },
-    {
-      "id": "gdacs-FL-1104142",
-      "source_id": "1104142",
-      "origin": "gdacs",
-      "title": "Flood in Haiti",
-      "type": "Flood",
-      "region": "Haiti",
-      "lat": 19.4461,
-      "lon": -72.6884,
-      "status": "Recent",
-      "updated": "Updated 2 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104142&eventtype=FL",
-      "event_date": "2026-09-03T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104142&eventtype=FL"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104142"
         }
       ]
     },
@@ -3223,6 +3329,34 @@
       ]
     },
     {
+      "id": "gdacs-FL-1104136",
+      "source_id": "1104136",
+      "origin": "gdacs",
+      "title": "Flood in Pakistan",
+      "type": "Flood",
+      "region": "Pakistan",
+      "lat": 31.0,
+      "lon": 72.0,
+      "status": "Recent",
+      "updated": "Updated 3 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104136&eventtype=FL",
+      "event_date": "2026-09-02T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104136&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104136"
+        }
+      ]
+    },
+    {
       "id": "gdacs-FL-1104138",
       "source_id": "1104138",
       "origin": "gdacs",
@@ -3303,34 +3437,6 @@
         {
           "origin": "gdacs",
           "source_id": "1104121"
-        }
-      ]
-    },
-    {
-      "id": "gdacs-FL-1104136",
-      "source_id": "1104136",
-      "origin": "gdacs",
-      "title": "Flood in Pakistan",
-      "type": "Flood",
-      "region": "Pakistan",
-      "lat": 31.0,
-      "lon": 72.0,
-      "status": "Recent",
-      "updated": "Updated 3 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104136&eventtype=FL",
-      "event_date": "2026-09-02T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104136&eventtype=FL"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104136"
         }
       ]
     },
@@ -3693,6 +3799,136 @@
   ],
   "events": [
     {
+      "id": "cems-EMSR927",
+      "source_id": "EMSR927",
+      "origin": "cems",
+      "title": "Flood in Nepal",
+      "type": "Flood",
+      "region": "Nepal",
+      "lat": 28.212231792029492,
+      "lon": 85.35376299877846,
+      "status": "Active",
+      "updated": "Updated <1 hour ago",
+      "priority": "Review",
+      "climate_link": "Not assessed",
+      "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
+      "source": "Copernicus CEMS",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927",
+      "event_date": "2026-09-05T09:23:04.065227",
+      "gdacs_id": "FL1104124",
+      "source_urls": [
+        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927"
+      ],
+      "source_members": [
+        {
+          "origin": "cems",
+          "source_id": "EMSR927"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/cems-EMSR927.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 28.25,
+        "grid_lon": 85.25,
+        "grid_distance_km": 11.0
+      }
+    },
+    {
+      "id": "cems-EMSR922",
+      "source_id": "EMSR922",
+      "origin": "cems",
+      "title": "Wildfire in Montenegro and Bosnia and Herzegovina",
+      "type": "Wildfire",
+      "region": "Bosnia and Herzegovina · Montenegro",
+      "lat": 42.53850346175422,
+      "lon": 18.90526453608507,
+      "status": "Active",
+      "updated": "Updated <1 hour ago",
+      "priority": "Review",
+      "climate_link": "Not assessed",
+      "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
+      "source": "Copernicus CEMS",
+      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
+      "event_date": "2026-09-05T09:05:38.114682",
+      "gdacs_id": null,
+      "source_urls": [
+        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922"
+      ],
+      "source_members": [
+        {
+          "origin": "cems",
+          "source_id": "EMSR922"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/cems-EMSR922.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 42.75,
+        "grid_lon": 18.75,
+        "grid_distance_km": 26.7
+      }
+    },
+    {
+      "id": "gdacs-TC-1001315",
+      "source_id": "1001315",
+      "origin": "gdacs",
+      "title": "Tropical Cyclone LOWELL-26",
+      "type": "Storm",
+      "region": "United States",
+      "lat": 13.3,
+      "lon": -161.9,
+      "status": "Recent",
+      "updated": "Updated 1 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 259 km/h) Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
+      "event_date": "2026-09-05T09:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1001315"
+        }
+      ],
+      "exposure": {
+        "hazard": "tropical_cyclone",
+        "gdacs_event_id": "1001315",
+        "gdacs_episode_id": 37,
+        "footprint_method": "gdacs_wind_polygon",
+        "population_ts_or_impact_footprint": 181,
+        "quality": "high"
+      },
+      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
+      "display_eligible": true,
+      "climate_context": {
+        "status": "unavailable",
+        "reason": "No valid CRU land grid cell within 500 km of the reported coordinate",
+        "event_month": 9,
+        "variables": [
+          "tmp",
+          "pre"
+        ]
+      }
+    },
+    {
       "id": "gdacs-TC-1001318",
       "source_id": "1001318",
       "origin": "gdacs",
@@ -3702,7 +3938,7 @@
       "lat": 26.2,
       "lon": 127.5,
       "status": "Recent",
-      "updated": "Updated 2 h ago",
+      "updated": "Updated 4 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Tropical Storm (maximum wind speed of 83 km/h) Alert level: Green.",
@@ -3728,78 +3964,20 @@
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true
-    },
-    {
-      "id": "gdacs-TC-1001315",
-      "source_id": "1001315",
-      "origin": "gdacs",
-      "title": "Tropical Cyclone LOWELL-26",
-      "type": "Storm",
-      "region": "United States",
-      "lat": 13.3,
-      "lon": -161.4,
-      "status": "Recent",
-      "updated": "Updated 5 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Hurricane/Typhoon > 74 mph (maximum wind speed of 269 km/h) Alert level: Green.",
-      "source": "GDACS · Green · NASA EONET",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
-      "event_date": "2026-09-05T03:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1001315&eventtype=TC",
-        "https://www.metoc.navy.mil/jtwc/products/ep1226.tcw"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1001315"
-        },
-        {
-          "origin": "eonet",
-          "source_id": "EONET_23612"
-        }
-      ],
-      "exposure": {
-        "hazard": "tropical_cyclone",
-        "gdacs_event_id": "1001315",
-        "gdacs_episode_id": 36,
-        "footprint_method": "gdacs_wind_polygon",
-        "population_ts_or_impact_footprint": 179,
-        "quality": "high"
-      },
-      "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true
-    },
-    {
-      "id": "gdacs-FL-1104122",
-      "source_id": "1104122",
-      "origin": "gdacs",
-      "title": "Flood in Thailand",
-      "type": "Flood",
-      "region": "Thailand",
-      "lat": 18.68,
-      "lon": 99.7333,
-      "status": "Recent",
-      "updated": "Updated 7 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL",
-      "event_date": "2026-09-05T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104122"
-        }
-      ]
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-TC-1001318.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 26.25,
+        "grid_lon": 127.75,
+        "grid_distance_km": 25.5
+      }
     },
     {
       "id": "gdacs-FL-1104140",
@@ -3811,7 +3989,7 @@
       "lat": 36.6468,
       "lon": 137.2184,
       "status": "Recent",
-      "updated": "Updated 7 h ago",
+      "updated": "Updated 9 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Magnitude 0 Alert level: Green.",
@@ -3827,7 +4005,20 @@
           "origin": "gdacs",
           "source_id": "1104140"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104140.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 36.75,
+        "grid_lon": 137.25,
+        "grid_distance_km": 11.8
+      }
     },
     {
       "id": "gdacs-FL-1104141",
@@ -3839,7 +4030,7 @@
       "lat": 13.9738,
       "lon": 107.9996,
       "status": "Recent",
-      "updated": "Updated 7 h ago",
+      "updated": "Updated 9 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Magnitude 0 Alert level: Green.",
@@ -3855,7 +4046,61 @@
           "origin": "gdacs",
           "source_id": "1104141"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104141.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 13.75,
+        "grid_lon": 107.75,
+        "grid_distance_km": 36.7
+      }
+    },
+    {
+      "id": "gdacs-FL-1104122",
+      "source_id": "1104122",
+      "origin": "gdacs",
+      "title": "Flood in Thailand",
+      "type": "Flood",
+      "region": "Thailand",
+      "lat": 18.68,
+      "lon": 99.7333,
+      "status": "Recent",
+      "updated": "Updated 9 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL",
+      "event_date": "2026-09-05T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104122&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104122"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104122.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 18.75,
+        "grid_lon": 99.75,
+        "grid_distance_km": 8.0
+      }
     },
     {
       "id": "eonet-EONET_23738",
@@ -3867,7 +4112,7 @@
       "lat": 27.8,
       "lon": 126.7,
       "status": "Open",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -3890,7 +4135,20 @@
         "quality": "screening"
       },
       "display_rule": "eonet_center_within_300km_of_populated_land",
-      "display_eligible": true
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/eonet-EONET_23738.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 26.75,
+        "grid_lon": 128.25,
+        "grid_distance_km": 192.6
+      }
     },
     {
       "id": "wf-cluster-0f83fbbcae",
@@ -3902,7 +4160,7 @@
       "lat": 65.2311,
       "lon": 117.424,
       "status": "Clustered",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "2 nearby major-wildfire records are grouped for the world overview. Expand this event to inspect individual source records.",
@@ -3926,7 +4184,7 @@
           "lat": 65.7025,
           "lon": 118.8572,
           "status": "Recent",
-          "updated": "Updated 8 h ago",
+          "updated": "Updated 10 h ago",
           "priority": "Standard",
           "climate_link": "Not assessed",
           "summary": "Burned area: 17,159 ha. Green impact for forestfire in 17159 ha Alert level: Green.",
@@ -3984,7 +4242,7 @@
           "exposure": {
             "hazard": "wildfire",
             "gdacs_event_id": "1031545",
-            "gdacs_episode_id": null,
+            "gdacs_episode_id": 7,
             "footprint_method": "GDACS burned-area/event polygon",
             "population_direct": 0,
             "population_within_5km": 0,
@@ -3999,6 +4257,20 @@
         "population_within_5km_member_sum": 0,
         "aggregation_note": "Member sum; nearby fire buffers may overlap and are not unique-population counts.",
         "quality": "display_summary_only"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/wf-cluster-0f83fbbcae.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 65.25,
+        "grid_lon": 117.25,
+        "grid_distance_km": 8.4
       }
     },
     {
@@ -4011,7 +4283,7 @@
       "lat": -18.376733333333334,
       "lon": 20.051366666666667,
       "status": "Clustered",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "3 nearby major-wildfire records are grouped for the world overview. Expand this event to inspect individual source records.",
@@ -4036,7 +4308,7 @@
           "lat": -17.3809,
           "lon": 20.2821,
           "status": "Recent",
-          "updated": "Updated 8 h ago",
+          "updated": "Updated 10 h ago",
           "priority": "Standard",
           "climate_link": "Not assessed",
           "summary": "Burned area: 13,074 ha. Green impact for forestfire in 13074 ha Alert level: Green.",
@@ -4079,7 +4351,7 @@
           "lat": -18.4216,
           "lon": 19.6183,
           "status": "Recent",
-          "updated": "Updated 8 h ago",
+          "updated": "Updated 10 h ago",
           "priority": "Standard",
           "climate_link": "Not assessed",
           "summary": "Burned area: 12,569 ha. Green impact for forestfire in 12569 ha Alert level: Green.",
@@ -4117,7 +4389,7 @@
           "lat": -19.3277,
           "lon": 20.2537,
           "status": "Recent",
-          "updated": "Updated 8 h ago",
+          "updated": "Updated 10 h ago",
           "priority": "Standard",
           "climate_link": "Not assessed",
           "summary": "Burned area: 19,263 ha. Green impact for forestfire in 19263 ha Alert level: Green.",
@@ -4152,6 +4424,20 @@
         "population_within_5km_member_sum": 73,
         "aggregation_note": "Member sum; nearby fire buffers may overlap and are not unique-population counts.",
         "quality": "display_summary_only"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/wf-cluster-28abeb4767.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -18.25,
+        "grid_lon": 20.25,
+        "grid_distance_km": 25.3
       }
     },
     {
@@ -4164,7 +4450,7 @@
       "lat": -9.899049999999999,
       "lon": 29.306449999999998,
       "status": "Clustered",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "2 nearby major-wildfire records are grouped for the world overview. Expand this event to inspect individual source records.",
@@ -4188,7 +4474,7 @@
           "lat": -10.1042,
           "lon": 28.9435,
           "status": "Recent",
-          "updated": "Updated 8 h ago",
+          "updated": "Updated 10 h ago",
           "priority": "Standard",
           "climate_link": "Not assessed",
           "summary": "Burned area: 11,346 ha. Green impact for forestfire in 11346 ha Alert level: Green.",
@@ -4261,6 +4547,20 @@
         "population_within_5km_member_sum": 3371,
         "aggregation_note": "Member sum; nearby fire buffers may overlap and are not unique-population counts.",
         "quality": "display_summary_only"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/wf-cluster-7b1cb5a6f2.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -9.75,
+        "grid_lon": 29.25,
+        "grid_distance_km": 17.7
       }
     },
     {
@@ -4273,7 +4573,7 @@
       "lat": -11.3123,
       "lon": 31.3314,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 12,896 ha. Green impact for forestfire in 12896 ha Alert level: Green.",
@@ -4309,6 +4609,20 @@
         "population_within_5km": 6018,
         "population_5km_ring": 4548,
         "quality": "high_spatial_reference"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-WF-1031523.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -11.25,
+        "grid_lon": 31.25,
+        "grid_distance_km": 11.3
       }
     },
     {
@@ -4321,7 +4635,7 @@
       "lat": -17.2042,
       "lon": 18.0414,
       "status": "Recent",
-      "updated": "Updated 8 h ago",
+      "updated": "Updated 10 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Burned area: 13,577 ha. Green impact for forestfire in 13577 ha Alert level: Green.",
@@ -4352,35 +4666,21 @@
         "population_within_5km": 2,
         "population_5km_ring": 2,
         "quality": "high_spatial_reference"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-WF-1031504.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -17.25,
+        "grid_lon": 18.25,
+        "grid_distance_km": 22.7
       }
-    },
-    {
-      "id": "cems-EMSR922",
-      "source_id": "EMSR922",
-      "origin": "cems",
-      "title": "Wildfire in Montenegro and Bosnia and Herzegovina",
-      "type": "Wildfire",
-      "region": "Bosnia and Herzegovina · Montenegro",
-      "lat": 42.53850346175422,
-      "lon": 18.90526453608507,
-      "status": "Active",
-      "updated": "Updated 11 h ago",
-      "priority": "Review",
-      "climate_link": "Not assessed",
-      "summary": "Copernicus EMS Rapid Mapping activation EMSR922.",
-      "source": "Copernicus CEMS",
-      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922",
-      "event_date": "2026-09-04T21:30:41.473411",
-      "gdacs_id": null,
-      "source_urls": [
-        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR922"
-      ],
-      "source_members": [
-        {
-          "origin": "cems",
-          "source_id": "EMSR922"
-        }
-      ]
     },
     {
       "id": "cems-EMSR928",
@@ -4392,7 +4692,7 @@
       "lat": 45.164037169774694,
       "lon": 10.08183610452019,
       "status": "Active",
-      "updated": "Updated 19 h ago",
+      "updated": "Updated 20 h ago",
       "priority": "Review",
       "climate_link": "Not assessed",
       "summary": "Copernicus EMS Rapid Mapping activation EMSR928.",
@@ -4410,35 +4710,20 @@
         }
       ],
       "display_rule": "cems_activation",
-      "display_eligible": true
-    },
-    {
-      "id": "cems-EMSR927",
-      "source_id": "EMSR927",
-      "origin": "cems",
-      "title": "Flood in Nepal",
-      "type": "Flood",
-      "region": "Nepal",
-      "lat": 28.212231792029492,
-      "lon": 85.35376299877846,
-      "status": "Active",
-      "updated": "Updated 21 h ago",
-      "priority": "Review",
-      "climate_link": "Not assessed",
-      "summary": "Copernicus EMS Rapid Mapping activation EMSR927. Linked GDACS ID: FL1104124.",
-      "source": "Copernicus CEMS",
-      "source_url": "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927",
-      "event_date": "2026-09-04T11:48:47.889715",
-      "gdacs_id": "FL1104124",
-      "source_urls": [
-        "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=EMSR927"
-      ],
-      "source_members": [
-        {
-          "origin": "cems",
-          "source_id": "EMSR927"
-        }
-      ]
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/cems-EMSR928.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 45.25,
+        "grid_lon": 10.25,
+        "grid_distance_km": 16.3
+      }
     },
     {
       "id": "gdacs-FL-1104105",
@@ -4466,7 +4751,20 @@
           "origin": "gdacs",
           "source_id": "1104105"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104105.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 5.75,
+        "grid_lon": 6.25,
+        "grid_distance_km": 24.4
+      }
     },
     {
       "id": "gdacs-FL-1103888",
@@ -4494,7 +4792,20 @@
           "origin": "gdacs",
           "source_id": "1103888"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1103888.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 37.75,
+        "grid_lon": -112.25,
+        "grid_distance_km": 11.8
+      }
     },
     {
       "id": "gdacs-WF-1031598",
@@ -4532,6 +4843,20 @@
         "population_within_5km": 4,
         "population_5km_ring": 4,
         "quality": "high_spatial_reference"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-WF-1031598.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -20.75,
+        "grid_lon": 19.75,
+        "grid_distance_km": 8.7
       }
     },
     {
@@ -4651,6 +4976,20 @@
         "population_within_5km_member_sum": 71934,
         "aggregation_note": "Member sum; nearby fire buffers may overlap and are not unique-population counts.",
         "quality": "display_summary_only"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/wf-cluster-21d086c284.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -6.75,
+        "grid_lon": 15.75,
+        "grid_distance_km": 26.5
       }
     },
     {
@@ -4689,6 +5028,20 @@
         "population_within_5km": 102,
         "population_5km_ring": 91,
         "quality": "high_spatial_reference"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-WF-1031551.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -12.25,
+        "grid_lon": -65.25,
+        "grid_distance_km": 23.4
       }
     },
     {
@@ -4727,6 +5080,20 @@
         "population_within_5km": 122,
         "population_5km_ring": 122,
         "quality": "high_spatial_reference"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-WF-1031451.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -10.75,
+        "grid_lon": -45.25,
+        "grid_distance_km": 16.6
       }
     },
     {
@@ -4846,6 +5213,20 @@
         "population_within_5km_member_sum": 33048,
         "aggregation_note": "Member sum; nearby fire buffers may overlap and are not unique-population counts.",
         "quality": "display_summary_only"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/wf-cluster-df3e3d658a.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -16.25,
+        "grid_lon": 37.75,
+        "grid_distance_km": 31.5
       }
     },
     {
@@ -4878,13 +5259,26 @@
       "exposure": {
         "hazard": "tropical_cyclone",
         "gdacs_event_id": "1001316",
-        "gdacs_episode_id": null,
+        "gdacs_episode_id": 12,
         "footprint_method": "gdacs_wind_polygon",
         "population_ts_or_impact_footprint": 657778,
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-TC-1001316.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 32.25,
+        "grid_lon": -96.75,
+        "grid_distance_km": 36.4
+      }
     },
     {
       "id": "gdacs-FL-1104132",
@@ -4912,63 +5306,20 @@
           "origin": "gdacs",
           "source_id": "1104132"
         }
-      ]
-    },
-    {
-      "id": "gdacs-FL-1104011",
-      "source_id": "1104011",
-      "origin": "gdacs",
-      "title": "Flood in Myanmar",
-      "type": "Flood",
-      "region": "Myanmar",
-      "lat": 17.6027,
-      "lon": 95.0002,
-      "status": "Recent",
-      "updated": "Updated 2 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104011&eventtype=FL",
-      "event_date": "2026-09-03T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104011&eventtype=FL"
       ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104011"
-        }
-      ]
-    },
-    {
-      "id": "gdacs-FL-1104099",
-      "source_id": "1104099",
-      "origin": "gdacs",
-      "title": "Flood in Mexico",
-      "type": "Flood",
-      "region": "Mexico",
-      "lat": 20.672,
-      "lon": -103.3384,
-      "status": "Recent",
-      "updated": "Updated 2 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104099&eventtype=FL",
-      "event_date": "2026-09-03T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104099&eventtype=FL"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104099"
-        }
-      ]
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104132.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 12.75,
+        "grid_lon": 107.25,
+        "grid_distance_km": 26.2
+      }
     },
     {
       "id": "gdacs-FL-1104142",
@@ -4996,7 +5347,102 @@
           "origin": "gdacs",
           "source_id": "1104142"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104142.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 19.25,
+        "grid_lon": -72.75,
+        "grid_distance_km": 22.7
+      }
+    },
+    {
+      "id": "gdacs-FL-1104011",
+      "source_id": "1104011",
+      "origin": "gdacs",
+      "title": "Flood in Myanmar",
+      "type": "Flood",
+      "region": "Myanmar",
+      "lat": 17.6027,
+      "lon": 95.0002,
+      "status": "Recent",
+      "updated": "Updated 2 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104011&eventtype=FL",
+      "event_date": "2026-09-03T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104011&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104011"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104011.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 17.75,
+        "grid_lon": 95.25,
+        "grid_distance_km": 31.1
+      }
+    },
+    {
+      "id": "gdacs-FL-1104099",
+      "source_id": "1104099",
+      "origin": "gdacs",
+      "title": "Flood in Mexico",
+      "type": "Flood",
+      "region": "Mexico",
+      "lat": 20.672,
+      "lon": -103.3384,
+      "status": "Recent",
+      "updated": "Updated 2 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104099&eventtype=FL",
+      "event_date": "2026-09-03T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104099&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104099"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104099.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 20.75,
+        "grid_lon": -103.25,
+        "grid_distance_km": 12.6
+      }
     },
     {
       "id": "gdacs-FL-1104081",
@@ -5024,7 +5470,20 @@
           "origin": "gdacs",
           "source_id": "1104081"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104081.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 26.25,
+        "grid_lon": 113.75,
+        "grid_distance_km": 27.1
+      }
     },
     {
       "id": "eonet-EONET_22926",
@@ -5066,7 +5525,20 @@
         "quality": "high"
       },
       "display_rule": "gdacs_orange_red_or_populated_tc_footprint",
-      "display_eligible": true
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/eonet-EONET_22926.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 23.75,
+        "grid_lon": 117.25,
+        "grid_distance_km": 16.2
+      }
     },
     {
       "id": "gdacs-DR-1027575",
@@ -5094,7 +5566,21 @@
           "origin": "gdacs",
           "source_id": "1027575"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1027575.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 11.75,
+        "grid_lon": 76.75,
+        "grid_distance_km": 27.3
+      }
     },
     {
       "id": "gdacs-DR-1018545",
@@ -5122,7 +5608,21 @@
           "origin": "gdacs",
           "source_id": "1018545"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1018545.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 12.25,
+        "grid_lon": 104.75,
+        "grid_distance_km": 34.5
+      }
     },
     {
       "id": "gdacs-DR-1027448",
@@ -5150,7 +5650,21 @@
           "origin": "gdacs",
           "source_id": "1027448"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1027448.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -8.75,
+        "grid_lon": -47.75,
+        "grid_distance_km": 19.0
+      }
     },
     {
       "id": "gdacs-DR-1018546",
@@ -5178,7 +5692,21 @@
           "origin": "gdacs",
           "source_id": "1018546"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1018546.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 44.75,
+        "grid_lon": -105.75,
+        "grid_distance_km": 17.5
+      }
     },
     {
       "id": "gdacs-DR-1018344",
@@ -5206,7 +5734,21 @@
           "origin": "gdacs",
           "source_id": "1018344"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1018344.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -2.25,
+        "grid_lon": 13.25,
+        "grid_distance_km": 11.2
+      }
     },
     {
       "id": "gdacs-DR-1023877",
@@ -5234,7 +5776,21 @@
           "origin": "gdacs",
           "source_id": "1023877"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1023877.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 8.75,
+        "grid_lon": -71.75,
+        "grid_distance_km": 25.7
+      }
     },
     {
       "id": "gdacs-DR-1027491",
@@ -5262,7 +5818,21 @@
           "origin": "gdacs",
           "source_id": "1027491"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1027491.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 48.25,
+        "grid_lon": 82.25,
+        "grid_distance_km": 9.6
+      }
     },
     {
       "id": "gdacs-DR-1018431",
@@ -5290,7 +5860,21 @@
           "origin": "gdacs",
           "source_id": "1018431"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1018431.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -17.75,
+        "grid_lon": 47.75,
+        "grid_distance_km": 7.1
+      }
     },
     {
       "id": "gdacs-DR-1018332",
@@ -5318,7 +5902,21 @@
           "origin": "gdacs",
           "source_id": "1018332"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1018332.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 48.25,
+        "grid_lon": 10.75,
+        "grid_distance_km": 25.8
+      }
     },
     {
       "id": "gdacs-DR-1027449",
@@ -5346,7 +5944,21 @@
           "origin": "gdacs",
           "source_id": "1027449"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-DR-1027449.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 15.25,
+        "grid_lon": -89.25,
+        "grid_distance_km": 10.6
+      }
     },
     {
       "id": "cems-EMSR914",
@@ -5374,7 +5986,21 @@
           "origin": "cems",
           "source_id": "EMSR914"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/cems-EMSR914.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 44.75,
+        "grid_lon": 21.25,
+        "grid_distance_km": 6.7
+      }
     },
     {
       "id": "eonet-EONET_23739",
@@ -5409,7 +6035,20 @@
         "quality": "screening"
       },
       "display_rule": "eonet_center_within_300km_of_populated_land",
-      "display_eligible": true
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/eonet-EONET_23739.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 30.75,
+        "grid_lon": -95.25,
+        "grid_distance_km": 24.5
+      }
     },
     {
       "id": "cems-EMSR920",
@@ -5437,91 +6076,21 @@
           "origin": "cems",
           "source_id": "EMSR920"
         }
-      ]
-    },
-    {
-      "id": "gdacs-FL-1104138",
-      "source_id": "1104138",
-      "origin": "gdacs",
-      "title": "Flood in Lithuania",
-      "type": "Flood",
-      "region": "Lithuania",
-      "lat": 56.0131,
-      "lon": 22.1367,
-      "status": "Recent",
-      "updated": "Updated 3 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104138&eventtype=FL",
-      "event_date": "2026-09-02T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104138&eventtype=FL"
       ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104138"
-        }
-      ]
-    },
-    {
-      "id": "gdacs-FL-1104053",
-      "source_id": "1104053",
-      "origin": "gdacs",
-      "title": "Flood in Italy",
-      "type": "Flood",
-      "region": "Italy",
-      "lat": 43.2587,
-      "lon": 13.7584,
-      "status": "Recent",
-      "updated": "Updated 3 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Green.",
-      "source": "GDACS · Green",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104053&eventtype=FL",
-      "event_date": "2026-09-02T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104053&eventtype=FL"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104053"
-        }
-      ]
-    },
-    {
-      "id": "gdacs-FL-1104121",
-      "source_id": "1104121",
-      "origin": "gdacs",
-      "title": "Flood in India",
-      "type": "Flood",
-      "region": "India",
-      "lat": 29.3506,
-      "lon": 79.5542,
-      "status": "Recent",
-      "updated": "Updated 3 days ago",
-      "priority": "Medium",
-      "climate_link": "Not assessed",
-      "summary": "Magnitude 0 Alert level: Orange.",
-      "source": "GDACS · Orange",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104121&eventtype=FL",
-      "event_date": "2026-09-02T01:00:00",
-      "burned_area_ha": null,
-      "source_urls": [
-        "https://www.gdacs.org/report.aspx?eventid=1104121&eventtype=FL"
-      ],
-      "source_members": [
-        {
-          "origin": "gdacs",
-          "source_id": "1104121"
-        }
-      ]
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/cems-EMSR920.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": 50.75,
+        "grid_lon": 6.25,
+        "grid_distance_km": 8.9
+      }
     },
     {
       "id": "gdacs-FL-1104136",
@@ -5549,7 +6118,143 @@
           "origin": "gdacs",
           "source_id": "1104136"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104136.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 30.75,
+        "grid_lon": 71.75,
+        "grid_distance_km": 36.6
+      }
+    },
+    {
+      "id": "gdacs-FL-1104138",
+      "source_id": "1104138",
+      "origin": "gdacs",
+      "title": "Flood in Lithuania",
+      "type": "Flood",
+      "region": "Lithuania",
+      "lat": 56.0131,
+      "lon": 22.1367,
+      "status": "Recent",
+      "updated": "Updated 3 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104138&eventtype=FL",
+      "event_date": "2026-09-02T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104138&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104138"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104138.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 56.25,
+        "grid_lon": 22.25,
+        "grid_distance_km": 27.3
+      }
+    },
+    {
+      "id": "gdacs-FL-1104053",
+      "source_id": "1104053",
+      "origin": "gdacs",
+      "title": "Flood in Italy",
+      "type": "Flood",
+      "region": "Italy",
+      "lat": 43.2587,
+      "lon": 13.7584,
+      "status": "Recent",
+      "updated": "Updated 3 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104053&eventtype=FL",
+      "event_date": "2026-09-02T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104053&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104053"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104053.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 43.25,
+        "grid_lon": 13.75,
+        "grid_distance_km": 1.2
+      }
+    },
+    {
+      "id": "gdacs-FL-1104121",
+      "source_id": "1104121",
+      "origin": "gdacs",
+      "title": "Flood in India",
+      "type": "Flood",
+      "region": "India",
+      "lat": 29.3506,
+      "lon": 79.5542,
+      "status": "Recent",
+      "updated": "Updated 3 days ago",
+      "priority": "Medium",
+      "climate_link": "Not assessed",
+      "summary": "Magnitude 0 Alert level: Orange.",
+      "source": "GDACS · Orange",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104121&eventtype=FL",
+      "event_date": "2026-09-02T01:00:00",
+      "burned_area_ha": null,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1104121&eventtype=FL"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1104121"
+        }
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104121.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 29.25,
+        "grid_lon": 79.75,
+        "grid_distance_km": 22.0
+      }
     },
     {
       "id": "gdacs-FL-1104124",
@@ -5577,7 +6282,20 @@
           "origin": "gdacs",
           "source_id": "1104124"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104124.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 27.25,
+        "grid_lon": 85.25,
+        "grid_distance_km": 12.4
+      }
     },
     {
       "id": "gdacs-FL-1104135",
@@ -5605,7 +6323,20 @@
           "origin": "gdacs",
           "source_id": "1104135"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104135.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 9.25,
+        "grid_lon": -83.75,
+        "grid_distance_km": 10.1
+      }
     },
     {
       "id": "gdacs-FL-1104137",
@@ -5633,7 +6364,20 @@
           "origin": "gdacs",
           "source_id": "1104137"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104137.json",
+        "event_month": 9,
+        "event_month_name": "September",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 47.25,
+        "grid_lon": 12.75,
+        "grid_distance_km": 13.1
+      }
     },
     {
       "id": "gdacs-FL-1104129",
@@ -5661,7 +6405,20 @@
           "origin": "gdacs",
           "source_id": "1104129"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104129.json",
+        "event_month": 8,
+        "event_month_name": "August",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 34.25,
+        "grid_lon": 35.75,
+        "grid_distance_km": 22.2
+      }
     },
     {
       "id": "gdacs-FL-1104133",
@@ -5689,7 +6446,20 @@
           "origin": "gdacs",
           "source_id": "1104133"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104133.json",
+        "event_month": 8,
+        "event_month_name": "August",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 35.25,
+        "grid_lon": 126.75,
+        "grid_distance_km": 16.8
+      }
     },
     {
       "id": "gdacs-FL-1104130",
@@ -5717,7 +6487,20 @@
           "origin": "gdacs",
           "source_id": "1104130"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104130.json",
+        "event_month": 8,
+        "event_month_name": "August",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 14.75,
+        "grid_lon": 120.75,
+        "grid_distance_km": 18.5
+      }
     },
     {
       "id": "gdacs-FL-1104131",
@@ -5745,7 +6528,20 @@
           "origin": "gdacs",
           "source_id": "1104131"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104131.json",
+        "event_month": 8,
+        "event_month_name": "August",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 40.75,
+        "grid_lon": 40.25,
+        "grid_distance_km": 15.0
+      }
     },
     {
       "id": "gdacs-FL-1104089",
@@ -5773,7 +6569,20 @@
           "origin": "gdacs",
           "source_id": "1104089"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104089.json",
+        "event_month": 8,
+        "event_month_name": "August",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 15.25,
+        "grid_lon": 105.75,
+        "grid_distance_km": 15.6
+      }
     },
     {
       "id": "gdacs-FL-1104126",
@@ -5801,7 +6610,20 @@
           "origin": "gdacs",
           "source_id": "1104126"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104126.json",
+        "event_month": 8,
+        "event_month_name": "August",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": -45.25,
+        "grid_lon": 168.75,
+        "grid_distance_km": 25.2
+      }
     },
     {
       "id": "gdacs-FL-1104127",
@@ -5829,11 +6651,24 @@
           "origin": "gdacs",
           "source_id": "1104127"
         }
-      ]
+      ],
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-FL-1104127.json",
+        "event_month": 8,
+        "event_month_name": "August",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 52.25,
+        "grid_lon": -9.75,
+        "grid_distance_km": 27.0
+      }
     }
   ],
   "hazard_exposure": {
-    "calculated_at": "2026-09-05T08:36:33Z",
+    "calculated_at": "2026-09-05T09:38:24Z",
     "population_dataset": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025, authoritative ~1 km source",
     "wildfire_rule": "burned area >= 10,000 ha; population in burned polygon and within 5 km",
     "storm_rule": "CEMS activation OR GDACS Orange/Red OR populated GDACS TC footprint; EONET-only fallback uses populated 300 km center buffer",
@@ -5841,9 +6676,9 @@
     "diagnostics": {
       "wildfire_enriched": 16,
       "wildfire_polygon_missing": 0,
-      "storm_enriched": 11,
+      "storm_enriched": 14,
       "storm_visible": 7,
-      "storm_hidden_remote_or_unpopulated": 5
+      "storm_hidden_remote_or_unpopulated": 8
     }
   }
 }
