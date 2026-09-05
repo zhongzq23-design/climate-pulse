@@ -11,6 +11,7 @@ on:
       - 'scripts/enrich_hazard_exposure.py'
       - 'scripts/run_hazard_enrichment.py'
       - 'scripts/enrich_drought_exposure.py'
+      - 'scripts/enrich_event_footprints.py'
       - 'scripts/enrich_climate_context.py'
       - '.github/workflows/monitor-events.yml'
       - 'data/reference/population/metadata.json'
@@ -26,7 +27,7 @@ concurrency:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -60,19 +61,22 @@ jobs:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
         run: python scripts/enrich_drought_exposure.py
 
+      - name: Persist mapped event footprints
+        run: python scripts/enrich_event_footprints.py
+
       - name: Enrich annual event climate context
         run: python scripts/enrich_climate_context.py
 
-      - name: Commit event, exposure and climate-context products
+      - name: Commit event, exposure, footprint and climate-context products
         shell: bash
         run: |
           git config user.name "climate-pulse-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/events data/exposure/population data/climate/event_timeseries
+          git add data/events data/exposure/population data/footprints data/climate/event_timeseries
           if git diff --cached --quiet; then
             echo "No data changes to commit."
             exit 0
           fi
-          git commit -m "data: refresh events, exposure and climate context $(date -u +'%Y-%m-%dT%H:%MZ')"
+          git commit -m "data: refresh events, exposure, footprints and climate context $(date -u +'%Y-%m-%dT%H:%MZ')"
           git pull --rebase origin main
           git push origin main
