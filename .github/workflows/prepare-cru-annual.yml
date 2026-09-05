@@ -1,0 +1,60 @@
+name: Prepare CRU annual climate context
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prepare_cru_annual.py'
+      - '.github/workflows/prepare-cru-annual.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: climate-reference-data-write
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install scientific dependencies
+        run: python -m pip install --disable-pip-version-check numpy netCDF4
+
+      - name: Syntax check
+        run: python -m py_compile scripts/prepare_cru_annual.py
+
+      - name: Download CRU-TS v4.10 and build annual files
+        run: python scripts/prepare_cru_annual.py
+
+      - name: Inspect derived dataset size
+        shell: bash
+        run: |
+          du -sh data/reference/climate/cru_ts_4.10
+          find data/reference/climate/cru_ts_4.10/annual -name '*.nc' -printf '%s %p\n' | sort -nr | head -5
+
+      - name: Commit annual CRU derivative
+        shell: bash
+        run: |
+          git config user.name "climate-pulse-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/reference/climate/cru_ts_4.10
+          if git diff --cached --quiet; then
+            echo "No CRU annual data changes to commit."
+            exit 0
+          fi
+          git commit -m "data: add CRU-TS v4.10 annual climate context"
+          git pull --rebase origin main
+          git push origin main
