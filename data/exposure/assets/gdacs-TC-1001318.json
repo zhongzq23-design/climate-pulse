@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "event_id": "gdacs-TC-1001318",
+  "event_type": "Storm",
+  "title": "Tropical Cyclone KROVANH-26",
+  "region": "Japan",
+  "calculated_at": "2026-09-05T22:48:47Z",
+  "exposure": {
+    "hazard": "tropical_cyclone",
+    "population_wind_39kt": 0,
+    "population_wind_74kt": 0,
+    "population_storm_surge": 0,
+    "gdacs_event_id": "1001318",
+    "gdacs_episode_id": 18,
+    "advisory_id": "277320",
+    "advisory_number": "18",
+    "advisory_datetime": "05 Sep 2026 12:00",
+    "advisory_actual": true,
+    "advisory_current": true,
+    "quality": "source_modelled_exposure",
+    "metric_provenance": {
+      "population_wind_39kt": {
+        "source": "GDACS/JTWC",
+        "source_field": "pop39",
+        "method": "source_modelled",
+        "derived_by_climate_pulse": false
+      },
+      "population_wind_74kt": {
+        "source": "GDACS/JTWC",
+        "source_field": "pop74",
+        "method": "source_modelled",
+        "derived_by_climate_pulse": false
+      },
+      "population_storm_surge": {
+        "source": "GDACS/JTWC",
+        "source_field": "popstormsurge",
+        "method": "source_modelled",
+        "derived_by_climate_pulse": false
+      }
+    },
+    "interpretation": "GDACS advisory exposure is modelled population within defined hazard zones; it is not observed harm.",
+    "potential_gdp_exposure_proxy_usd": 176623178907,
+    "gdp_proxy_reference_year": 2024,
+    "gdp_proxy_indicator": "World Bank WDI NY.GDP.PCAP.CD (GDP per capita, current US$)",
+    "gdp_proxy_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "gdp_proxy_population_coverage_pct": 100.0,
+    "gdp_proxy_method": "sum over countries: GHSL population inside hazard footprint × WDI 2024 GDP per capita",
+    "gdp_proxy_country_components": [
+      {
+        "country": "Japan",
+        "iso3": "JPN",
+        "population_basis": 5225986,
+        "gdp_per_capita_usd_2024": 33797.1,
+        "proxy_usd": 176623178907
+      }
+    ],
+    "gdp_proxy_interpretation": "Economic activity exposure proxy only; not observed loss, asset damage, business interruption, or a gridded local-GDP estimate."
+  }
+}

@@ -4,7 +4,7 @@
   "event_type": "Storm",
   "title": "Tropical Cyclone EDOUARD-26",
   "region": "United States",
-  "calculated_at": "2026-09-05T18:59:17Z",
+  "calculated_at": "2026-09-05T22:42:30Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -12,9 +12,36 @@
     "interpretation": "Population exposure, not observed casualties or economic loss"
   },
   "hazard": "tropical_cyclone",
+  "population_wind_39kt": 0,
+  "population_wind_74kt": 0,
+  "population_storm_surge": 0,
   "gdacs_event_id": "1001316",
   "gdacs_episode_id": 12,
-  "footprint_method": "gdacs_wind_polygon",
-  "population_ts_or_impact_footprint": 657778,
-  "quality": "high"
+  "advisory_id": "276741",
+  "advisory_number": "12",
+  "advisory_datetime": "03 Sep 2026 09:00",
+  "advisory_actual": true,
+  "advisory_current": true,
+  "quality": "source_modelled_exposure",
+  "metric_provenance": {
+    "population_wind_39kt": {
+      "source": "GDACS/NOAA",
+      "source_field": "pop39",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_wind_74kt": {
+      "source": "GDACS/NOAA",
+      "source_field": "pop74",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_storm_surge": {
+      "source": "GDACS/NOAA",
+      "source_field": "popstormsurge",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    }
+  },
+  "interpretation": "GDACS advisory exposure is modelled population within defined hazard zones; it is not observed harm."
 }

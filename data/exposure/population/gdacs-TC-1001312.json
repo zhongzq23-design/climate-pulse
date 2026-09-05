@@ -4,7 +4,7 @@
   "event_type": "Storm",
   "title": "Tropical Cyclone ETAU-26",
   "region": "31.70°, 166.80°",
-  "calculated_at": "2026-09-05T18:59:51Z",
+  "calculated_at": "2026-09-05T22:43:08Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -12,9 +12,36 @@
     "interpretation": "Population exposure, not observed casualties or economic loss"
   },
   "hazard": "tropical_cyclone",
+  "population_wind_39kt": 0,
+  "population_wind_74kt": 0,
+  "population_storm_surge": 0,
   "gdacs_event_id": "1001312",
   "gdacs_episode_id": 16,
-  "footprint_method": "gdacs_wind_polygon",
-  "population_ts_or_impact_footprint": 0,
-  "quality": "high"
+  "advisory_id": "275898",
+  "advisory_number": "16",
+  "advisory_datetime": "30 Aug 2026 18:00",
+  "advisory_actual": true,
+  "advisory_current": true,
+  "quality": "source_modelled_exposure",
+  "metric_provenance": {
+    "population_wind_39kt": {
+      "source": "GDACS/JTWC",
+      "source_field": "pop39",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_wind_74kt": {
+      "source": "GDACS/JTWC",
+      "source_field": "pop74",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_storm_surge": {
+      "source": "GDACS/JTWC",
+      "source_field": "popstormsurge",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    }
+  },
+  "interpretation": "GDACS advisory exposure is modelled population within defined hazard zones; it is not observed harm."
 }
