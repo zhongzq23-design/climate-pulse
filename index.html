@@ -13,77 +13,43 @@
 <body>
   <main class="app">
     <header class="hero">
-      <div>
-        <h1>Climate Pulse</h1>
-        <p>Tracking climate-related events and emerging environmental signals around the world.</p>
-      </div>
+      <div><h1>Climate Pulse</h1><p>Tracking climate-related events and emerging environmental signals around the world.</p></div>
       <span class="updated" id="lastUpdated">Loading current events…</span>
     </header>
-
     <section class="toolbar" aria-label="Map controls">
-      <div class="mode-switch" id="modeSwitch">
-        <button class="mode active" data-mode="standard">Standard events</button>
-        <button class="mode" data-mode="emerging">Emerging signals</button>
-      </div>
+      <div class="mode-switch" id="modeSwitch"><button class="mode active" data-mode="standard">Standard events</button><button class="mode" data-mode="emerging">Emerging signals</button></div>
       <div class="filters" id="filters"></div>
       <div class="utility-actions" aria-label="Site actions">
         <button class="utility-btn utility-refresh" id="refreshBtn"><span class="utility-symbol" aria-hidden="true">↻</span><span>Refresh data</span></button>
         <a class="utility-btn utility-methods" href="methods.html"><span class="utility-info" aria-hidden="true">i</span><span>Methods</span></a>
       </div>
     </section>
-
     <div class="source-status" id="sourceStatus" aria-live="polite"></div>
-
     <section class="layout">
       <article class="panel map-panel">
-        <div class="panel-head">
-          <div>
-            <h2 id="mapTitle">Live Standard Events</h2>
-            <p id="mapSubtitle">Authoritative source metrics are preferred; Climate Pulse estimates are explicitly labelled.</p>
-          </div>
-          <span class="count" id="visibleCount">0 events</span>
-        </div>
+        <div class="panel-head"><div><h2 id="mapTitle">Live Standard Events</h2><p id="mapSubtitle">Authoritative source metrics are preferred; Climate Pulse estimates are explicitly labelled.</p></div><span class="count" id="visibleCount">0 events</span></div>
         <div class="map-wrap" id="mapWrap">
           <svg id="worldMap" viewBox="0 0 1200 600" role="img" aria-label="World climate-event map">
             <image href="assets/world.svg" width="1200" height="600"></image>
-            <g class="grid">
-              <line x1="200" y1="0" x2="200" y2="600"></line><line x1="400" y1="0" x2="400" y2="600"></line>
-              <line class="prime" x1="600" y1="0" x2="600" y2="600"></line><line x1="800" y1="0" x2="800" y2="600"></line><line x1="1000" y1="0" x2="1000" y2="600"></line>
-              <line x1="0" y1="200" x2="1200" y2="200"></line><line class="equator" x1="0" y1="300" x2="1200" y2="300"></line><line x1="0" y1="400" x2="1200" y2="400"></line>
-              <text x="610" y="24">0°</text>
-            </g>
+            <g class="grid"><line x1="200" y1="0" x2="200" y2="600"></line><line x1="400" y1="0" x2="400" y2="600"></line><line class="prime" x1="600" y1="0" x2="600" y2="600"></line><line x1="800" y1="0" x2="800" y2="600"></line><line x1="1000" y1="0" x2="1000" y2="600"></line><line x1="0" y1="200" x2="1200" y2="200"></line><line class="equator" x1="0" y1="300" x2="1200" y2="300"></line><line x1="0" y1="400" x2="1200" y2="400"></line><text x="610" y="24">0°</text></g>
             <g id="markers"></g>
           </svg>
           <div class="map-popup" id="mapPopup"></div>
         </div>
-        <p class="map-note">Tap a marker → preview → <strong>View event</strong>. For wildfire population, GDACS/GWIS values are used first; Climate Pulse calculates a GHSH fallback only when the equivalent source value is unavailable. Green wildfire display additionally requires ≥10,000 ha and &gt;10,000 people within 5 km; Orange/Red remain visible.</p>
+        <p class="map-note">Tap a marker → preview → <strong>View event</strong>. For wildfire population, GDACS/GWIS values are used first; Climate Pulse calculates a GHSL fallback only when the equivalent source value is unavailable. Green wildfire display additionally requires ≥10,000 ha and &gt;10,000 people within 5 km; Orange/Red remain visible.</p>
       </article>
-
-      <aside class="panel detail" id="detailPanel">
-        <div class="empty">Select an event on the map or in the feed.</div>
-      </aside>
+      <aside class="panel detail" id="detailPanel"><div class="empty">Select an event on the map or in the feed.</div></aside>
     </section>
-
     <section class="panel feed-panel" id="feedPanel">
-      <div class="panel-head">
-        <div><h2 id="feedTitle">Standard Event Feed</h2><p id="feedSubtitle">Expand a card for source-first hazard metrics, mapped footprint, clearly labelled supplemental exposure, sources and long-term climate background.</p></div>
-        <span class="count" id="feedCount"></span>
-      </div>
-      <div class="event-list" id="eventList"></div>
-      <div class="load-more" id="loadMore"></div>
+      <div class="panel-head"><div><h2 id="feedTitle">Standard Event Feed</h2><p id="feedSubtitle">Expand a card for source-first hazard metrics, mapped footprint, clearly labelled supplemental exposure, sources and long-term climate background.</p></div><span class="count" id="feedCount"></span></div>
+      <div class="event-list" id="eventList"></div><div class="load-more" id="loadMore"></div>
     </section>
-
     <footer>
       <p><strong>Terminology matters:</strong> exposed population is not affected population. Climate Pulse uses “affected” or “displaced” only when a source reports an actual impact; derived spatial counts are labelled estimates.</p>
       <p>Climate context and event attribution are kept separate. Source ingestion does not imply endorsement or causal attribution.</p>
       <p><a href="methods.html">Methods & definitions</a> · <a href="README.md">Project & data architecture</a></p>
     </footer>
   </main>
-  <script src="assets/sources.js"></script>
-  <script src="assets/app.js"></script>
-  <script src="assets/ux-fixes.js"></script>
-  <script src="assets/hazard-exposure-ui.js"></script>
-  <script src="assets/climate-context-ui.js"></script>
-  <script src="assets/footprint-ui.js"></script>
+  <script src="assets/sources.js"></script><script src="assets/app.js"></script><script src="assets/ux-fixes.js"></script><script src="assets/hazard-exposure-ui.js"></script><script src="assets/climate-context-ui.js"></script><script src="assets/footprint-ui.js"></script>
 </body>
 </html>
