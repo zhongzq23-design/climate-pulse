@@ -34,7 +34,6 @@
     ];
     if (e.priority) rows.push(['Priority', e.priority]);
 
-    // Burned area belongs only to wildfire records.
     if (e.type === 'Wildfire' && hasNum(e.burned_area_ha)) {
       rows.push(['Burned area', fmtHa(e.burned_area_ha)]);
     }
@@ -49,6 +48,8 @@
     } else if (e.type === 'Storm') {
       if (hasNum(x.population_ts_or_impact_footprint)) rows.push(['Population in TC impact footprint', `${fmtPop(x.population_ts_or_impact_footprint)} people`]);
       if (hasNum(x.population_within_300km_of_center)) rows.push(['Population within 300 km · screening', `${fmtPop(x.population_within_300km_of_center)} people`]);
+    } else if (e.type === 'Drought') {
+      if (hasNum(x.population_in_drought_footprint)) rows.push(['Population in drought footprint', `${fmtPop(x.population_in_drought_footprint)} people`]);
     }
     return cellGrid(rows);
   };
@@ -60,7 +61,7 @@
         const direct = fmtPop(x.population_direct);
         const nearby = fmtPop(x.population_5km_ring);
         const total = fmtPop(x.population_within_5km);
-        return `GHSL 2025 population screening: ${direct} people in the mapped wildfire footprint (direct exposure), ${nearby} additional people within 5 km (nearby exposure), and ${total} people in total across the footprint plus 5 km. Exposure does not mean observed harm.`;
+        return `GHSL 2025 population screening: ${direct} people in the mapped wildfire footprint, ${nearby} additional people within 5 km, and ${total} people in total across the footprint plus 5 km. Exposure does not mean observed harm.`;
       }
       if (hasNum(x.population_within_5km_member_sum)) {
         return `Grouped-fire screening: ${fmtPop(x.population_within_5km_member_sum)} population-exposures across member footprint-plus-5-km areas. Member areas may overlap, so this is not a unique-person count.`;
@@ -73,6 +74,9 @@
       if (hasNum(x.population_within_300km_of_center)) {
         return `Fallback screening: ${fmtPop(x.population_within_300km_of_center)} people live within 300 km of the reported storm centre. This is a proximity screen, not a wind-impact estimate.`;
       }
+    }
+    if (e?.type === 'Drought' && hasNum(x.population_in_drought_footprint)) {
+      return `GHSL 2025 population inside the latest mapped GDACS drought footprint: ${fmtPop(x.population_in_drought_footprint)} people. This is potential spatial exposure, not a count of people actually affected or needing assistance.`;
     }
     return '';
   }

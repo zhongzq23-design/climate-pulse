@@ -1,26 +1,18 @@
 #!/usr/bin/env python3
-"""Attach CRU-TS climate context to current Climate Pulse display events.
+"""Attach annual CRU-TS v4.10 climate context to current Climate Pulse events.
 
-Design
-------
-Long-term context uses annual CRU-TS v4.10 values (1901-2025):
-* annual series for the hazard-relevant variables;
+Public climate context is annual-only:
+* annual series for hazard-relevant variables, 1901-2025;
 * 1901-1930 early baseline;
 * 2016-2025 recent 10-year mean;
 * change from the early baseline;
-* 1901-2025 linear trend per century.
+* Theil-Sen median-slope trend for 1901-2025, reported per century;
+* two-sided Mann-Kendall significance test (p < 0.05 display threshold).
 
-Seasonal context preserves the event calendar month without storing the full
-monthly history. For an event occurring in month M it compares:
-* 1981-2010 same-month climatology; and
-* 2016-2025 same-month recent mean.
-
-This is NOT a 2026 event-month anomaly because CRU-TS v4.10 ends in 2025.
-A current-event anomaly would need a near-real-time product (e.g. ERA5).
+Monthly anomaly products are not used in the current public view.
 """
 from __future__ import annotations
 
-import calendar
 import json
 import math
 import re
@@ -34,9 +26,6 @@ from netCDF4 import Dataset
 ROOT = Path(__file__).resolve().parents[1]
 LATEST = ROOT / "data" / "events" / "latest.json"
 ANNUAL_DIR = ROOT / "data" / "reference" / "climate" / "cru_ts_4.10" / "annual"
-MONTHLY_DIR = ROOT / "data" / "reference" / "climate" / "cru_ts_4.10" / "monthly"
-CLIM_FILE = MONTHLY_DIR / "climatology_1981_2010.nc"
-RECENT_FILE = MONTHLY_DIR / "recent_2016_2025.nc"
 OUT_DIR = ROOT / "data" / "climate" / "event_timeseries"
 INDEX = OUT_DIR / "index.json"
 
@@ -44,6 +33,7 @@ YEARS = list(range(1901, 2026))
 EARLY = (1901, 1930)
 RECENT_ANNUAL = (2016, 2025)
 MAX_LAND_FALLBACK_KM = 500.0
+TREND_VERSION = "theilsen-mk-v1"
 
 VARIABLE_PROFILES = {
     "Drought": ["tmp", "pre", "vpd"],
@@ -54,7 +44,6 @@ VARIABLE_PROFILES = {
     "Landslide": ["tmp", "pre"],
 }
 UNITS = {"tmp": "degC", "pre": "mm/year", "vpd": "hPa"}
-MONTHLY_UNITS = {"tmp": "degC", "pre": "mm/month", "vpd": "hPa"}
 LABELS = {"tmp": "Temperature", "pre": "Precipitation", "vpd": "VPD"}
 
 
@@ -67,18 +56,6 @@ def load_json(path: Path, fallback: Any) -> Any:
         return json.loads(path.read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError):
         return fallback
-
-
-def parse_month(value: Any, fallback: int) -> tuple[int, str]:
-    s = str(value or "").strip()
-    if s:
-        try:
-            x = s[:-1] + "+00:00" if s.endswith("Z") else s
-            d = datetime.fromisoformat(x)
-            return int(d.month), "event_date"
-        except ValueError:
-            pass
-    return fallback, "snapshot_month_fallback"
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -137,18 +114,56 @@ def safe_name(event_id: Any) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", str(event_id or "event"))[:160]
 
 
+def valid_pairs(years: list[int], values: list[float | None]) -> tuple[np.ndarray, np.ndarray]:
+    pairs = [(float(y), float(v)) for y, v in zip(years, values) if v is not None and math.isfinite(float(v))]
+    if not pairs:
+        return np.asarray([], dtype="float64"), np.asarray([], dtype="float64")
+    return np.asarray([p[0] for p in pairs], dtype="float64"), np.asarray([p[1] for p in pairs], dtype="float64")
+
+
 def mean_period(years: list[int], values: list[float | None], start: int, end: int) -> float | None:
     arr = [float(v) for y, v in zip(years, values) if start <= y <= end and v is not None and math.isfinite(float(v))]
     return float(np.mean(arr)) if arr else None
 
 
-def trend_per_century(years: list[int], values: list[float | None]) -> float | None:
-    pairs = [(float(y), float(v)) for y, v in zip(years, values) if v is not None and math.isfinite(float(v))]
-    if len(pairs) < 20:
-        return None
-    x = np.asarray([p[0] for p in pairs], dtype="float64")
-    y = np.asarray([p[1] for p in pairs], dtype="float64")
-    return float(np.polyfit(x, y, 1)[0] * 100.0)
+def theil_sen(years: list[int], values: list[float | None]) -> dict[str, float | None]:
+    x, y = valid_pairs(years, values)
+    n = len(x)
+    if n < 20:
+        return {"slope_per_year": None, "intercept": None}
+    slopes = []
+    for i in range(n - 1):
+        dx = x[i + 1:] - x[i]
+        dy = y[i + 1:] - y[i]
+        slopes.extend((dy / dx).tolist())
+    slope = float(np.median(np.asarray(slopes, dtype="float64")))
+    intercept = float(np.median(y - slope * x))
+    return {"slope_per_year": slope, "intercept": intercept}
+
+
+def mann_kendall(years: list[int], values: list[float | None]) -> dict[str, float | bool | int | None]:
+    _, y = valid_pairs(years, values)
+    n = len(y)
+    if n < 20:
+        return {"s": None, "tau": None, "z": None, "p": None, "significant_p05": False, "n": n}
+    s = 0
+    for i in range(n - 1):
+        diff = y[i + 1:] - y[i]
+        s += int(np.sum(diff > 0) - np.sum(diff < 0))
+    _, counts = np.unique(y, return_counts=True)
+    tie_term = float(np.sum(counts * (counts - 1) * (2 * counts + 5)))
+    var_s = (n * (n - 1) * (2 * n + 5) - tie_term) / 18.0
+    if var_s <= 0:
+        z = 0.0
+    elif s > 0:
+        z = (s - 1.0) / math.sqrt(var_s)
+    elif s < 0:
+        z = (s + 1.0) / math.sqrt(var_s)
+    else:
+        z = 0.0
+    p = math.erfc(abs(z) / math.sqrt(2.0))
+    tau = float(s / (0.5 * n * (n - 1)))
+    return {"s": s, "tau": tau, "z": z, "p": p, "significant_p05": bool(p < 0.05), "n": n}
 
 
 def diff_summary(var: str, baseline: float | None, recent: float | None) -> dict[str, float | None]:
@@ -164,33 +179,37 @@ def annual_summary(series: dict[str, list[float | None]]) -> dict[str, Any]:
     for var, values in series.items():
         early = mean_period(YEARS, values, *EARLY)
         recent = mean_period(YEARS, values, *RECENT_ANNUAL)
-        trend = trend_per_century(YEARS, values)
-        mean_all = mean_period(YEARS, values, YEARS[0], YEARS[-1])
-        trend_pct = float(trend / mean_all * 100.0) if var == "pre" and trend is not None and mean_all not in (None, 0) else None
+        ts = theil_sen(YEARS, values)
+        mk = mann_kendall(YEARS, values)
+        slope_year = ts["slope_per_year"]
+        trend_century = float(slope_year * 100.0) if slope_year is not None else None
+        trend_pct = float(trend_century / early * 100.0) if var == "pre" and trend_century is not None and early not in (None, 0) else None
         out[var] = {
             "label": LABELS[var],
             "unit": UNITS[var],
             "baseline_1901_1930": early,
             "recent_2016_2025": recent,
             "change": diff_summary(var, early, recent),
-            "trend_1901_2025_per_century": trend,
+            "trend_method": "Theil-Sen median pairwise slope",
+            "theil_sen_slope_per_year": slope_year,
+            "theil_sen_intercept": ts["intercept"],
+            "trend_1901_2025_per_century": trend_century,
             "trend_percent_per_century": trend_pct,
+            "significance_method": "two-sided Mann-Kendall",
+            "mann_kendall_s": mk["s"],
+            "mann_kendall_tau": mk["tau"],
+            "mann_kendall_z": mk["z"],
+            "mann_kendall_p": mk["p"],
+            "trend_significant_p05": mk["significant_p05"],
+            "trend_n": mk["n"],
         }
     return out
 
 
-def build_context(event: dict[str, Any], month: int, month_source: str, variables: list[str], yi: int, xi: int, grid_lat: float, grid_lon: float, grid_distance_km: float, grid_method: str, annual_series: dict[str, list[float | None]], monthly_base: Dataset, monthly_recent: Dataset) -> dict[str, Any]:
-    baseline: dict[str, float | None] = {}
-    recent: dict[str, float | None] = {}
-    differences: dict[str, Any] = {}
-    for var in variables:
-        baseline[var] = scalar(monthly_base.variables[var][month - 1, yi, xi])
-        recent[var] = scalar(monthly_recent.variables[var][month - 1, yi, xi])
-        differences[var] = diff_summary(var, baseline[var], recent[var])
-
-    signature = f"cru4.10|{grid_lat:.2f}|{grid_lon:.2f}|m{month:02d}|{'-'.join(variables)}|annual1901-2025|normal1981-2010|recent2016-2025"
+def build_context(event: dict[str, Any], variables: list[str], grid_lat: float, grid_lon: float, grid_distance_km: float, grid_method: str, annual_series: dict[str, list[float | None]]) -> dict[str, Any]:
+    signature = f"cru4.10|{grid_lat:.2f}|{grid_lon:.2f}|{'-'.join(variables)}|annual1901-2025|{TREND_VERSION}"
     return {
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "generated_at": now_iso(),
         "context_signature": signature,
         "event_id": event.get("id"),
@@ -201,22 +220,16 @@ def build_context(event: dict[str, Any], month: int, month_source: str, variable
         "reported_location": {"lat": event.get("lat"), "lon": event.get("lon")},
         "cru_grid": {"lat": grid_lat, "lon": grid_lon, "distance_km_from_reported_coordinate": round(grid_distance_km, 1), "selection_method": grid_method, "resolution_degrees": 0.5},
         "variable_profile": variables,
-        "annual": {"years": YEARS, "series": annual_series, "summary": annual_summary(annual_series), "display_note": "Annual values retain long-term 1901-2025 context; the public chart also shows a 5-year moving mean for readability."},
-        "same_month_context": {
-            "event_month": month,
-            "event_month_name": calendar.month_name[month],
-            "month_source": month_source,
-            "reference_period": [1981, 2010],
-            "recent_period": [2016, 2025],
-            "baseline": baseline,
-            "recent": recent,
-            "difference": differences,
-            "units": {v: MONTHLY_UNITS[v] for v in variables},
-            "interpretation": "Recent same-calendar-month climate context compared with the 1981-2010 seasonal normal.",
-            "not_event_month_anomaly": "CRU-TS v4.10 ends in 2025. For current 2026 events this is not the actual event-month weather anomaly; it is a seasonally matched recent-climate shift."
+        "annual": {
+            "years": YEARS,
+            "series": annual_series,
+            "summary": annual_summary(annual_series),
+            "trend_method": "Theil-Sen median pairwise slope",
+            "significance_method": "two-sided Mann-Kendall; p<0.05 display threshold; no serial-correlation correction",
+            "display_note": "Annual values retain long-term 1901-2025 context; the public chart also shows a 5-year moving mean for readability."
         },
         "scientific_note": "Climate context does not establish causal event attribution.",
-        "vpd_note": "CRU VPD is derived from monthly-mean temperature and CRU vap; it omits sub-daily/diurnal temperature variability.",
+        "vpd_note": "CRU VPD is derived from monthly-mean temperature and CRU vap before annual aggregation; it omits sub-daily/diurnal temperature variability.",
         "vpd_reference": "https://doi.org/10.1038/s41467-025-63672-z"
     }
 
@@ -224,8 +237,6 @@ def build_context(event: dict[str, Any], month: int, month_source: str, variable
 def main() -> None:
     if not LATEST.exists():
         raise RuntimeError("data/events/latest.json is missing")
-    if not CLIM_FILE.exists() or not RECENT_FILE.exists():
-        raise RuntimeError("CRU monthly context is missing; run prepare_cru_monthly_context.py first")
     first_annual = ANNUAL_DIR / "cru_ts4.10_1901_annual.nc"
     if not first_annual.exists():
         raise RuntimeError("CRU annual context is missing")
@@ -234,66 +245,66 @@ def main() -> None:
     events = snap.get("events") or []
     if not isinstance(events, list):
         raise RuntimeError("latest.json events is not a list")
-    generated = str(snap.get("generated_at") or "")
-    try:
-        fallback_month = datetime.fromisoformat(generated.replace("Z", "+00:00")).month
-    except ValueError:
-        fallback_month = datetime.now(timezone.utc).month
-
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    with Dataset(first_annual, "r") as ds0, Dataset(CLIM_FILE, "r") as monthly_base, Dataset(RECENT_FILE, "r") as monthly_recent:
+    with Dataset(first_annual, "r") as ds0:
         lat = np.asarray(ds0.variables["lat"][:], dtype="float64")
         lon = np.asarray(ds0.variables["lon"][:], dtype="float64")
-        base_tmp = np.ma.asarray(monthly_base.variables["tmp"][:])
+        first_tmp = np.ma.asarray(ds0.variables["tmp"][:])
+        valid = ~np.ma.getmaskarray(first_tmp) & np.isfinite(np.ma.filled(first_tmp, np.nan))
 
-        pending: list[dict[str, Any]] = []
-        entries: list[dict[str, Any]] = []
-        for event in events:
-            variables = VARIABLE_PROFILES.get(str(event.get("type")), ["tmp", "pre"])
-            month, month_source = parse_month(event.get("event_date"), fallback_month)
-            valid = ~np.ma.getmaskarray(base_tmp[month - 1]) & np.isfinite(np.ma.filled(base_tmp[month - 1], np.nan))
-            loc = resolve_land_cell(lat, lon, valid, float(event["lat"]), float(event["lon"]))
-            if loc is None:
-                event["climate_context"] = {"status": "unavailable", "reason": "No valid CRU land grid cell within 500 km of the reported coordinate", "event_month": month, "variables": variables}
-                continue
-            yi, xi, dist, method = loc
-            grid_lat, grid_lon = float(lat[yi]), float(lon[xi])
-            file_name = safe_name(event.get("id")) + ".json"
-            path = OUT_DIR / file_name
-            signature = f"cru4.10|{grid_lat:.2f}|{grid_lon:.2f}|m{month:02d}|{'-'.join(variables)}|annual1901-2025|normal1981-2010|recent2016-2025"
-            existing = load_json(path, {}) if path.exists() else {}
-            if existing.get("context_signature") == signature and existing.get("annual", {}).get("years") == YEARS:
-                event["climate_context"] = {"status": "ready", "path": f"data/climate/event_timeseries/{file_name}", "event_month": month, "event_month_name": calendar.month_name[month], "variables": variables, "grid_lat": grid_lat, "grid_lon": grid_lon, "grid_distance_km": round(dist, 1)}
-                entries.append({"event_id": event.get("id"), "path": event["climate_context"]["path"], "signature": signature})
-                continue
-            pending.append({"event": event, "variables": variables, "month": month, "month_source": month_source, "yi": yi, "xi": xi, "grid_lat": grid_lat, "grid_lon": grid_lon, "dist": dist, "method": method, "file_name": file_name, "signature": signature, "series": {v: [] for v in variables}})
+    pending: list[dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
+    for event in events:
+        variables = VARIABLE_PROFILES.get(str(event.get("type")), ["tmp", "pre"])
+        loc = resolve_land_cell(lat, lon, valid, float(event["lat"]), float(event["lon"]))
+        if loc is None:
+            event["climate_context"] = {"status": "unavailable", "reason": "No valid CRU land grid cell within 500 km of the reported coordinate", "variables": variables}
+            continue
+        yi, xi, dist, method = loc
+        grid_lat, grid_lon = float(lat[yi]), float(lon[xi])
+        file_name = safe_name(event.get("id")) + ".json"
+        path = OUT_DIR / file_name
+        signature = f"cru4.10|{grid_lat:.2f}|{grid_lon:.2f}|{'-'.join(variables)}|annual1901-2025|{TREND_VERSION}"
+        existing = load_json(path, {}) if path.exists() else {}
+        if existing.get("context_signature") == signature and existing.get("annual", {}).get("years") == YEARS:
+            event["climate_context"] = {"status": "ready", "path": f"data/climate/event_timeseries/{file_name}", "variables": variables, "grid_lat": grid_lat, "grid_lon": grid_lon, "grid_distance_km": round(dist, 1)}
+            entries.append({"event_id": event.get("id"), "path": event["climate_context"]["path"], "signature": signature})
+            continue
+        pending.append({"event": event, "variables": variables, "yi": yi, "xi": xi, "grid_lat": grid_lat, "grid_lon": grid_lon, "dist": dist, "method": method, "file_name": file_name, "signature": signature, "series": {v: [] for v in variables}})
 
-        if pending:
-            needed_vars = sorted({v for p in pending for v in p["variables"]})
-            for year in YEARS:
-                path = ANNUAL_DIR / f"cru_ts4.10_{year}_annual.nc"
-                if not path.exists():
-                    raise RuntimeError(f"Missing annual CRU file: {path}")
-                with Dataset(path, "r") as ds:
-                    arrays = {v: np.ma.asarray(ds.variables[v][:]) for v in needed_vars}
-                    for p in pending:
-                        for v in p["variables"]:
-                            p["series"][v].append(scalar(arrays[v][p["yi"], p["xi"]]))
+    if pending:
+        needed_vars = sorted({v for p in pending for v in p["variables"]})
+        for year in YEARS:
+            path = ANNUAL_DIR / f"cru_ts4.10_{year}_annual.nc"
+            if not path.exists():
+                raise RuntimeError(f"Missing annual CRU file: {path}")
+            with Dataset(path, "r") as ds:
+                arrays = {v: np.ma.asarray(ds.variables[v][:]) for v in needed_vars}
+                for p in pending:
+                    for v in p["variables"]:
+                        p["series"][v].append(scalar(arrays[v][p["yi"], p["xi"]]))
 
-            for p in pending:
-                event = p["event"]
-                context = build_context(event, p["month"], p["month_source"], p["variables"], p["yi"], p["xi"], p["grid_lat"], p["grid_lon"], p["dist"], p["method"], p["series"], monthly_base, monthly_recent)
-                out_path = OUT_DIR / p["file_name"]
-                out_path.write_text(json.dumps(context, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-                event["climate_context"] = {"status": "ready", "path": f"data/climate/event_timeseries/{p['file_name']}", "event_month": p["month"], "event_month_name": calendar.month_name[p["month"]], "variables": p["variables"], "grid_lat": p["grid_lat"], "grid_lon": p["grid_lon"], "grid_distance_km": round(p["dist"], 1)}
-                entries.append({"event_id": event.get("id"), "path": event["climate_context"]["path"], "signature": p["signature"]})
+        for p in pending:
+            event = p["event"]
+            context = build_context(event, p["variables"], p["grid_lat"], p["grid_lon"], p["dist"], p["method"], p["series"])
+            out_path = OUT_DIR / p["file_name"]
+            out_path.write_text(json.dumps(context, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+            event["climate_context"] = {"status": "ready", "path": f"data/climate/event_timeseries/{p['file_name']}", "variables": p["variables"], "grid_lat": p["grid_lat"], "grid_lon": p["grid_lon"], "grid_distance_km": round(p["dist"], 1)}
+            entries.append({"event_id": event.get("id"), "path": event["climate_context"]["path"], "signature": p["signature"]})
 
-    snap["schema_version"] = "1.3"
-    snap.setdefault("monitor", {})["climate_context"] = {"dataset": "CRU-TS v4.10", "annual_period": [1901, 2025], "same_month_normal": [1981, 2010], "same_month_recent": [2016, 2025], "note": "Same-month comparison is seasonally matched recent climate context, not the actual 2026 event-month anomaly."}
+    snap["schema_version"] = "1.4"
+    snap.setdefault("monitor", {})["climate_context"] = {
+        "dataset": "CRU-TS v4.10",
+        "annual_period": [1901, 2025],
+        "public_view": "annual_only",
+        "trend_method": "Theil-Sen median pairwise slope",
+        "significance_method": "two-sided Mann-Kendall; p<0.05; no serial-correlation correction",
+        "note": "Monthly anomalies are not used in the current public view."
+    }
     LATEST.write_text(json.dumps(snap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    INDEX.write_text(json.dumps({"schema_version": "1.0", "generated_at": now_iso(), "dataset": "CRU-TS v4.10", "event_context_count": len(entries), "events": entries}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"status": "ok", "events": len(events), "contexts_ready": len(entries), "new_contexts": len(pending)}, indent=2))
+    INDEX.write_text(json.dumps({"schema_version": "2.0", "generated_at": now_iso(), "dataset": "CRU-TS v4.10", "trend_method": TREND_VERSION, "event_context_count": len(entries), "events": entries}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({"status": "ok", "events": len(events), "contexts_ready": len(entries), "new_contexts": len(pending), "trend_method": TREND_VERSION}, indent=2))
 
 
 if __name__ == "__main__":

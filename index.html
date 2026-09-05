@@ -24,8 +24,10 @@
         <button class="mode" data-mode="emerging">Emerging signals</button>
       </div>
       <div class="filters" id="filters"></div>
-      <button class="refresh" id="refreshBtn">Refresh</button>
-      <a class="refresh" href="methods.html" style="margin-left:0;text-decoration:none;display:inline-flex;align-items:center">Methods</a>
+      <div class="utility-actions" aria-label="Site actions">
+        <button class="utility-btn utility-refresh" id="refreshBtn"><span class="utility-symbol" aria-hidden="true">↻</span><span>Refresh data</span></button>
+        <a class="utility-btn utility-methods" href="methods.html"><span class="utility-info" aria-hidden="true">i</span><span>Methods</span></a>
+      </div>
     </section>
 
     <div class="source-status" id="sourceStatus" aria-live="polite"></div>
@@ -60,13 +62,9 @@
       </aside>
     </section>
 
-    <section class="panel climate-context-panel" id="climateContextPanel" aria-live="polite">
-      <div class="climate-context-body"><div class="climate-status">Select an event to view its climate background.</div></div>
-    </section>
-
     <section class="panel feed-panel" id="feedPanel">
       <div class="panel-head">
-        <div><h2 id="feedTitle">Standard Event Feed</h2><p id="feedSubtitle">Expand a card for full source and update details.</p></div>
+        <div><h2 id="feedTitle">Standard Event Feed</h2><p id="feedSubtitle">Expand a card for climate background, exposure and source details.</p></div>
         <span class="count" id="feedCount"></span>
       </div>
       <div class="event-list" id="eventList"></div>

@@ -10,10 +10,10 @@ on:
       - 'scripts/monitor_events.py'
       - 'scripts/enrich_hazard_exposure.py'
       - 'scripts/run_hazard_enrichment.py'
+      - 'scripts/enrich_drought_exposure.py'
       - 'scripts/enrich_climate_context.py'
       - '.github/workflows/monitor-events.yml'
       - 'data/reference/population/metadata.json'
-      - 'data/reference/climate/cru_ts_4.10/monthly/metadata.json'
       - 'data/reference/climate/cru_ts_4.10/annual/index.json'
 
 permissions:
@@ -26,7 +26,7 @@ concurrency:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -55,7 +55,12 @@ jobs:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
         run: python scripts/run_hazard_enrichment.py
 
-      - name: Enrich event climate context
+      - name: Enrich drought population exposure
+        env:
+          CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
+        run: python scripts/enrich_drought_exposure.py
+
+      - name: Enrich annual event climate context
         run: python scripts/enrich_climate_context.py
 
       - name: Commit event, exposure and climate-context products
