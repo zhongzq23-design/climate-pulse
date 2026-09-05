@@ -17,11 +17,13 @@
 
     <header>
       <h1 class="methods-title">Methods & definitions</h1>
-      <p class="methods-lead">Climate Pulse publishes simple operational definitions so readers can see how events, mapped footprints, exposure estimates and climate-context indicators are constructed. This page summarizes the logic in plain language and formulas rather than reproducing source code.</p>
+      <p class="methods-lead">Climate Pulse publishes operational definitions so readers can see how events, mapped footprints, exposure indicators and climate-context metrics are constructed. Exposure means spatial or economic screening; it does not mean verified damage.</p>
       <div class="badge-row">
         <span class="method-badge">3× daily monitoring</span>
         <span class="method-badge">Mapped GDACS footprints</span>
-        <span class="method-badge">GHSL 2025 population</span>
+        <span class="method-badge">FAO crop area</span>
+        <span class="method-badge">NASA MODIS land cover</span>
+        <span class="method-badge">World Bank WDI</span>
         <span class="method-badge">CRU-TS v4.10 · 1901–2025</span>
         <span class="method-badge">Context ≠ attribution</span>
       </div>
@@ -41,134 +43,146 @@
 
       <article class="method-card">
         <h2>2. Deduplication and map clustering</h2>
-        <p>Source IDs and source links are retained. Obvious cross-source duplicates may be merged when they describe the same hazard type and occur close together in space and time.</p>
+        <p>Source IDs and links are retained. Obvious cross-source duplicates may be merged when they describe the same hazard type and occur close together in space and time.</p>
         <div class="formula">candidate duplicate if: same hazard type AND distance &lt; 80 km AND |date₁ − date₂| ≤ 5 days</div>
-        <p>Major wildfire records may also be grouped visually when they occur within roughly 180 km and 7 days. A number inside a wildfire marker therefore means “grouped reports”, not severity. A map cluster is a display object rather than a single source polygon, so it may not have a footprint panel.</p>
+        <p>Major wildfire records may also be grouped visually when they occur within roughly 180 km and 7 days. A grouped marker is a display object rather than one source polygon.</p>
       </article>
 
       <article class="method-card">
         <h2>3. Mapped event footprint</h2>
-        <p>When a current event already has a usable GDACS polygon, Climate Pulse can show a compact latitude–longitude footprint map at the start of the event's expanded details. The purpose is orientation: it helps readers see the approximate geographic extent and shape of the mapped event rather than only a centre coordinate.</p>
-        <p>The browser geometry is a topology-preserving simplified copy of the source polygon. Simplification reduces page weight; it is <strong>not</strong> used for population exposure calculations.</p>
-        <div class="formula">browser footprint = simplify(mapped event polygon)</div>
-        <div class="method-note">If no usable source polygon exists, no footprint panel is shown. Climate Pulse does not invent a generic polygon or radius merely to fill the map.</div>
+        <p>When a usable GDACS polygon is available for wildfire, tropical cyclone, drought or flood, Climate Pulse shows a regional footprint map at the start of expanded details. Country boundaries, coastlines, selected cities and latitude/longitude are orientation aids.</p>
+        <p>The blue browser outline is a topology-preserving simplified copy. <strong>All exposure calculations use the unsimplified mapped polygon</strong>, not the simplified display geometry.</p>
+        <div class="formula">browser footprint = simplify(mapped source polygon)</div>
+        <div class="method-note">If no usable source polygon exists, no footprint panel is shown. Climate Pulse does not invent a generic polygon merely to fill the map.</div>
       </article>
 
       <article class="method-card">
-        <h2>4. Wildfire selection and population exposure</h2>
-        <p>The main-map gate for GDACS wildfire records is currently <strong>burned area ≥ 10,000 ha</strong>. The threshold reduces map clutter and does not imply that a smaller fire cannot be locally severe.</p>
-        <div class="formula">GDACS major wildfire: burned area ≥ 10,000 ha</div>
-        <p>Where a usable GDACS fire polygon exists, it is overlaid with JRC GHSL GHS-WUP-POP R2025A population at approximately 1 km resolution.</p>
-        <div class="definition-grid">
-          <div class="definition"><b>Direct exposure</b><span>Population inside the mapped wildfire footprint.</span></div>
-          <div class="definition"><b>Nearby exposure (≤5 km)</b><span>Additional population outside the footprint but within 5 km.</span></div>
-          <div class="definition"><b>Total potential exposure</b><span>Population in the footprint plus its 5 km buffer.</span></div>
-        </div>
-        <div class="formula">Direct = P(F)</div>
+        <h2>4. Wildfire exposure</h2>
+        <p>The main-map gate for GDACS wildfire records is <strong>burned area ≥ 10,000 ha</strong>. Where a usable fire polygon exists, the existing population screening uses JRC GHSL GHS-WUP-POP R2025A at approximately 1 km resolution.</p>
+        <div class="formula">Direct population = P(F)</div>
         <div class="formula">Nearby ≤5 km = P(F ⊕ 5 km) − P(F)</div>
-        <div class="formula">Total = P(F ⊕ 5 km)</div>
-        <div class="method-warning method-note"><strong>Exposure is not observed harm.</strong> These values do not equal casualties, evacuations, smoke exposure, property loss or confirmed personal impacts.</div>
+        <p>Climate Pulse also estimates the <strong>forest area spatially overlapping the mapped wildfire footprint</strong> using the NASA MODIS MCD12C1 Version 6.1 2024 0.05° land-cover product. Forest is the summed sub-pixel percentage of IGBP classes 1–5.</p>
+        <div class="formula">Forest overlap = Σ cell area × forest fraction inside F</div>
+        <div class="method-warning method-note"><strong>Forest overlap is not confirmed forest loss.</strong> A mapped fire/event polygon can include unburned patches and the MODIS product is a land-cover reference, not a fire-severity product.</div>
       </article>
 
       <article class="method-card">
         <h2>5. Tropical cyclones and storms</h2>
-        <p>A cyclone centre point is not treated as the impact area. GDACS tropical-cyclone wind/impact polygons are preferred when available and are overlaid with GHSL population.</p>
-        <ul>
-          <li><strong>GDACS Orange/Red:</strong> retained on the main map.</li>
-          <li><strong>GDACS Green:</strong> retained when the mapped TC footprint intersects populated cells.</li>
-          <li><strong>EONET-only storm:</strong> a 300 km population proximity screen is used only as a fallback when a standard wind footprint is unavailable.</li>
-          <li><strong>CEMS storm activation:</strong> retained because it represents an emergency-mapping activation.</li>
-        </ul>
-        <div class="formula">TC potential exposure = P(mapped tropical-cyclone wind / impact footprint)</div>
-        <p>The 300 km fallback is labelled <strong>screening</strong>; it is not presented as a wind-impact estimate and it does not create a footprint map.</p>
+        <p>A cyclone centre point is not treated as the impact area. GDACS tropical-cyclone wind/impact polygons are preferred. Orange/Red GDACS storms remain visible; Green records require populated footprint exposure. EONET-only storms can use a labelled 300 km population proximity screen when a wind footprint is unavailable.</p>
+        <p>Where a mapped GDACS cyclone footprint exists, Climate Pulse also calculates a <strong>potential GDP exposure proxy</strong> using the country-split footprint, GHSL 2025 population and World Bank World Development Indicators GDP per capita for 2024.</p>
+        <div class="formula">GDP exposure proxy = Σcountry [GHSL population in TC footprint × WDI 2024 GDP per capita]</div>
+        <div class="method-warning method-note"><strong>This is not economic loss.</strong> It is a transparent macroeconomic exposure proxy, not gridded local GDP, asset value, insured loss, business interruption or observed damage.</div>
       </article>
 
       <article class="method-card">
-        <h2>6. Drought population exposure</h2>
-        <p>For GDACS droughts, Climate Pulse uses the latest GDACS drought event polygon rather than a generic radius. The mapped event footprint is overlaid with the same GHSL 2025 population grid used for other hazards.</p>
-        <div class="formula">Drought potential population exposure = P(D)</div>
-        <p>Here, <strong>D</strong> is the mapped GDACS drought event polygon and <strong>P(D)</strong> is the summed residential population inside that footprint. No additional distance buffer is added because drought is already represented as an areal, long-duration hazard.</p>
-        <div class="method-warning method-note"><strong>Potential exposure is not the same as people affected.</strong> The value does not measure water shortage severity, crop loss, food insecurity, vulnerability, humanitarian need or confirmed impacts.</div>
-        <p><a href="https://data.gdacs.org/Knowledge/models_dr.aspx" target="_blank" rel="noopener">GDACS drought methodology ↗</a></p>
+        <h2>6. Drought land, forest and crop exposure</h2>
+        <p>Climate Pulse no longer displays a drought population-exposure count. For a GDACS drought with a mapped polygon <strong>D</strong>, the public view instead emphasizes potentially exposed area.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>Mapped footprint</b><span>Geodesic area of the unsimplified GDACS drought polygon.</span></div>
+          <div class="definition"><b>Land area</b><span>MODIS 2024 sub-pixel land area, using 100% minus IGBP water fraction.</span></div>
+          <div class="definition"><b>Forest area</b><span>MODIS 2024 IGBP forest classes 1–5 overlapping the polygon.</span></div>
+          <div class="definition"><b>Crop area</b><span>FAO CROPGRIDS 2020 crop physical area overlapping the polygon.</span></div>
+        </div>
+        <div class="formula">Potential forest exposure = Σ cell area × MODIS forest fraction inside D</div>
+        <div class="formula">Potential crop exposure = Σ CROPGRIDS crop physical area inside D</div>
+        <p>FAO CROPGRIDS provides 173 crops at 0.05° resolution for 2020 and distinguishes harvested area from crop physical area. Climate Pulse uses <strong>crop physical area</strong>, because the intended quantity is land occupied by crops rather than the number of harvesting cycles.</p>
+        <div class="method-warning method-note"><strong>These are spatial overlaps, not impacts.</strong> They do not measure crop failure, yield loss, forest mortality, water shortage, food insecurity or drought severity. CROPGRIDS can also overstate distinct cropland in some multi-cropping situations when crop-specific physical areas are summed.</div>
+        <p><a href="https://www.fao.org/agroinformatics/training-and-resources/data-sets/data-set-detail/cropgrids-data-on-harvested-and-crop-areas/en" target="_blank" rel="noopener">FAO CROPGRIDS ↗</a> · <a href="https://data.gdacs.org/Knowledge/models_dr.aspx" target="_blank" rel="noopener">GDACS drought methodology ↗</a></p>
       </article>
 
       <article class="method-card">
-        <h2>7. Population reference</h2>
-        <p>Population exposure uses the European Commission Joint Research Centre <strong>GHSL GHS-WUP-POP R2025A, epoch 2025</strong>. Event calculations use the authoritative approximately 1 km source in the backend. A lighter 0.1° derivative is kept in the repository for fast screening and visualization.</p>
-        <p><a href="https://human-settlement.emergency.copernicus.eu/ghs_wup_pop_r2025a.php" target="_blank" rel="noopener">GHSL population product ↗</a></p>
+        <h2>7. Flood GDP exposure</h2>
+        <p>When GDACS provides a usable flood polygon, Climate Pulse can calculate the same country-split World Bank/GHSL GDP exposure proxy used for tropical cyclones.</p>
+        <div class="formula">GDP exposure proxy = Σcountry [GHSL 2025 population in flood footprint × WDI 2024 GDP per capita]</div>
+        <p>Using country GDP per capita makes the method globally reproducible and current, but it cannot represent within-country concentration of economic activity. The label therefore remains <strong>potential GDP exposure proxy</strong>.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>8. Reference datasets for exposure</h2>
+        <div class="definition-grid">
+          <div class="definition"><b>Population</b><span>JRC GHSL GHS-WUP-POP R2025A, epoch 2025, approximately 1 km authoritative source.</span></div>
+          <div class="definition"><b>Land / forest</b><span>NASA MODIS MCD12C1.061, 2024, 0.05°, IGBP sub-pixel class percentages.</span></div>
+          <div class="definition"><b>Crops</b><span>FAO CROPGRIDS v1.08, 2020, 0.05°, 173 crops; crop physical area.</span></div>
+          <div class="definition"><b>GDP</b><span>World Bank WDI NY.GDP.PCAP.CD, 2024 common-year GDP per capita in current US$.</span></div>
+        </div>
+        <p>For MODIS, land area is 100% minus the IGBP water fraction; forest is classes 1–5. NASA cautions users when interpreting recent MCD12 land-cover years because the supervised-classification training database was not continuously updated and some training sites may have changed land cover. Climate Pulse therefore treats MODIS as a broad land/forest exposure reference rather than exact contemporary parcel mapping.</p>
+        <p><a href="https://doi.org/10.5067/MODIS/MCD12C1.061" target="_blank" rel="noopener">NASA MCD12C1.061 ↗</a> · <a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener">World Bank WDI GDP per capita ↗</a></p>
       </article>
 
       <article class="method-card" id="climate-context">
-        <h2>8. Event climate context</h2>
-        <p>The current public view uses <strong>annual climate context only</strong>. Climate background is extracted from the nearest valid land cell in <strong>CRU-TS v4.10</strong>, a 0.5° global land dataset covering 1901–2025. If the reported coordinate falls over the ocean, the backend may use the nearest valid CRU land cell within 500 km and reports that distance on the website.</p>
-        <h3>Variables shown by hazard type</h3>
+        <h2>9. Event climate context</h2>
+        <p>The public view uses <strong>annual climate context only</strong>. Climate background is extracted from the nearest valid land cell in <strong>CRU-TS v4.10</strong>, a 0.5° global land dataset covering 1901–2025. If a reported coordinate is offshore, the backend may use the nearest valid CRU land cell within 500 km and reports that distance.</p>
         <div class="definition-grid">
           <div class="definition"><b>Drought</b><span>Temperature + precipitation + VPD</span></div>
           <div class="definition"><b>Wildfire / Heat</b><span>Temperature + precipitation + VPD</span></div>
           <div class="definition"><b>Flood / Storm / Landslide</b><span>Temperature + precipitation</span></div>
         </div>
-        <p>This selection is a contextual display rule. It does not imply that the displayed variables alone explain the event. Monthly anomalies and near-real-time weather are not used in the current public climate panel.</p>
+        <p>Monthly anomalies and near-real-time weather are not used in the current public climate panel.</p>
       </article>
 
       <article class="method-card">
-        <h2>9. Long-term annual indicators</h2>
-        <p>Each event keeps the full 1901–2025 annual series for its selected variables. The public summary includes an early baseline, a recent ten-year mean and the same simple linear long-term trend used in the earlier Climate Pulse design.</p>
+        <h2>10. Long-term annual indicators</h2>
+        <p>Each event keeps the full 1901–2025 annual series for its selected variables. The public summary includes an early baseline, a recent ten-year mean and an ordinary least-squares long-term trend.</p>
         <div class="definition-grid">
           <div class="definition"><b>Early baseline</b><span>1901–1930 annual mean.</span></div>
           <div class="definition"><b>Recent annual mean</b><span>2016–2025 annual mean.</span></div>
-          <div class="definition"><b>Long-term trend</b><span>Ordinary least-squares slope for 1901–2025, reported per century.</span></div>
+          <div class="definition"><b>Long-term trend</b><span>OLS slope for 1901–2025, reported per century.</span></div>
         </div>
-        <div class="formula">Change since early baseline = mean(2016–2025) − mean(1901–1930)</div>
+        <div class="formula">Change = mean(2016–2025) − mean(1901–1930)</div>
         <div class="formula">Trend = OLS slope(annual value ~ year) × 100 years</div>
-        <p>No significance badge or p-value is displayed in the current public view. The charts show faint annual values and a 5-year moving mean for readability. Temperature and precipitation use separate axes; VPD, when relevant, is shown in a separate chart rather than forcing three y-axes into one panel.</p>
+        <p>No significance badge or p-value is displayed. Charts retain annual values and a 5-year moving mean for readability.</p>
       </article>
 
       <article class="method-card">
-        <h2>10. CRU VPD calculation</h2>
-        <p>CRU provides monthly actual vapour pressure (<strong>AVP</strong>) as <code>vap</code>. Saturation vapour pressure (<strong>SVP</strong>) is calculated from CRU monthly mean temperature <strong>T</strong>, then VPD is calculated <em>before</em> monthly values are aggregated into annual values.</p>
+        <h2>11. CRU VPD calculation</h2>
+        <p>CRU provides monthly actual vapour pressure (<strong>AVP</strong>) as <code>vap</code>. Saturation vapour pressure (<strong>SVP</strong>) is calculated from monthly mean temperature <strong>T</strong>; VPD is calculated before annual aggregation.</p>
         <div class="formula">VPD = SVP − AVP</div>
         <div class="formula">SVP = 6.1078 × exp(aT / (T + b)) &nbsp; [hPa]</div>
-        <p>For <strong>T ≥ 0°C</strong>, <code>a = 17.269</code> and <code>b = 237.3</code>. For <strong>T &lt; 0°C</strong>, <code>a = 21.875</code> and <code>b = 265.5</code>.</p>
-        <div class="method-warning method-note"><strong>Temporal-resolution limitation:</strong> SVP is nonlinear in temperature. Calculating VPD from monthly-mean temperature cannot reproduce the effects of the diurnal temperature cycle or sub-daily asymmetric warming. This CRU-derived VPD is therefore a long-term climate-context metric, not a high-frequency VPD estimate.</div>
+        <p>For <strong>T ≥ 0°C</strong>, <code>a = 17.269</code>, <code>b = 237.3</code>; for <strong>T &lt; 0°C</strong>, <code>a = 21.875</code>, <code>b = 265.5</code>.</p>
+        <div class="method-warning method-note"><strong>Temporal-resolution limitation:</strong> monthly-mean temperature cannot reproduce the diurnal temperature cycle or sub-daily asymmetric warming. This is a long-term climate-context metric, not high-frequency VPD.</div>
         <p>See <a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener"><strong>Zhong, Z., Chen, H.W., Dai, A. et al. (2025), “Sub-diurnal asymmetric warming has amplified atmospheric dryness since the 1980s,” Nature Communications 16, 8247</strong> ↗</a>.</p>
       </article>
 
       <article class="method-card">
-        <h2>11. Climate context is not attribution</h2>
-        <p>A warming, drying or VPD trend can provide useful local background information, but it does not by itself demonstrate that anthropogenic climate change caused a particular wildfire, flood, cyclone, drought, heatwave or landslide.</p>
-        <div class="method-note">Climate Pulse keeps <strong>event detection</strong>, <strong>mapped footprint</strong>, <strong>population exposure</strong>, <strong>local climate context</strong> and <strong>formal event attribution</strong> as separate concepts.</div>
+        <h2>12. Climate context is not attribution</h2>
+        <p>A warming, drying or VPD trend can provide useful local background information, but it does not by itself demonstrate that anthropogenic climate change caused a particular event.</p>
+        <div class="method-note">Climate Pulse keeps <strong>event detection</strong>, <strong>mapped footprint</strong>, <strong>asset/population exposure</strong>, <strong>local climate context</strong> and <strong>formal event attribution</strong> as separate concepts.</div>
       </article>
 
       <article class="method-card">
-        <h2>12. Main limitations</h2>
+        <h2>13. Main limitations</h2>
         <ul>
           <li>Hazard polygons and event coordinates can change as an event evolves.</li>
-          <li>The browser footprint is simplified for orientation and is not the analysis geometry used for exposure.</li>
+          <li>Browser footprints are simplified; exposure calculations use unsimplified source geometry.</li>
+          <li>Forest/crop overlap does not equal ecological damage, crop loss or yield loss.</li>
+          <li>MODIS recent-year land-cover classifications require caution and are used only as broad exposure context.</li>
+          <li>The GDP indicator is a country-level per-capita proxy and cannot represent within-country spatial economic concentration.</li>
           <li>Gridded residential population is not real-time human presence.</li>
-          <li>Drought footprint exposure does not measure drought severity or vulnerability.</li>
-          <li>Cross-source deduplication and wildfire clustering use operational distance/time heuristics.</li>
-          <li>Grouped-event member sums can double-count population where footprints overlap.</li>
-          <li>CRU is land-only; offshore events may use the nearest valid land cell and that distance must be considered.</li>
+          <li>Grouped-event member sums can double-count overlapping areas.</li>
+          <li>CRU is land-only; offshore events may use the nearest valid land cell.</li>
           <li>CRU-derived VPD from monthly means omits sub-daily temperature variability.</li>
         </ul>
       </article>
 
       <article class="method-card">
-        <h2>13. Source documentation</h2>
+        <h2>14. Source documentation</h2>
         <ul>
-          <li><a href="https://eonet.gsfc.nasa.gov/docs/v3" target="_blank" rel="noopener">NASA EONET API documentation ↗</a></li>
-          <li><a href="https://www.gdacs.org/gdacsapi/swagger/index.html" target="_blank" rel="noopener">GDACS API documentation ↗</a></li>
+          <li><a href="https://eonet.gsfc.nasa.gov/docs/v3" target="_blank" rel="noopener">NASA EONET API ↗</a></li>
+          <li><a href="https://www.gdacs.org/gdacsapi/swagger/index.html" target="_blank" rel="noopener">GDACS API ↗</a></li>
           <li><a href="https://data.gdacs.org/Knowledge/models_dr.aspx" target="_blank" rel="noopener">GDACS drought methodology ↗</a></li>
-          <li><a href="https://mapping.emergency.copernicus.eu/" target="_blank" rel="noopener">Copernicus Emergency Management Service ↗</a></li>
+          <li><a href="https://human-settlement.emergency.copernicus.eu/ghs_wup_pop_r2025a.php" target="_blank" rel="noopener">JRC GHSL GHS-WUP-POP R2025A ↗</a></li>
+          <li><a href="https://www.fao.org/agroinformatics/training-and-resources/data-sets/data-set-detail/cropgrids-data-on-harvested-and-crop-areas/en" target="_blank" rel="noopener">FAO CROPGRIDS ↗</a></li>
+          <li><a href="https://doi.org/10.1038/s41597-024-03247-7" target="_blank" rel="noopener">CROPGRIDS Scientific Data paper ↗</a></li>
+          <li><a href="https://doi.org/10.5067/MODIS/MCD12C1.061" target="_blank" rel="noopener">NASA MODIS MCD12C1.061 ↗</a></li>
+          <li><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener">World Bank WDI GDP per capita ↗</a></li>
           <li><a href="https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/" target="_blank" rel="noopener">CRU-TS v4.10 ↗</a></li>
-          <li><a href="https://doi.org/10.1038/s41597-020-0453-3" target="_blank" rel="noopener">Harris et al. (2020), CRU-TS v4 description ↗</a></li>
-          <li><a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener">Zhong et al. (2025), VPD and sub-diurnal asymmetric warming ↗</a></li>
+          <li><a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener">Zhong et al. (2025) ↗</a></li>
           <li><a href="https://github.com/zhongzq23-design/climate-pulse" target="_blank" rel="noopener">Climate Pulse public repository ↗</a></li>
         </ul>
       </article>
     </section>
 
-    <footer class="methods-footer"><strong>Climate Pulse</strong> · Public methods summary. Potential exposure and climate background are screening/context metrics and should not be interpreted as observed harm or causal event attribution.</footer>
+    <footer class="methods-footer"><strong>Climate Pulse</strong> · Potential exposure and climate background are screening/context metrics and should not be interpreted as observed harm, economic loss or causal event attribution.</footer>
   </main>
 </body>
 </html>
