@@ -1,16 +1,16 @@
 'use strict';
 
-// Climate-context UI. This layer reads compact per-event JSON produced by
-// scripts/enrich_climate_context.py and renders seasonally matched context plus
-// the long-term CRU annual record without pulling NetCDF files into the browser.
+// Annual-only climate-context UI. Climate Pulse intentionally keeps the public
+// event view focused on long-term CRU-TS v4.10 change (1901-2025). Monthly or
+// near-real-time anomaly work is kept outside this public panel for now.
 (() => {
   const CACHE = new Map();
   let renderToken = 0;
   const C = { tmp: '#c94f3d', pre: '#2e7aa5', vpd: '#c8871b' };
   const META = {
-    tmp: { label: 'Temperature', unit: '°C' },
-    pre: { label: 'Precipitation', unit: 'mm' },
-    vpd: { label: 'VPD', unit: 'hPa' }
+    tmp: { label: 'Temperature', unit: '°C', note: 'Annual mean' },
+    pre: { label: 'Precipitation', unit: 'mm/year', note: 'Annual total' },
+    vpd: { label: 'VPD', unit: 'hPa', note: 'Annual mean' }
   };
 
   const finite = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
@@ -19,21 +19,21 @@
     const n = Number(v);
     return `${n > 0 ? '+' : ''}${n.toFixed(digits)}`;
   };
-  const valueText = (v, variable, monthly = false) => {
+  const valueText = (v, variable) => {
     if (!finite(v)) return '–';
     const n = Number(v);
     if (variable === 'tmp') return `${n.toFixed(1)} °C`;
     if (variable === 'vpd') return `${n.toFixed(2)} hPa`;
-    return `${Math.round(n).toLocaleString()} ${monthly ? 'mm/month' : 'mm/year'}`;
+    return `${Math.round(n).toLocaleString()} mm/year`;
   };
-  const deltaText = (variable, diff) => {
-    if (!diff || !finite(diff.absolute)) return '–';
-    if (variable === 'tmp') return `${signed(diff.absolute, 1)} °C`;
-    if (variable === 'vpd') return `${signed(diff.absolute, 2)} hPa`;
-    const pct = finite(diff.percent) ? ` (${signed(diff.percent, 1)}%)` : '';
-    return `${signed(diff.absolute, 0)} mm${pct}`;
+  const changeText = (variable, change) => {
+    if (!change || !finite(change.absolute)) return '–';
+    if (variable === 'tmp') return `${signed(change.absolute, 1)} °C`;
+    if (variable === 'vpd') return `${signed(change.absolute, 2)} hPa`;
+    if (finite(change.percent)) return `${signed(change.percent, 1)}%`;
+    return `${signed(change.absolute, 0)} mm`;
   };
-  const annualTrendText = (variable, s) => {
+  const trendText = (variable, s) => {
     if (!s) return '–';
     if (variable === 'pre' && finite(s.trend_percent_per_century)) return `${signed(s.trend_percent_per_century, 1)}% / century`;
     if (!finite(s.trend_1901_2025_per_century)) return '–';
@@ -56,7 +56,7 @@
     let lo = Math.min(...x), hi = Math.max(...x);
     if (includeZero) lo = Math.min(0, lo);
     if (hi === lo) { hi += 1; lo -= 1; }
-    const pad = (hi - lo) * 0.08;
+    const pad = (hi - lo) * .08;
     return [lo - (includeZero && lo === 0 ? 0 : pad), hi + pad];
   }
   function pathFor(values, xFn, yFn) {
@@ -80,7 +80,7 @@
   }
 
   function comboChart(years, temp, precip) {
-    const W = 980, H = 270, m = { l: 62, r: 72, t: 20, b: 38 };
+    const W = 980, H = 286, m = { l: 62, r: 76, t: 24, b: 40 };
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
     const t5 = movingAverage(temp), p5 = movingAverage(precip);
     const [t0, t1] = range([...temp, ...t5]);
@@ -89,13 +89,13 @@
     const x = i => m.l + (years.length === 1 ? 0 : i / (years.length - 1) * pw);
     const yt = v => m.t + (t1 - v) / (t1 - t0) * ph;
     const yp = v => m.t + (p1 - v) / (p1 - p0) * ph;
-    const bw = Math.max(1.1, pw / years.length * .7);
+    const bw = Math.max(1.15, pw / years.length * .72);
     const grid = ticks(t0, t1).map(v => `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${yt(v)}" y2="${yt(v)}"></line><text class="axistext" x="${m.l - 8}" y="${yt(v) + 4}" text-anchor="end">${shortNum(v)}</text>`).join('');
     const right = ticks(p0, p1).map(v => `<text class="axistext" x="${W - m.r + 9}" y="${yp(v) + 4}" text-anchor="start">${shortNum(v)}</text>`).join('');
     const bars = precip.map((v, i) => finite(v) ? `<rect class="prebar" x="${(x(i) - bw / 2).toFixed(2)}" y="${yp(Number(v)).toFixed(2)}" width="${bw.toFixed(2)}" height="${Math.max(0, yp(0) - yp(Number(v))).toFixed(2)}" fill="${C.pre}"></rect>` : '').join('');
-    const ix = [0, 29, 59, 89, years.length - 1].filter((v, i, a) => v >= 0 && v < years.length && a.indexOf(v) === i);
+    const ix = [0, 24, 49, 74, 99, years.length - 1].filter((v, i, a) => v >= 0 && v < years.length && a.indexOf(v) === i);
     const xt = ix.map(i => `<text class="axistext" x="${x(i)}" y="${H - 11}" text-anchor="middle">${years[i]}</text>`).join('');
-    return `<svg class="climate-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Annual temperature and precipitation history">
+    return `<svg class="climate-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="CRU annual temperature and precipitation, 1901 to 2025">
       ${grid}${right}${bars}
       <path class="rawline" d="${pathFor(temp, x, yt)}" stroke="${C.tmp}"></path>
       <path class="smoothline" d="${pathFor(t5, x, yt)}" stroke="${C.tmp}"></path>
@@ -107,38 +107,32 @@
   }
 
   function lineChart(years, values, variable) {
-    const W = 980, H = 220, m = { l: 62, r: 28, t: 18, b: 36 };
+    const W = 980, H = 224, m = { l: 62, r: 28, t: 20, b: 36 };
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
     const sm = movingAverage(values);
     const [y0, y1] = range([...values, ...sm]);
     const x = i => m.l + (years.length === 1 ? 0 : i / (years.length - 1) * pw);
     const y = v => m.t + (y1 - v) / (y1 - y0) * ph;
     const grid = ticks(y0, y1).map(v => `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"></line><text class="axistext" x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${shortNum(v)}</text>`).join('');
-    const ix = [0, 29, 59, 89, years.length - 1].filter((v, i, a) => v >= 0 && v < years.length && a.indexOf(v) === i);
+    const ix = [0, 24, 49, 74, 99, years.length - 1].filter((v, i, a) => v >= 0 && v < years.length && a.indexOf(v) === i);
     const xt = ix.map(i => `<text class="axistext" x="${x(i)}" y="${H - 10}" text-anchor="middle">${years[i]}</text>`).join('');
-    return `<svg class="climate-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Annual ${META[variable].label} history">
+    return `<svg class="climate-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="CRU annual ${META[variable].label}, 1901 to 2025">
       ${grid}<path class="rawline" d="${pathFor(values, x, y)}" stroke="${C[variable]}"></path><path class="smoothline" d="${pathFor(sm, x, y)}" stroke="${C[variable]}"></path>${xt}
       <text class="axislabel" x="16" y="${m.t + ph / 2}" transform="rotate(-90 16 ${m.t + ph / 2})" text-anchor="middle">${META[variable].label} · ${META[variable].unit}</text>
     </svg>`;
   }
 
-  function seasonalCard(variable, ctx) {
-    const s = ctx.same_month_context || {}, b = s.baseline?.[variable], r = s.recent?.[variable], d = s.difference?.[variable];
-    if (!finite(b) && !finite(r)) return '';
-    const month = esc(s.event_month_name || 'Event month');
-    return `<div class="seasonal-card"><b>${esc(META[variable].label)} · ${month}</b><div class="seasonal-main" style="color:${C[variable]}">${esc(deltaText(variable, d))}</div><div class="seasonal-sub">2016–2025 same-month mean ${esc(valueText(r, variable, true))}<br>1981–2010 normal ${esc(valueText(b, variable, true))}</div></div>`;
-  }
-
   function annualMetric(variable, ctx) {
     const s = ctx.annual?.summary?.[variable];
     if (!s) return '';
-    const change = s.change || {};
-    let changeText = deltaText(variable, change);
-    if (variable === 'pre' && finite(change.percent)) changeText = `${signed(change.percent, 1)}% (${signed(change.absolute, 0)} mm)`;
-    return `<div class="annual-metric"><h4 style="color:${C[variable]}">${esc(META[variable].label)}</h4>
-      <div class="metric-row"><span>Recent 10-year annual mean</span><strong>${esc(valueText(s.recent_2016_2025, variable, false))}</strong></div>
-      <div class="metric-row"><span>Change vs 1901–1930</span><strong>${esc(changeText)}</strong></div>
-      <div class="metric-row"><span>1901–2025 trend</span><strong>${esc(annualTrendText(variable, s))}</strong></div></div>`;
+    return `<div class="annual-metric" style="--metric-color:${C[variable]}">
+      <div class="metric-kicker">${esc(META[variable].note)}</div>
+      <h4>${esc(META[variable].label)}</h4>
+      <div class="metric-primary">${esc(trendText(variable, s))}</div>
+      <div class="metric-primary-label">Long-term trend · 1901–2025</div>
+      <div class="metric-row"><span>Recent 10-year mean</span><strong>${esc(valueText(s.recent_2016_2025, variable))}</strong></div>
+      <div class="metric-row"><span>Change vs 1901–1930</span><strong>${esc(changeText(variable, s.change))}</strong></div>
+    </div>`;
   }
 
   async function fetchContext(path) {
@@ -163,10 +157,9 @@
     const label = [...panel.querySelectorAll('.section-label')].find(x => /local warming context/i.test(x.textContent || ''));
     const box = label?.nextElementSibling;
     if (box?.classList.contains('climate-box')) {
-      const ready = e.climate_context?.status === 'ready';
-      box.innerHTML = ready
-        ? `Long-term and seasonally matched <strong>CRU-TS v4.10</strong> climate background is shown below. Climate context is not event attribution.`
-        : `CRU climate background will appear below after the next backend enrichment. <strong>Climate context is not event attribution.</strong>`;
+      box.innerHTML = e.climate_context?.status === 'ready'
+        ? `Long-term <strong>CRU-TS v4.10</strong> climate background (1901–2025) is shown below. Climate context is not event attribution.`
+        : `Long-term CRU climate background will appear below after backend enrichment. <strong>Climate context is not event attribution.</strong>`;
     }
   }
 
@@ -174,22 +167,21 @@
     const vars = Array.isArray(ctx.variable_profile) ? ctx.variable_profile : (e.climate_context?.variables || ['tmp', 'pre']);
     const years = ctx.annual?.years || [];
     const series = ctx.annual?.series || {};
-    const same = ctx.same_month_context || {};
     const dist = ctx.cru_grid?.distance_km_from_reported_coordinate;
     const method = ctx.cru_grid?.selection_method === 'nearest_valid_land_cell' ? 'nearest valid CRU land cell' : 'nearest CRU grid cell';
-    const seasonal = vars.map(v => seasonalCard(v, ctx)).join('');
-    const annual = vars.map(v => annualMetric(v, ctx)).join('');
+    const metrics = vars.map(v => annualMetric(v, ctx)).join('');
+    const profile = vars.map(v => `<span class="context-variable" style="--chip:${C[v]}">${esc(META[v].label)}</span>`).join('');
     const combo = vars.includes('tmp') && vars.includes('pre') && series.tmp && series.pre
-      ? `<div class="climate-chart-card"><div class="climate-chart-title"><h3>Annual climate history · 1901–2025</h3><div class="chart-legend"><span class="legend-line"><span class="legend-swatch" style="background:${C.tmp}"></span>Temperature · 5-year mean</span><span class="legend-line"><span class="legend-bar" style="background:${C.pre}"></span>Precipitation · annual</span><span class="legend-line"><span class="legend-swatch" style="background:${C.pre};height:2px"></span>Precipitation · 5-year mean</span></div></div>${comboChart(years, series.tmp, series.pre)}</div>` : '';
+      ? `<div class="climate-chart-card"><div class="climate-chart-title"><div><div class="chart-kicker">Long-term annual record</div><h3>Temperature + precipitation</h3></div><div class="chart-legend"><span class="legend-line"><span class="legend-swatch" style="background:${C.tmp}"></span>Temperature · 5-year mean</span><span class="legend-line"><span class="legend-bar" style="background:${C.pre}"></span>Precipitation · annual</span><span class="legend-line"><span class="legend-swatch" style="background:${C.pre};height:2px"></span>Precipitation · 5-year mean</span></div></div>${comboChart(years, series.tmp, series.pre)}</div>` : '';
     const vpd = vars.includes('vpd') && series.vpd
-      ? `<div class="climate-chart-card"><div class="climate-chart-title"><h3>Annual atmospheric dryness · VPD</h3><div class="chart-legend"><span class="legend-line"><span class="legend-swatch" style="background:${C.vpd}"></span>VPD · 5-year mean</span></div></div>${lineChart(years, series.vpd, 'vpd')}</div>` : '';
-    return `<div class="climate-context-head"><div><h2>Climate context · ${esc(e.title)}</h2><p>${esc(same.event_month_name || 'Event-month')} seasonal background plus the long-term annual record. Variables are selected for this hazard type.</p></div><div class="climate-context-meta">CRU-TS v4.10 · 0.5°<br>${esc(method)}${finite(dist) ? ` · ${Number(dist).toFixed(0)} km from reported coordinate` : ''}</div></div>
+      ? `<div class="climate-chart-card"><div class="climate-chart-title"><div><div class="chart-kicker">Atmospheric dryness</div><h3>VPD · 1901–2025</h3></div><div class="chart-legend"><span class="legend-line"><span class="legend-swatch" style="background:${C.vpd}"></span>VPD · 5-year mean</span></div></div>${lineChart(years, series.vpd, 'vpd')}</div>` : '';
+
+    return `<div class="climate-context-head"><div><div class="context-eyebrow">Climate background · annual only</div><h2>${esc(e.title)}</h2><p>Long-term local climate change from 1901 to 2025. Variables are selected by hazard type; monthly anomalies are not used in this view.</p><div class="context-variable-row">${profile}</div></div><div class="climate-context-meta">CRU-TS v4.10 · 0.5°<br>${esc(method)}${finite(dist) ? ` · ${Number(dist).toFixed(0)} km from reported coordinate` : ''}</div></div>
       <div class="climate-context-body">
-        <div class="climate-callout"><strong>Seasonally matched comparison:</strong> ${esc(same.event_month_name || 'the event month')} in 2016–2025 is compared with the same calendar month in the 1981–2010 normal. This controls for the seasonal cycle. Because CRU-TS v4.10 ends in 2025, this is <strong>not</strong> the actual 2026 event-month weather anomaly.</div>
-        <div class="seasonal-strip">${seasonal}</div>
-        <div class="section-label">Long-term annual background</div><div class="annual-metrics">${annual}</div>
+        <div class="annual-summary-intro"><div><strong>Long-term signal</strong><span>Trend is calculated from annual values over 1901–2025. Recent mean uses 2016–2025; early comparison uses 1901–1930.</span></div><span class="annual-only-pill">1901–2025</span></div>
+        <div class="annual-metrics">${metrics}</div>
         ${combo}${vpd}
-        <div class="climate-footer-note"><span>Annual raw values are shown with 5-year smoothing for readability. Local climate background does not establish causal attribution.</span><a href="methods.html#climate-context">How climate context is calculated →</a></div>
+        <div class="climate-footer-note"><span>Thin marks show annual variability; stronger lines show a 5-year moving mean. This is climate background, not a causal attribution of the event.</span><a href="methods.html#climate-context">Methods →</a></div>
       </div>`;
   }
 
@@ -198,11 +190,11 @@
     if (!panel) return;
     const token = ++renderToken;
     if (mode === 'emerging') {
-      panel.innerHTML = '<div class="climate-context-body"><div class="climate-status">Climate context will be added to an Emerging Signal only after that signal passes the editorial review workflow.</div></div>';
+      panel.innerHTML = '<div class="climate-context-body"><div class="climate-status">Climate context will be added to an Emerging Signal only after editorial review.</div></div>';
       return;
     }
     if (!e) {
-      panel.innerHTML = '<div class="climate-context-body"><div class="climate-status">Select an event to view its climate background.</div></div>';
+      panel.innerHTML = '<div class="climate-context-body"><div class="climate-status">Select an event to view its long-term climate background.</div></div>';
       return;
     }
     const ref = e.climate_context || {};
@@ -211,10 +203,10 @@
       return;
     }
     if (ref.status !== 'ready' || !ref.path) {
-      panel.innerHTML = `<div class="climate-context-head"><div><h2>Climate context · ${esc(e.title)}</h2><p>CRU background is queued for backend enrichment.</p></div></div><div class="climate-context-body"><div class="climate-status"><span class="climate-loading">Waiting for the next monitoring run…</span></div></div>`;
+      panel.innerHTML = `<div class="climate-context-head"><div><h2>Climate context · ${esc(e.title)}</h2><p>1901–2025 CRU background is queued for backend enrichment.</p></div></div><div class="climate-context-body"><div class="climate-status"><span class="climate-loading">Waiting for the next monitoring run…</span></div></div>`;
       return;
     }
-    panel.innerHTML = `<div class="climate-context-head"><div><h2>Climate context · ${esc(e.title)}</h2><p>Loading long-term and seasonally matched CRU background…</p></div></div><div class="climate-context-body"><div class="climate-status"><span class="climate-loading">Loading climate context…</span></div></div>`;
+    panel.innerHTML = `<div class="climate-context-head"><div><h2>Climate context · ${esc(e.title)}</h2><p>Loading CRU annual record 1901–2025…</p></div></div><div class="climate-context-body"><div class="climate-status"><span class="climate-loading">Loading climate context…</span></div></div>`;
     try {
       const ctx = await fetchContext(ref.path);
       if (token !== renderToken) return;
