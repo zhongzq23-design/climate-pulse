@@ -1,0 +1,65 @@
+name: Prepare NASA MODIS 2024 landcover reference
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prepare_modis_landcover_2024.py'
+      - '.github/workflows/prepare-modis-landcover-2024.yml'
+      - 'data/reference/landcover/modis_mcd12c1_2024/metadata.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prepare-modis-landcover-2024
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore MODIS source cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/climate-pulse/modis
+          key: mcd12c1-v061-2024-a2024001
+
+      - name: Install scientific dependencies
+        run: python -m pip install --disable-pip-version-check numpy rasterio pyproj pyhdf
+
+      - name: Build compact land and forest reference when Earthdata is configured
+        env:
+          CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: python scripts/prepare_modis_landcover_2024.py
+
+      - name: Commit derived reference when built
+        shell: bash
+        run: |
+          if [ ! -f data/reference/landcover/modis_mcd12c1_2024/land_forest_area_ha_0p05.tif ]; then
+            echo "MODIS reference not built; EARTHDATA_TOKEN may not be configured."
+            exit 0
+          fi
+          git config user.name "climate-pulse-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/reference/landcover/modis_mcd12c1_2024
+          if git diff --cached --quiet; then
+            echo "No MODIS reference changes to commit."
+            exit 0
+          fi
+          git commit -m "data: prepare NASA MODIS 2024 land and forest reference"
+          git pull --rebase origin main
+          git push origin main
