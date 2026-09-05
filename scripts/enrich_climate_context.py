@@ -6,10 +6,10 @@ Public climate context is annual-only:
 * 1901-1930 early baseline;
 * 2016-2025 recent 10-year mean;
 * change from the early baseline;
-* Theil-Sen median-slope trend for 1901-2025, reported per century;
-* two-sided Mann-Kendall significance test (p < 0.05 display threshold).
+* ordinary least-squares linear trend for 1901-2025, reported per century.
 
-Monthly anomaly products are not used in the current public view.
+No trend-significance test and no monthly anomaly are shown in the current
+public view.
 """
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ YEARS = list(range(1901, 2026))
 EARLY = (1901, 1930)
 RECENT_ANNUAL = (2016, 2025)
 MAX_LAND_FALLBACK_KM = 500.0
-TREND_VERSION = "theilsen-mk-v1"
+TREND_VERSION = "ols-linear-v1"
 
 VARIABLE_PROFILES = {
     "Drought": ["tmp", "pre", "vpd"],
@@ -87,7 +87,6 @@ def resolve_land_cell(lat: np.ndarray, lon: np.ndarray, valid2d: np.ndarray, eve
     if bool(valid2d[yi, xi]):
         d = haversine_km(event_lat, event_lon, float(lat[yi]), float(lon[xi]))
         return yi, xi, d, "nearest_grid_cell"
-
     best = None
     max_cells = 12
     y0, x0 = yi, xi
@@ -126,44 +125,12 @@ def mean_period(years: list[int], values: list[float | None], start: int, end: i
     return float(np.mean(arr)) if arr else None
 
 
-def theil_sen(years: list[int], values: list[float | None]) -> dict[str, float | None]:
+def linear_trend(years: list[int], values: list[float | None]) -> dict[str, float | None]:
     x, y = valid_pairs(years, values)
-    n = len(x)
-    if n < 20:
+    if len(x) < 20:
         return {"slope_per_year": None, "intercept": None}
-    slopes = []
-    for i in range(n - 1):
-        dx = x[i + 1:] - x[i]
-        dy = y[i + 1:] - y[i]
-        slopes.extend((dy / dx).tolist())
-    slope = float(np.median(np.asarray(slopes, dtype="float64")))
-    intercept = float(np.median(y - slope * x))
-    return {"slope_per_year": slope, "intercept": intercept}
-
-
-def mann_kendall(years: list[int], values: list[float | None]) -> dict[str, float | bool | int | None]:
-    _, y = valid_pairs(years, values)
-    n = len(y)
-    if n < 20:
-        return {"s": None, "tau": None, "z": None, "p": None, "significant_p05": False, "n": n}
-    s = 0
-    for i in range(n - 1):
-        diff = y[i + 1:] - y[i]
-        s += int(np.sum(diff > 0) - np.sum(diff < 0))
-    _, counts = np.unique(y, return_counts=True)
-    tie_term = float(np.sum(counts * (counts - 1) * (2 * counts + 5)))
-    var_s = (n * (n - 1) * (2 * n + 5) - tie_term) / 18.0
-    if var_s <= 0:
-        z = 0.0
-    elif s > 0:
-        z = (s - 1.0) / math.sqrt(var_s)
-    elif s < 0:
-        z = (s + 1.0) / math.sqrt(var_s)
-    else:
-        z = 0.0
-    p = math.erfc(abs(z) / math.sqrt(2.0))
-    tau = float(s / (0.5 * n * (n - 1)))
-    return {"s": s, "tau": tau, "z": z, "p": p, "significant_p05": bool(p < 0.05), "n": n}
+    slope, intercept = np.polyfit(x, y, 1)
+    return {"slope_per_year": float(slope), "intercept": float(intercept)}
 
 
 def diff_summary(var: str, baseline: float | None, recent: float | None) -> dict[str, float | None]:
@@ -179,9 +146,8 @@ def annual_summary(series: dict[str, list[float | None]]) -> dict[str, Any]:
     for var, values in series.items():
         early = mean_period(YEARS, values, *EARLY)
         recent = mean_period(YEARS, values, *RECENT_ANNUAL)
-        ts = theil_sen(YEARS, values)
-        mk = mann_kendall(YEARS, values)
-        slope_year = ts["slope_per_year"]
+        fit = linear_trend(YEARS, values)
+        slope_year = fit["slope_per_year"]
         trend_century = float(slope_year * 100.0) if slope_year is not None else None
         trend_pct = float(trend_century / early * 100.0) if var == "pre" and trend_century is not None and early not in (None, 0) else None
         out[var] = {
@@ -190,18 +156,11 @@ def annual_summary(series: dict[str, list[float | None]]) -> dict[str, Any]:
             "baseline_1901_1930": early,
             "recent_2016_2025": recent,
             "change": diff_summary(var, early, recent),
-            "trend_method": "Theil-Sen median pairwise slope",
-            "theil_sen_slope_per_year": slope_year,
-            "theil_sen_intercept": ts["intercept"],
+            "trend_method": "ordinary least-squares linear trend",
+            "linear_slope_per_year": slope_year,
+            "linear_intercept": fit["intercept"],
             "trend_1901_2025_per_century": trend_century,
             "trend_percent_per_century": trend_pct,
-            "significance_method": "two-sided Mann-Kendall",
-            "mann_kendall_s": mk["s"],
-            "mann_kendall_tau": mk["tau"],
-            "mann_kendall_z": mk["z"],
-            "mann_kendall_p": mk["p"],
-            "trend_significant_p05": mk["significant_p05"],
-            "trend_n": mk["n"],
         }
     return out
 
@@ -209,7 +168,7 @@ def annual_summary(series: dict[str, list[float | None]]) -> dict[str, Any]:
 def build_context(event: dict[str, Any], variables: list[str], grid_lat: float, grid_lon: float, grid_distance_km: float, grid_method: str, annual_series: dict[str, list[float | None]]) -> dict[str, Any]:
     signature = f"cru4.10|{grid_lat:.2f}|{grid_lon:.2f}|{'-'.join(variables)}|annual1901-2025|{TREND_VERSION}"
     return {
-        "schema_version": "2.0",
+        "schema_version": "2.1",
         "generated_at": now_iso(),
         "context_signature": signature,
         "event_id": event.get("id"),
@@ -220,17 +179,10 @@ def build_context(event: dict[str, Any], variables: list[str], grid_lat: float, 
         "reported_location": {"lat": event.get("lat"), "lon": event.get("lon")},
         "cru_grid": {"lat": grid_lat, "lon": grid_lon, "distance_km_from_reported_coordinate": round(grid_distance_km, 1), "selection_method": grid_method, "resolution_degrees": 0.5},
         "variable_profile": variables,
-        "annual": {
-            "years": YEARS,
-            "series": annual_series,
-            "summary": annual_summary(annual_series),
-            "trend_method": "Theil-Sen median pairwise slope",
-            "significance_method": "two-sided Mann-Kendall; p<0.05 display threshold; no serial-correlation correction",
-            "display_note": "Annual values retain long-term 1901-2025 context; the public chart also shows a 5-year moving mean for readability."
-        },
+        "annual": {"years": YEARS, "series": annual_series, "summary": annual_summary(annual_series), "trend_method": "ordinary least-squares linear trend", "display_note": "Annual values retain long-term 1901-2025 context; the public chart also shows a 5-year moving mean for readability."},
         "scientific_note": "Climate context does not establish causal event attribution.",
         "vpd_note": "CRU VPD is derived from monthly-mean temperature and CRU vap before annual aggregation; it omits sub-daily/diurnal temperature variability.",
-        "vpd_reference": "https://doi.org/10.1038/s41467-025-63672-z"
+        "vpd_reference": "https://doi.org/10.1038/s41467-025-63672-z",
     }
 
 
@@ -240,19 +192,16 @@ def main() -> None:
     first_annual = ANNUAL_DIR / "cru_ts4.10_1901_annual.nc"
     if not first_annual.exists():
         raise RuntimeError("CRU annual context is missing")
-
     snap = load_json(LATEST, {})
     events = snap.get("events") or []
     if not isinstance(events, list):
         raise RuntimeError("latest.json events is not a list")
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-
     with Dataset(first_annual, "r") as ds0:
         lat = np.asarray(ds0.variables["lat"][:], dtype="float64")
         lon = np.asarray(ds0.variables["lon"][:], dtype="float64")
         first_tmp = np.ma.asarray(ds0.variables["tmp"][:])
         valid = ~np.ma.getmaskarray(first_tmp) & np.isfinite(np.ma.filled(first_tmp, np.nan))
-
     pending: list[dict[str, Any]] = []
     entries: list[dict[str, Any]] = []
     for event in events:
@@ -272,7 +221,6 @@ def main() -> None:
             entries.append({"event_id": event.get("id"), "path": event["climate_context"]["path"], "signature": signature})
             continue
         pending.append({"event": event, "variables": variables, "yi": yi, "xi": xi, "grid_lat": grid_lat, "grid_lon": grid_lon, "dist": dist, "method": method, "file_name": file_name, "signature": signature, "series": {v: [] for v in variables}})
-
     if pending:
         needed_vars = sorted({v for p in pending for v in p["variables"]})
         for year in YEARS:
@@ -284,7 +232,6 @@ def main() -> None:
                 for p in pending:
                     for v in p["variables"]:
                         p["series"][v].append(scalar(arrays[v][p["yi"], p["xi"]]))
-
         for p in pending:
             event = p["event"]
             context = build_context(event, p["variables"], p["grid_lat"], p["grid_lon"], p["dist"], p["method"], p["series"])
@@ -292,18 +239,10 @@ def main() -> None:
             out_path.write_text(json.dumps(context, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
             event["climate_context"] = {"status": "ready", "path": f"data/climate/event_timeseries/{p['file_name']}", "variables": p["variables"], "grid_lat": p["grid_lat"], "grid_lon": p["grid_lon"], "grid_distance_km": round(p["dist"], 1)}
             entries.append({"event_id": event.get("id"), "path": event["climate_context"]["path"], "signature": p["signature"]})
-
     snap["schema_version"] = "1.4"
-    snap.setdefault("monitor", {})["climate_context"] = {
-        "dataset": "CRU-TS v4.10",
-        "annual_period": [1901, 2025],
-        "public_view": "annual_only",
-        "trend_method": "Theil-Sen median pairwise slope",
-        "significance_method": "two-sided Mann-Kendall; p<0.05; no serial-correlation correction",
-        "note": "Monthly anomalies are not used in the current public view."
-    }
+    snap.setdefault("monitor", {})["climate_context"] = {"dataset": "CRU-TS v4.10", "annual_period": [1901, 2025], "public_view": "annual_only", "trend_method": "ordinary least-squares linear trend", "significance": "not displayed", "note": "Monthly anomalies are not used in the current public view."}
     LATEST.write_text(json.dumps(snap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    INDEX.write_text(json.dumps({"schema_version": "2.0", "generated_at": now_iso(), "dataset": "CRU-TS v4.10", "trend_method": TREND_VERSION, "event_context_count": len(entries), "events": entries}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    INDEX.write_text(json.dumps({"schema_version": "2.1", "generated_at": now_iso(), "dataset": "CRU-TS v4.10", "trend_method": TREND_VERSION, "event_context_count": len(entries), "events": entries}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"status": "ok", "events": len(events), "contexts_ready": len(entries), "new_contexts": len(pending), "trend_method": TREND_VERSION}, indent=2))
 
 
