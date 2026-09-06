@@ -18,9 +18,12 @@ on:
       - 'scripts/enrich_event_footprints.py'
       - 'scripts/enrich_asset_exposure.py'
       - 'scripts/enrich_climate_context.py'
+      - 'scripts/update_daily_ledger.py'
+      - 'scripts/build_periodic_reports.py'
       - 'tests/test_source_metric_utils.py'
       - 'tests/test_wildfire_episode_sync.py'
       - 'tests/test_flood_footprint_qc.py'
+      - 'tests/test_reporting_storage.py'
       - '.github/workflows/monitor-events.yml'
       - 'data/reference/population/metadata.json'
       - 'data/reference/climate/cru_ts_4.10/annual/index.json'
@@ -31,7 +34,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: climate-event-monitor
+  group: climate-pulse-data-writer
   cancel-in-progress: false
 
 jobs:
@@ -59,8 +62,11 @@ jobs:
       - name: Install scientific dependencies
         run: python -m pip install --disable-pip-version-check numpy rasterio shapely pyproj netCDF4
 
-      - name: Run parser regression tests
+      - name: Run parser and reporting regression tests
         run: python -m unittest discover -s tests -v
+
+      - name: Check display-only population rounding script
+        run: node --check assets/display-rounding-ui.js
 
       - name: Fetch, normalize, deduplicate and archive events
         run: python scripts/run_event_monitor.py
@@ -84,16 +90,24 @@ jobs:
       - name: Enrich annual event climate context
         run: python scripts/enrich_climate_context.py
 
-      - name: Commit event, exposure, footprint and climate-context products
+      - name: Update exact-value daily reporting ledger
+        run: python scripts/update_daily_ledger.py
+
+      - name: Build rolling 7-day and month-to-date report previews
+        env:
+          CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
+        run: python scripts/build_periodic_reports.py --mode rolling
+
+      - name: Commit event, exposure, history and report products
         shell: bash
         run: |
           git config user.name "climate-pulse-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries
+          git add data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports
           if git diff --cached --quiet; then
             echo "No data changes to commit."
             exit 0
           fi
-          git commit -m "data: refresh events, exposure, footprints and climate context $(date -u +'%Y-%m-%dT%H:%MZ')"
+          git commit -m "data: refresh events, daily ledger and rolling reports $(date -u +'%Y-%m-%dT%H:%MZ')"
           git pull --rebase origin main
           git push origin main
