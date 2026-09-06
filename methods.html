@@ -63,7 +63,7 @@
         <p>If <code>POPAFFECTED</code> or the 5-km value is unavailable, Climate Pulse can fall back to the mapped wildfire polygon and JRC GHSL 2025. The derived value is explicitly labelled as a Climate Pulse estimate and never silently replaces a source value.</p>
         <div class="formula">fallback exposed population = GHSL population inside unsimplified GDACS fire geometry</div>
         <p>For the public map, <strong>Orange and Red GDACS wildfires remain visible</strong>. A Green wildfire must satisfy both:</p>
-        <div class="formula">burned area ≥ 10,000 ha AND population within 5 km &gt; 10,000</div>
+        <div class="formula">burned area ≥ 10,000 ha AND population within 5 km ≥ 10,000</div>
         <p>MODIS forest overlap is retained only as <strong>supplemental spatial context</strong>. It is not presented as confirmed forest loss.</p>
       </article>
       <article class="method-card">
@@ -111,11 +111,16 @@
         <div class="formula">Change = mean(2016–2025) − mean(1901–1930)</div><div class="formula">Trend = OLS slope(annual value ~ year) × 100 years</div>
         <p>No significance badge or p-value is displayed. Charts retain annual values and a 5-year moving mean for readability.</p>
       </article>
-      <article class="method-card">
+      <article class="method-card" id="vpd-calculation">
         <h2>12. CRU VPD calculation</h2>
+        <p><strong>Vapour pressure deficit (VPD)</strong> is a widely used measure of atmospheric dryness. It is the gap between how much water vapour the air could hold at saturation and how much water vapour is actually present. Higher VPD therefore indicates drier air relative to saturation and, in general, stronger atmospheric evaporative demand.</p>
         <p>CRU provides monthly actual vapour pressure (<strong>AVP</strong>) as <code>vap</code>. Saturation vapour pressure (<strong>SVP</strong>) is calculated from monthly mean temperature <strong>T</strong>; VPD is calculated before annual aggregation.</p>
         <div class="formula">VPD = SVP − AVP</div><div class="formula">SVP = 6.1078 × exp(aT / (T + b)) &nbsp; [hPa]</div>
         <p>For <strong>T ≥ 0°C</strong>, <code>a = 17.269</code>, <code>b = 237.3</code>; for <strong>T &lt; 0°C</strong>, <code>a = 21.875</code>, <code>b = 265.5</code>.</p>
+        <p>VPD is directly related to the commonly used humidity metric <strong>relative humidity (RH)</strong>. RH expresses actual vapour pressure as a percentage of saturation vapour pressure:</p>
+        <div class="formula">RH = 100 × AVP / SVP &nbsp; [%]</div>
+        <div class="formula">VPD = SVP × (1 − RH / 100)</div>
+        <p>At a fixed temperature, lower RH means higher VPD. However, because SVP rises nonlinearly with temperature, the same RH can correspond to a larger VPD in warmer air. RH and VPD are therefore closely related but not interchangeable measures of atmospheric moisture conditions.</p>
         <div class="method-warning method-note"><strong>Temporal-resolution limitation:</strong> monthly-mean temperature cannot reproduce the diurnal temperature cycle or sub-daily asymmetric warming. This is a long-term climate-context metric, not high-frequency VPD.</div>
         <p>See <a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener"><strong>Zhong, Z., Chen, H.W., Dai, A. et al. (2025), “Sub-diurnal asymmetric warming has amplified atmospheric dryness since the 1980s,” Nature Communications 16, 8247</strong> ↗</a>.</p>
       </article>
