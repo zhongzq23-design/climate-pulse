@@ -4,7 +4,7 @@
   "event_type": "Wildfire",
   "title": "Forest fires in Australia",
   "region": "Australia",
-  "calculated_at": "2026-09-05T22:42:02Z",
+  "calculated_at": "2026-09-06T16:29:40Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -18,10 +18,10 @@
   "population_within_5km": 5,
   "population_within_10km": 9,
   "source_model": "GDACS/GWIS wildfire exposure",
-  "source_model_run": "202609052113308250",
+  "source_model_run": "202609061705421878",
   "source_model_status": "info: processing ok",
   "gdacs_event_id": "1031549",
-  "gdacs_episode_id": 8,
+  "gdacs_episode_id": 10,
   "quality": "source_modelled_exposure",
   "metric_provenance": {
     "population_direct": {
@@ -53,7 +53,15 @@
       "source_field": "SUMPOP10.0",
       "method": "source_modelled",
       "derived_by_climate_pulse": false
+    },
+    "burned_area_ha": {
+      "source": "GDACS/GWIS",
+      "source_field": "severitytext",
+      "method": "source_reported_current_episode",
+      "derived_by_climate_pulse": false,
+      "gdacs_episode_id": 10
     }
   },
-  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation."
+  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
+  "burned_area_ha": 10414.0
 }
