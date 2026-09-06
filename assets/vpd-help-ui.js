@@ -7,14 +7,13 @@
     const titles = root.querySelectorAll?.('.climate-chart-title h4') || [];
     for (const title of titles) {
       if (!/Atmospheric dryness\s*·\s*VPD/i.test(title.textContent || '')) continue;
-      const host = title.closest('.climate-chart-title');
-      if (!host || host.querySelector('.vpd-help-link')) continue;
+      if (title.querySelector('.vpd-help-link')) continue;
       const link = document.createElement('a');
       link.className = 'vpd-help-link';
       link.href = 'methods.html#vpd-calculation';
       link.textContent = 'What’s VPD?';
       link.setAttribute('aria-label', 'What is VPD? Open the VPD calculation method');
-      title.insertAdjacentElement('afterend', link);
+      title.append(document.createTextNode(' '), link);
     }
   }
 
