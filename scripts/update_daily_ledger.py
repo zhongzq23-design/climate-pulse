@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Maintain a compact daily reporting ledger from the enriched Climate Pulse snapshot.
+"""Maintain Climate Pulse daily reporting ledger with report-integrity metadata.
 
-The raw 3x-daily event archive remains authoritative. This ledger is a derived,
-report-friendly layer: it preserves exact source/derived metric values, merges
-repeated observations of the same event within a UTC day, and stores a compact
-reporting geometry for later weekly/monthly spatial deduplication.
+The 3x-daily enriched event archive remains authoritative. This compact daily
+ledger preserves exact metrics, stable event identity, lifecycle/temporal fields,
+public-significance state and reporting-geometry semantics for later weekly and
+monthly aggregation.
 """
 from __future__ import annotations
 
@@ -22,6 +22,7 @@ from shapely.geometry import mapping, shape
 
 ROOT = Path(__file__).resolve().parents[1]
 LATEST = ROOT / "data" / "events" / "latest.json"
+LIFECYCLE = ROOT / "data" / "events" / "lifecycle.json"
 RUNTIME_DIR = ROOT / ".runtime" / "event_geometries"
 DAILY_ROOT = ROOT / "data" / "history" / "daily"
 TYPE_CODE = {"Flood": "FL", "Storm": "TC", "Wildfire": "WF", "Drought": "DR"}
@@ -38,6 +39,33 @@ def iso(dt: datetime) -> str:
 
 def safe_name(value: Any) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value or "event"))[:160]
+
+
+def parse_dt(value: Any) -> datetime | None:
+    s = str(value or "").strip()
+    if not s:
+        return None
+    try:
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    except ValueError:
+        return None
+
+
+def min_iso(*values: Any) -> str | None:
+    rows = [(parse_dt(v), str(v)) for v in values if v]
+    rows = [(d, s) for d, s in rows if d]
+    return min(rows, key=lambda x: x[0])[1] if rows else None
+
+
+def max_iso(*values: Any) -> str | None:
+    rows = [(parse_dt(v), str(v)) for v in values if v]
+    rows = [(d, s) for d, s in rows if d]
+    return max(rows, key=lambda x: x[0])[1] if rows else None
 
 
 def finite_number(value: Any) -> float | int | None:
@@ -138,8 +166,26 @@ def round_coords(value: Any, digits: int = 4) -> Any:
     return value
 
 
-def reporting_geometry(event_id: Any) -> dict[str, Any] | None:
-    path = RUNTIME_DIR / f"{safe_name(event_id)}.json"
+def geometry_semantics(event_type: str, footprint_method: Any) -> dict[str, str]:
+    method = str(footprint_method or "").lower()
+    if event_type == "Wildfire":
+        return {"grade": "exposure_grade", "role": "burned_fire_perimeter",
+                "interpretation": "Mapped wildfire perimeter suitable for spatial exposure aggregation; exposure does not mean harm."}
+    if event_type == "Storm":
+        return {"grade": "exposure_grade", "role": "tropical_cyclone_hazard_zone",
+                "interpretation": "Mapped cyclone hazard zone (for example wind/impact footprint) suitable for spatial exposure aggregation."}
+    if event_type == "Flood":
+        return {"grade": "context_grade", "role": "reported_flood_event_area",
+                "interpretation": "GDACS reported flood affected/event area; not observed inundation extent and excluded from cross-hazard exposure headline."}
+    if event_type == "Drought":
+        return {"grade": "risk_grade", "role": "drought_risk_impact_area",
+                "interpretation": "Mapped drought risk/impact area; used for risk/crop context rather than direct human-exposure headline."}
+    return {"grade": "context_grade", "role": "mapped_event_context",
+            "interpretation": f"Context geometry ({method or 'unspecified method'})."}
+
+
+def reporting_geometry(event: dict[str, Any]) -> dict[str, Any] | None:
+    path = RUNTIME_DIR / f"{safe_name(event.get('id'))}.json"
     if not path.exists():
         return None
     try:
@@ -159,11 +205,13 @@ def reporting_geometry(event_id: Any) -> dict[str, Any] | None:
             compact = geom
         gj = mapping(compact)
         gj["coordinates"] = round_coords(gj.get("coordinates"), 4)
+        method = doc.get("footprint_method")
         return {
             "geometry": gj,
             "source": "runtime unsimplified mapped source footprint",
             "report_simplification_tolerance_degrees": round(tolerance, 6),
-            "footprint_method": doc.get("footprint_method"),
+            "footprint_method": method,
+            "geometry_semantics": geometry_semantics(str(event.get("type") or ""), method),
             "geometry_qc": doc.get("geometry_qc"),
             "gdacs_event_type": doc.get("gdacs_event_type"),
             "gdacs_event_id": doc.get("gdacs_event_id"),
@@ -180,10 +228,55 @@ def load_json(path: Path, fallback: Any) -> Any:
         return fallback
 
 
+def lifecycle_keys(event: dict[str, Any]) -> list[str]:
+    code = TYPE_CODE.get(str(event.get("type")), str(event.get("type") or "EV").upper())
+    keys = [str(event.get("id") or "")]
+    for row in source_members(event):
+        origin, sid = row["origin"].lower(), row["source_id"]
+        if origin == "gdacs":
+            keys.append(f"gdacs-{code}-{sid}")
+        elif origin in {"eonet", "cems"}:
+            keys.append(f"{origin}-{sid}")
+    return [k for k in dict.fromkeys(keys) if k]
+
+
+def lifecycle_snapshot(event: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
+    table = state.get("events") if isinstance(state.get("events"), dict) else {}
+    rows = [table[k] for k in lifecycle_keys(event) if isinstance(table.get(k), dict)]
+    if not rows:
+        return {}
+    first = None
+    last = None
+    observations = 0
+    for row in rows:
+        first = min_iso(first, row.get("first_seen"))
+        last = max_iso(last, row.get("last_seen"))
+        observations += int(row.get("observations", 0) or 0)
+    return {"first_seen": first, "last_seen": last, "source_observations": observations}
+
+
+def public_significant(event: dict[str, Any]) -> bool:
+    if "display_eligible" in event:
+        return bool(event.get("display_eligible"))
+    return True
+
+
+def temporal_fields(event: dict[str, Any]) -> dict[str, Any]:
+    sm = event.get("source_metrics") if isinstance(event.get("source_metrics"), dict) else {}
+    return {
+        "source_updated_at": event.get("source_updated_at"),
+        "event_start": event.get("event_start") or sm.get("wildfire_start_date"),
+        "event_end": event.get("event_end"),
+        "last_detection": event.get("last_detection") or sm.get("wildfire_last_detection"),
+        "operational_event_date": event.get("event_date"),
+    }
+
+
 def main() -> None:
     if not LATEST.exists():
         raise RuntimeError("data/events/latest.json does not exist")
     snap = load_json(LATEST, {})
+    lifecycle = load_json(LIFECYCLE, {})
     generated = str(snap.get("generated_at") or "")
     try:
         run_dt = datetime.fromisoformat(generated.replace("Z", "+00:00")).astimezone(timezone.utc)
@@ -193,7 +286,7 @@ def main() -> None:
     day_path = DAILY_ROOT / run_dt.strftime("%Y") / run_dt.strftime("%m") / f"{run_dt.strftime('%d')}.json"
     day_path.parent.mkdir(parents=True, exist_ok=True)
     day = load_json(day_path, {
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "date_utc": run_dt.date().isoformat(),
         "first_run_at": generated,
         "last_run_at": generated,
@@ -202,6 +295,7 @@ def main() -> None:
         "raw_archive_authority": "data/events/archive (3x-daily enriched snapshots)",
         "events": {},
     })
+    day["schema_version"] = "2.0"
     day["last_run_at"] = generated
     day["run_count"] = int(day.get("run_count", 0)) + 1
     runs = list(day.get("source_runs") or [])
@@ -218,6 +312,8 @@ def main() -> None:
         current_metrics = raw_metrics(event)
         level = alert_level(event)
         event_ids = sorted(set([*(prev.get("event_ids") or []), str(event.get("id") or "")]) - {""})
+        life = lifecycle_snapshot(event, lifecycle)
+        sig_now = public_significant(event)
         rec = {
             "stable_id": stable,
             "event_ids": event_ids,
@@ -230,8 +326,15 @@ def main() -> None:
             "first_observed_at": prev.get("first_observed_at") or generated,
             "last_observed_at": generated,
             "event_date_latest": event.get("event_date"),
+            "temporal_latest": temporal_fields(event),
+            "lifecycle_first_seen": min_iso(prev.get("lifecycle_first_seen"), life.get("first_seen")) or prev.get("first_observed_at") or generated,
+            "lifecycle_last_seen": max_iso(prev.get("lifecycle_last_seen"), life.get("last_seen"), generated) or generated,
+            "lifecycle_source_observations": max(int(prev.get("lifecycle_source_observations", 0) or 0), int(life.get("source_observations", 0) or 0)),
             "alert_level_latest": level,
             "max_alert_level": prev.get("max_alert_level") or level,
+            "public_significant_latest": sig_now,
+            "public_significant": bool(prev.get("public_significant")) or sig_now,
+            "display_rule_latest": event.get("display_rule"),
             "raw_metrics_latest": current_metrics,
             "raw_metrics_max": merge_max(prev.get("raw_metrics_max") or {}, current_metrics),
             "metric_provenance": deepcopy((event.get("exposure") or {}).get("metric_provenance") or {}),
@@ -239,7 +342,7 @@ def main() -> None:
         old_level = str(prev.get("max_alert_level") or "")
         if ALERT_RANK.get(level, 0) >= ALERT_RANK.get(old_level, 0):
             rec["max_alert_level"] = level or old_level
-        geom = reporting_geometry(event.get("id"))
+        geom = reporting_geometry(event)
         if geom and "geometry" in geom:
             geom["captured_at"] = generated
             rec["reporting_footprint"] = geom
@@ -250,6 +353,7 @@ def main() -> None:
         events_table[stable] = rec
 
     day["event_count"] = len(events_table)
+    day["public_significant_event_count"] = sum(1 for e in events_table.values() if e.get("public_significant"))
     day_path.write_text(json.dumps(day, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({
         "status": "ok",
@@ -257,6 +361,7 @@ def main() -> None:
         "date_utc": day["date_utc"],
         "run_count": day["run_count"],
         "event_count": day["event_count"],
+        "public_significant_event_count": day["public_significant_event_count"],
     }, indent=2))
 
 
