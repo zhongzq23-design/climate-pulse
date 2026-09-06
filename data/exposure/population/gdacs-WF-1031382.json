@@ -4,7 +4,7 @@
   "event_type": "Wildfire",
   "title": "Forest fires in Namibia",
   "region": "Namibia",
-  "calculated_at": "2026-09-05T22:39:45Z",
+  "calculated_at": "2026-09-06T08:29:32Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -14,14 +14,14 @@
   "hazard": "wildfire",
   "population_direct": 0,
   "population_within_1km": 3,
-  "population_within_2km": 33,
-  "population_within_5km": 316,
-  "population_within_10km": 750,
+  "population_within_2km": 40,
+  "population_within_5km": 405,
+  "population_within_10km": 772,
   "source_model": "GDACS/GWIS wildfire exposure",
-  "source_model_run": "202609052147394929",
+  "source_model_run": "202609060924436571",
   "source_model_status": "info: processing ok",
   "gdacs_event_id": "1031382",
-  "gdacs_episode_id": 18,
+  "gdacs_episode_id": 20,
   "quality": "source_modelled_exposure",
   "metric_provenance": {
     "population_direct": {
@@ -53,7 +53,15 @@
       "source_field": "SUMPOP10.0",
       "method": "source_modelled",
       "derived_by_climate_pulse": false
+    },
+    "burned_area_ha": {
+      "source": "GDACS/GWIS",
+      "source_field": "severitytext",
+      "method": "source_reported_current_episode",
+      "derived_by_climate_pulse": false,
+      "gdacs_episode_id": 20
     }
   },
-  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation."
+  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
+  "burned_area_ha": 15943.0
 }
