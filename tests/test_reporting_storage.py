@@ -3,9 +3,12 @@ import unittest
 from datetime import date
 from pathlib import Path
 
+from shapely.geometry import GeometryCollection, LineString, Polygon
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 
 from build_periodic_reports import display_people, period_specs  # noqa: E402
+from report_geometry_utils import polygonal_only  # noqa: E402
 from update_daily_ledger import stable_identity  # noqa: E402
 
 
@@ -45,6 +48,18 @@ class ReportingStorageTests(unittest.TestCase):
         self.assertEqual(specs['last-7-days']['end'], date(2026, 9, 6))
         self.assertEqual(specs['month-to-date']['start'], date(2026, 9, 1))
         self.assertEqual(specs['month-to-date']['end'], date(2026, 9, 6))
+
+    def test_polygonal_only_removes_non_polygon_collection_parts(self):
+        poly = Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)])
+        line = LineString([(0, 0), (2, 2)])
+        got = polygonal_only(GeometryCollection([poly, line]))
+        self.assertIsNotNone(got)
+        self.assertIn(got.geom_type, {'Polygon', 'MultiPolygon'})
+        self.assertAlmostEqual(got.area, 1.0)
+
+    def test_polygonal_only_returns_none_for_non_polygon_collection(self):
+        got = polygonal_only(GeometryCollection([LineString([(0, 0), (1, 1)])]))
+        self.assertIsNone(got)
 
 
 if __name__ == '__main__':
