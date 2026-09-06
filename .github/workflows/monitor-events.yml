@@ -14,11 +14,13 @@ on:
       - 'scripts/source_metric_utils.py'
       - 'scripts/wildfire_episode_metrics.py'
       - 'scripts/sync_wildfire_episode_metrics.py'
+      - 'scripts/flood_footprint_qc.py'
       - 'scripts/enrich_event_footprints.py'
       - 'scripts/enrich_asset_exposure.py'
       - 'scripts/enrich_climate_context.py'
       - 'tests/test_source_metric_utils.py'
       - 'tests/test_wildfire_episode_sync.py'
+      - 'tests/test_flood_footprint_qc.py'
       - '.github/workflows/monitor-events.yml'
       - 'data/reference/population/metadata.json'
       - 'data/reference/climate/cru_ts_4.10/annual/index.json'
@@ -71,7 +73,7 @@ jobs:
       - name: Align wildfire headline metrics to the same GDACS episode
         run: python scripts/sync_wildfire_episode_metrics.py
 
-      - name: Persist mapped event footprints
+      - name: Persist QC-passed mapped event footprints
         run: python scripts/enrich_event_footprints.py
 
       - name: Enrich supplemental land forest crop and GDP exposure
