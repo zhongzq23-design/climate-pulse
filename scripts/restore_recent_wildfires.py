@@ -4,9 +4,9 @@
 GDACS SEARCH can key filtering to event start date. A wildfire that started more
 than seven days ago but still had detections in the last seven days can therefore
 fall out of the source list even though it remains operationally recent. This
-helper queries two older start-date bands, keeps only records whose GDACS `todate`
-(or equivalent parsed event date) is still within the normal 7-day freshness
-window, and merges them into the current snapshot before source-first enrichment.
+helper queries two older start-date bands and keeps only records whose explicit
+last_detection (falling back to the operational event date for legacy records)
+is still within the normal seven-day freshness window.
 """
 from __future__ import annotations
 
@@ -28,14 +28,13 @@ OLDER_BANDS = ((8, 14), (15, 21))
 
 
 def recent_by_last_detection(event: dict[str, Any], now) -> bool:
-    dt = parse_dt(event.get("event_date"))
+    dt = parse_dt(event.get("last_detection") or event.get("event_date"))
     if dt is None:
         return False
     return dt >= now - timedelta(days=FRESH_DAYS)
 
 
 def fetch_band(now, old_min: int, old_max: int) -> list[dict[str, Any]]:
-    # `fromDate`/`toDate` are intentionally a historical start-date band.
     start = (now - timedelta(days=old_max)).date().isoformat()
     end = (now - timedelta(days=old_min)).date().isoformat()
     url = GDACS_URL + "?" + urllib.parse.urlencode({
@@ -80,7 +79,6 @@ def main() -> None:
         except Exception as exc:  # noqa: BLE001
             errors.append(f"{old_min}-{old_max}d:{type(exc).__name__}:{str(exc)[:140]}")
 
-    # Deduplicate recovered source IDs, then merge them with the standard 7-day feed.
     recovered_by_id = {str(e.get("id")): e for e in recovered}
     source_events = merge_unique(snap.get("source_events") or [], list(recovered_by_id.values()))
     canonical = dedupe(source_events)
