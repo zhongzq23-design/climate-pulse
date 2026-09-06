@@ -17,8 +17,8 @@
   const finite = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
   function normLon(lon, center) { let x = Number(lon), c = Number(center); while (x - c > 180) x -= 360; while (x - c < -180) x += 360; return x; }
   function wrapLon(lon) { let x = Number(lon); while (x > 180) x -= 360; while (x <= -180) x += 360; return x; }
-  function fmtLon(lon) { const x = wrapLon(lon); return `${Math.abs(x).toFixed(Math.abs(x) < 10 ? 1 : 0)}° ${x >= 0 ? 'E' : 'W'}`; }
-  function fmtLat(lat) { const y = Number(lat); return `${Math.abs(y).toFixed(Math.abs(y) < 10 ? 1 : 0)}° ${y >= 0 ? 'N' : 'S'}`; }
+  function fmtLon(lon) { const x = wrapLon(lon); return `${Math.abs(x).toFixed(2)}° ${x >= 0 ? 'E' : 'W'}`; }
+  function fmtLat(lat) { const y = Number(lat); return `${Math.abs(y).toFixed(2)}° ${y >= 0 ? 'N' : 'S'}`; }
   function collectPoints(geometry, centerLon) {
     const pts = [];
     const walk = node => {
@@ -28,7 +28,7 @@
     };
     walk(geometry?.coordinates); return pts;
   }
-  function niceStep(span) { return [.25, .5, 1, 2, 5, 10, 15, 20, 30, 45, 60, 90].find(s => span / s <= 5) || 90; }
+  function niceStep(span) { return [.1, .25, .5, 1, 2, 5, 10, 15, 20, 30, 45, 60, 90].find(s => span / s <= 5) || 90; }
   function ringPath(ring, centerLon, x, y) {
     if (!Array.isArray(ring) || !ring.length) return '';
     let out = '', prevLon = null, started = false;
@@ -135,14 +135,22 @@
     if (!pts.length) return '';
     let minLon = Math.min(...pts.map(p => p[0])), maxLon = Math.max(...pts.map(p => p[0]));
     let minLat = Math.min(...pts.map(p => p[1])), maxLat = Math.max(...pts.map(p => p[1]));
-    let lonSpan = Math.max(maxLon - minLon, 0.01), latSpan = Math.max(maxLat - minLat, 0.01);
+    const footprintLonSpan = Math.max(maxLon - minLon, 0.0001);
+    const footprintLatSpan = Math.max(maxLat - minLat, 0.0001);
+    const footprintSpan = Math.max(footprintLonSpan, footprintLatSpan);
+    let lonSpan = footprintLonSpan, latSpan = footprintLatSpan;
     const midLon = (minLon + maxLon) / 2, midLat = (minLat + maxLat) / 2;
 
-    // Deliberately zoom farther out than the event itself so a viewer can orient
-    // the footprint against countries and nearby cities.
-    const minLonView = 8, minLatView = 5;
-    lonSpan = Math.max(lonSpan * 1.75, minLonView);
-    latSpan = Math.max(latSpan * 1.75, minLatView);
+    // Keep regional context, but do not zoom so far out that a small source
+    // polygon disappears under the reported-coordinate marker. This specifically
+    // fixes valid small flood footprints such as Haiti, where the old fixed 8° ×
+    // 5° minimum view made the polygon only a few pixels wide.
+    let minLonView = 8, minLatView = 5;
+    if (footprintSpan < 0.15) { minLonView = 1.4; minLatView = 1.0; }
+    else if (footprintSpan < 0.5) { minLonView = 2.4; minLatView = 1.6; }
+    else if (footprintSpan < 2) { minLonView = 4; minLatView = 2.5; }
+    lonSpan = Math.max(lonSpan * 1.9, minLonView);
+    latSpan = Math.max(latSpan * 1.9, minLatView);
     minLon = midLon - lonSpan / 2; maxLon = midLon + lonSpan / 2;
     minLat = midLat - latSpan / 2; maxLat = midLat + latSpan / 2;
     if (minLat < -90) { maxLat += -90 - minLat; minLat = -90; }
@@ -170,7 +178,13 @@
     const method = esc(doc.footprint_method || e.footprint?.method || 'mapped event polygon');
     const location = `${fmtLat(centerLat)} · ${fmtLon(centerLon)}`;
     const contextText = (context?.coast || context?.borders || context?.cities) ? 'Natural Earth 1:110m context' : 'Geographic context unavailable';
-    return `<div class="footprint-inline-head"><div><h3>Mapped event footprint</h3><p>${method} · zoomed-out regional orientation view</p></div><div class="footprint-meta"><strong>${location}</strong><br>${contextText}</div></div><div class="footprint-map-card"><svg class="footprint-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapped event footprint with country borders, nearby cities, latitude and longitude grid"><defs><clipPath id="footprint-plot-clip"><rect x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" rx="10"></rect></clipPath></defs><rect class="footprint-bg" x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" rx="10"></rect>${gridLon}${gridLat}<g clip-path="url(#footprint-plot-clip)">${coast}${borders}<path class="footprint-shape" d="${path}" fill-rule="evenodd"></path>${cities}${centerMark}</g><text class="footprint-axislabel" x="${m.l + pw / 2}" y="${H - 7}" text-anchor="middle">Longitude</text><text class="footprint-axislabel" x="21" y="${m.t + ph / 2}" transform="rotate(-90 21 ${m.t + ph / 2})" text-anchor="middle">Latitude</text></svg></div><div class="footprint-note">Blue outline = mapped event footprint; red point = reported event coordinate. Coastlines, international boundaries and selected major cities are orientation aids from Natural Earth 1:110m and are not used for exposure calculations. All exposure calculations use the unsimplified mapped footprint; the simplified blue outline is for browser orientation only.</div>`;
+    const autoZoomText = footprintSpan < 0.5 ? ' · auto-zoomed to keep the mapped source footprint visible' : '';
+    const qcText = e?.type === 'Flood' && doc?.geometry_qc?.status === 'pass'
+      ? ' Flood geometry passed coordinate-alignment QC; unrelated GDACS polygon features were not combined.' : '';
+    const floodCaution = e?.type === 'Flood'
+      ? ' For floods, the blue shape is the GDACS reported affected-area/event polygon, not observed inundation extent.' : '';
+    const legend = `<div class="footprint-note"><strong>Map key:</strong> blue fill/outline = mapped event footprint; red point = reported event coordinate.${floodCaution}${qcText} Coastlines, international boundaries and selected major cities are orientation aids from Natural Earth 1:110m and are not used for exposure calculations. All exposure calculations use the unsimplified QC-passed mapped footprint; the simplified blue shape is for browser orientation only.</div>`;
+    return `<div class="footprint-inline-head"><div><h3>Mapped event footprint</h3><p>${method} · regional orientation view${autoZoomText}</p></div><div class="footprint-meta"><strong>${location}</strong><br>${contextText}</div></div><div class="footprint-map-card"><svg class="footprint-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapped event footprint with country borders, nearby cities, latitude and longitude grid"><defs><clipPath id="footprint-plot-clip"><rect x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" rx="10"></rect></clipPath></defs><rect class="footprint-bg" x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" rx="10"></rect>${gridLon}${gridLat}<g clip-path="url(#footprint-plot-clip)">${coast}${borders}<path class="footprint-shape" d="${path}" fill-rule="evenodd"></path>${cities}${centerMark}</g><text class="footprint-axislabel" x="${m.l + pw / 2}" y="${H - 7}" text-anchor="middle">Longitude</text><text class="footprint-axislabel" x="21" y="${m.t + ph / 2}" transform="rotate(-90 21 ${m.t + ph / 2})" text-anchor="middle">Latitude</text></svg></div>${legend}`;
   }
   async function fetchFootprint(path) {
     if (CACHE.has(path)) return CACHE.get(path);
