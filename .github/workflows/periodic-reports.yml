@@ -68,7 +68,7 @@ jobs:
       - name: Build report publication
         env:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
-        run: python scripts/build_periodic_reports.py --mode "${{ steps.period.outputs.mode }}"
+        run: python scripts/run_periodic_reports.py --mode "${{ steps.period.outputs.mode }}"
 
       - name: Commit report publication
         shell: bash

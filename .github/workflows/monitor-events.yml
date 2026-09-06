@@ -20,6 +20,8 @@ on:
       - 'scripts/enrich_climate_context.py'
       - 'scripts/update_daily_ledger.py'
       - 'scripts/build_periodic_reports.py'
+      - 'scripts/report_geometry_utils.py'
+      - 'scripts/run_periodic_reports.py'
       - 'tests/test_source_metric_utils.py'
       - 'tests/test_wildfire_episode_sync.py'
       - 'tests/test_flood_footprint_qc.py'
@@ -96,7 +98,7 @@ jobs:
       - name: Build rolling 7-day and month-to-date report previews
         env:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
-        run: python scripts/build_periodic_reports.py --mode rolling
+        run: python scripts/run_periodic_reports.py --mode rolling
 
       - name: Commit event, exposure, history and report products
         shell: bash
