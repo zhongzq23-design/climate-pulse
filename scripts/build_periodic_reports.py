@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
-"""Build rolling, weekly and monthly Climate Pulse impact/exposure reports.
+"""Build Climate Pulse rolling, weekly and monthly reports with integrity gates.
 
-Reports are derived from the daily reporting ledger, while the 3x-daily enriched
-archive remains the raw authority. Spatial deduplication uses the compact
-reporting footprints stored in the ledger: event geometries are unioned before
-population or crop-area extraction, so repeated observations and overlapping
-mapped footprints are not simply added together.
-
-Terminology is intentionally conservative. The headline human metric is
-"unique mapped population exposed", not "affected population". Drought crop
-area is physical crop area inside mapped drought risk/impact footprints, not
-confirmed crop loss.
+Headline statistics use public/significant events. Geometry semantics determine
+which mapped areas can contribute to cross-hazard human exposure: wildfire and
+cyclone exposure-grade footprints may be combined, while GDACS flood event areas
+remain context-grade and drought polygons remain risk-grade. Frozen weekly/monthly
+publications are withheld unless every requested UTC day has a daily ledger.
 """
 from __future__ import annotations
 
@@ -37,7 +32,6 @@ DAILY_ROOT = ROOT / "data" / "history" / "daily"
 REPORT_DATA_ROOT = ROOT / "data" / "reports"
 REPORT_HTML_ROOT = ROOT / "reports"
 INDEX_PATH = REPORT_DATA_ROOT / "index.json"
-HUMAN_SPATIAL_TYPES = {"Wildfire", "Storm", "Flood"}
 GEOD = Geod(ellps="WGS84")
 ALERT_RANK = {"": 0, "Green": 1, "Orange": 2, "Red": 3}
 
@@ -54,12 +48,26 @@ def parse_day(value: str | None) -> date:
     return date.fromisoformat(value) if value else utcnow().date()
 
 
+def parse_dt(value: Any) -> datetime | None:
+    s = str(value or "").strip()
+    if not s:
+        return None
+    try:
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    except ValueError:
+        return None
+
+
 def period_specs(mode: str, today: date) -> list[dict[str, Any]]:
     if mode == "rolling":
-        month_start = today.replace(day=1)
         return [
             {"kind": "rolling", "id": "last-7-days", "label": "Rolling 7 days", "start": today - timedelta(days=6), "end": today, "frozen": False},
-            {"kind": "rolling", "id": "month-to-date", "label": "Month to date", "start": month_start, "end": today, "frozen": False},
+            {"kind": "rolling", "id": "month-to-date", "label": "Month to date", "start": today.replace(day=1), "end": today, "frozen": False},
         ]
     if mode == "previous-week":
         monday = today - timedelta(days=today.weekday())
@@ -108,6 +116,23 @@ def safe_geometry(record: dict[str, Any]):
         return None
 
 
+def geometry_semantics(record: dict[str, Any]) -> dict[str, Any]:
+    fp = record.get("reporting_footprint") if isinstance(record.get("reporting_footprint"), dict) else {}
+    sem = fp.get("geometry_semantics") if isinstance(fp.get("geometry_semantics"), dict) else {}
+    if sem.get("grade"):
+        return sem
+    typ = str(record.get("type") or "")
+    if typ == "Wildfire":
+        return {"grade": "exposure_grade", "role": "burned_fire_perimeter"}
+    if typ == "Storm":
+        return {"grade": "exposure_grade", "role": "tropical_cyclone_hazard_zone"}
+    if typ == "Flood":
+        return {"grade": "context_grade", "role": "reported_flood_event_area"}
+    if typ == "Drought":
+        return {"grade": "risk_grade", "role": "drought_risk_impact_area"}
+    return {"grade": "context_grade", "role": "mapped_event_context"}
+
+
 def safe_union(geoms: list[Any]):
     clean = [g for g in geoms if g is not None and not g.is_empty]
     if not clean:
@@ -148,21 +173,40 @@ def geodesic_area_km2(geom) -> float | None:
         return total / 1_000_000.0 if total else None
 
 
+def min_time(*values: Any) -> str | None:
+    rows = [(parse_dt(v), str(v)) for v in values if v]
+    rows = [(d, s) for d, s in rows if d]
+    return min(rows, key=lambda x: x[0])[1] if rows else None
+
+
+def max_time(*values: Any) -> str | None:
+    rows = [(parse_dt(v), str(v)) for v in values if v]
+    rows = [(d, s) for d, s in rows if d]
+    return max(rows, key=lambda x: x[0])[1] if rows else None
+
+
+def record_public_significant(record: dict[str, Any]) -> bool:
+    if "public_significant" in record:
+        return bool(record.get("public_significant"))
+    if "public_significant_latest" in record:
+        return bool(record.get("public_significant_latest"))
+    return str(record.get("type") or "") not in {"Wildfire", "Storm"}
+
+
 def merge_event(existing: dict[str, Any] | None, record: dict[str, Any], ledger_day: str) -> dict[str, Any]:
     out = deepcopy(existing or {
-        "stable_id": record.get("stable_id"),
-        "type": record.get("type"),
-        "title": record.get("title"),
-        "region": record.get("region"),
-        "days_observed": [],
-        "max_alert_level": "",
-        "raw_metrics_max": {},
-        "geometries": [],
+        "stable_id": record.get("stable_id"), "type": record.get("type"), "title": record.get("title"), "region": record.get("region"),
+        "days_observed": [], "max_alert_level": "", "raw_metrics_max": {}, "raw_metrics_latest": {}, "geometry_records": [],
+        "public_significant": False,
     })
     out["title"] = record.get("title") or out.get("title")
     out["region"] = record.get("region") or out.get("region")
     if ledger_day not in out["days_observed"]:
         out["days_observed"].append(ledger_day)
+    out["days_observed"].sort()
+    out["public_significant"] = bool(out.get("public_significant")) or record_public_significant(record)
+    out["lifecycle_first_seen"] = min_time(out.get("lifecycle_first_seen"), record.get("lifecycle_first_seen"), record.get("first_observed_at"))
+    out["lifecycle_last_seen"] = max_time(out.get("lifecycle_last_seen"), record.get("lifecycle_last_seen"), record.get("last_observed_at"))
     level = str(record.get("max_alert_level") or record.get("alert_level_latest") or "")
     if ALERT_RANK.get(level, 0) >= ALERT_RANK.get(str(out.get("max_alert_level") or ""), 0):
         out["max_alert_level"] = level
@@ -171,14 +215,23 @@ def merge_event(existing: dict[str, Any] | None, record: dict[str, Any], ledger_
         old = finite(out["raw_metrics_max"].get(key))
         if n is not None and (old is None or n > old):
             out["raw_metrics_max"][key] = int(n) if n.is_integer() else n
-    geom = safe_geometry(record)
-    if geom is not None:
-        out["geometries"].append(geom)
+    observed = parse_dt(record.get("last_observed_at"))
+    previous_observed = parse_dt(out.get("latest_observed_at"))
+    if observed and (previous_observed is None or observed >= previous_observed):
+        out["latest_observed_at"] = record.get("last_observed_at")
+        out["raw_metrics_latest"] = deepcopy(record.get("raw_metrics_latest") or {})
+        out["alert_level_latest"] = record.get("alert_level_latest")
+        out["temporal_latest"] = deepcopy(record.get("temporal_latest") or {})
+    g = safe_geometry(record)
+    if g is not None:
+        sem = geometry_semantics(record)
+        out["geometry_records"].append({"day": ledger_day, "geometry": g, "grade": sem.get("grade"), "role": sem.get("role")})
     return out
 
 
 def load_period(start: date, end: date) -> tuple[dict[str, Any], dict[str, Any]]:
     events: dict[str, Any] = {}
+    missing: list[str] = []
     coverage = {"requested_days": (end - start).days + 1, "days_with_ledger": 0, "monitor_runs": 0, "ledger_files": []}
     d = start
     while d <= end:
@@ -189,18 +242,20 @@ def load_period(start: date, end: date) -> tuple[dict[str, Any], dict[str, Any]]
             coverage["monitor_runs"] += int(ledger.get("run_count", 0))
             coverage["ledger_files"].append(str(path.relative_to(ROOT)))
             for stable_id, rec in (ledger.get("events") or {}).items():
-                if not isinstance(rec, dict):
-                    continue
-                events[stable_id] = merge_event(events.get(stable_id), rec, d.isoformat())
+                if isinstance(rec, dict):
+                    events[stable_id] = merge_event(events.get(stable_id), rec, d.isoformat())
+        else:
+            missing.append(d.isoformat())
         d += timedelta(days=1)
-    for event in events.values():
-        event["geometries"] = [g for g in event["geometries"] if g is not None]
+    coverage["missing_dates"] = missing
+    coverage["complete"] = coverage["days_with_ledger"] == coverage["requested_days"]
+    coverage["day_coverage_pct"] = round(100.0 * coverage["days_with_ledger"] / max(1, coverage["requested_days"]), 1)
+    coverage["expected_monitor_runs_nominal"] = 3 * coverage["requested_days"]
+    coverage["monitor_run_coverage_pct"] = round(100.0 * coverage["monitor_runs"] / max(1, coverage["expected_monitor_runs_nominal"]), 1)
     return events, coverage
 
 
-def preferred_population_metric(event: dict[str, Any]) -> tuple[str | None, float | None]:
-    metrics = event.get("raw_metrics_max") or {}
-    typ = event.get("type")
+def preferred_population_metric_from(metrics: dict[str, Any], typ: Any) -> tuple[str | None, float | None]:
     keys = {
         "Wildfire": ("population_direct", "population_within_5km"),
         "Storm": ("population_wind_39kt", "population_ts_or_impact_footprint", "population_storm_surge"),
@@ -213,63 +268,122 @@ def preferred_population_metric(event: dict[str, Any]) -> tuple[str | None, floa
     return None, None
 
 
-def event_summaries(events: dict[str, Any]) -> list[dict[str, Any]]:
+def event_union(event: dict[str, Any], grade: str | None = None):
+    rows = event.get("geometry_records") or []
+    geoms = [r.get("geometry") for r in rows if r.get("geometry") is not None and (grade is None or r.get("grade") == grade)]
+    return safe_union(geoms)
+
+
+def event_first_day_union(event: dict[str, Any], grade: str | None = None):
+    rows = [r for r in (event.get("geometry_records") or []) if r.get("geometry") is not None and (grade is None or r.get("grade") == grade)]
+    if not rows:
+        return None
+    first_day = min(str(r.get("day") or "") for r in rows)
+    return safe_union([r["geometry"] for r in rows if str(r.get("day") or "") == first_day])
+
+
+def date_of(value: Any) -> date | None:
+    dt = parse_dt(value)
+    return dt.date() if dt else None
+
+
+def lifecycle_flags(event: dict[str, Any], start: date, end: date, coverage_complete: bool) -> dict[str, Any]:
+    first = date_of(event.get("lifecycle_first_seen")) or (date.fromisoformat(event["days_observed"][0]) if event.get("days_observed") else None)
+    last = date_of(event.get("lifecycle_last_seen")) or (date.fromisoformat(event["days_observed"][-1]) if event.get("days_observed") else None)
+    new = bool(first and start <= first <= end)
+    seen_end = end.isoformat() in (event.get("days_observed") or [])
+    resolved = bool(coverage_complete and last and start <= last < end and not seen_end)
+    ongoing = not new and not resolved
+    if resolved and new:
+        label = "New & resolved this period"
+    elif resolved:
+        label = "Resolved this period"
+    elif new:
+        label = "New this period"
+    else:
+        label = "Ongoing"
+    return {"label": label, "new_this_period": new, "ongoing": ongoing, "resolved_this_period": resolved,
+            "first_seen": event.get("lifecycle_first_seen"), "last_seen": event.get("lifecycle_last_seen")}
+
+
+def event_summaries(events: dict[str, Any], start: date, end: date, coverage_complete: bool) -> list[dict[str, Any]]:
     rows = []
     for stable, event in events.items():
-        key, pop = preferred_population_metric(event)
+        peak_key, peak_pop = preferred_population_metric_from(event.get("raw_metrics_max") or {}, event.get("type"))
+        latest_key, latest_pop = preferred_population_metric_from(event.get("raw_metrics_latest") or {}, event.get("type"))
         metrics = event.get("raw_metrics_max") or {}
+        union = event_union(event)
+        first_union = event_first_day_union(event)
+        area = geodesic_area_km2(union)
+        first_area = geodesic_area_km2(first_union)
+        added = None if area is None or first_area is None else max(0.0, area - first_area)
+        life = lifecycle_flags(event, start, end, coverage_complete)
         rows.append({
-            "stable_id": stable,
-            "type": event.get("type"),
-            "title": event.get("title"),
-            "region": event.get("region"),
-            "max_alert_level": event.get("max_alert_level"),
-            "days_observed": len(event.get("days_observed") or []),
-            "preferred_population_metric": key,
-            "preferred_population_raw": int(pop) if pop is not None else None,
+            "stable_id": stable, "type": event.get("type"), "title": event.get("title"), "region": event.get("region"),
+            "public_significant": bool(event.get("public_significant")), "max_alert_level": event.get("max_alert_level"),
+            "days_observed": len(event.get("days_observed") or []), "lifecycle": life,
+            "preferred_population_metric_peak": peak_key, "preferred_population_peak_raw": int(peak_pop) if peak_pop is not None else None,
+            "preferred_population_metric_latest": latest_key, "preferred_population_latest_raw": int(latest_pop) if latest_pop is not None else None,
+            "period_mapped_footprint_union_km2": round(area, 1) if area is not None else None,
+            "additional_mapped_area_after_first_observed_day_km2": round(added, 1) if added is not None else None,
             "burned_area_ha_max": metrics.get("burned_area_ha"),
             "agricultural_drought_impact_area_km2_max": metrics.get("agricultural_drought_impact_area_km2"),
         })
-    rows.sort(key=lambda r: (ALERT_RANK.get(str(r.get("max_alert_level") or ""), 0), r.get("preferred_population_raw") or 0), reverse=True)
+    rows.sort(key=lambda r: (ALERT_RANK.get(str(r.get("max_alert_level") or ""), 0), r.get("preferred_population_peak_raw") or 0), reverse=True)
     return rows
 
 
-def compute_metrics(events: dict[str, Any]) -> dict[str, Any]:
-    by_type: dict[str, list[Any]] = {}
-    merged_event_geom: dict[str, Any] = {}
+def compute_metrics(events: dict[str, Any], start: date, end: date, coverage_complete: bool) -> dict[str, Any]:
+    by_grade_type: dict[tuple[str, str], list[Any]] = {}
     mapped_counts = Counter()
-    for stable, event in events.items():
-        g = safe_union(event.get("geometries") or [])
-        if g is not None:
-            merged_event_geom[stable] = g
-            by_type.setdefault(str(event.get("type")), []).append(g)
-            mapped_counts[str(event.get("type"))] += 1
+    semantics_counts = Counter()
+    for event in events.values():
+        seen_pairs = set()
+        for rec in event.get("geometry_records") or []:
+            g = rec.get("geometry")
+            grade = str(rec.get("grade") or "context_grade")
+            typ = str(event.get("type") or "Unknown")
+            if g is None:
+                continue
+            by_grade_type.setdefault((grade, typ), []).append(g)
+            semantics_counts[f"{grade}:{typ}"] += 1
+            seen_pairs.add((grade, typ))
+        for _, typ in seen_pairs:
+            mapped_counts[typ] += 1
 
-    population = {"combined_raw": None, "by_hazard_raw": {}, "included_hazards": sorted(HUMAN_SPATIAL_TYPES)}
-    human_geoms = [g for stable, g in merged_event_geom.items() if events[stable].get("type") in HUMAN_SPATIAL_TYPES]
-    pop_path = h.ensure_population_source() if human_geoms else None
+    exposure_types = sorted({typ for (grade, typ) in by_grade_type if grade == "exposure_grade"})
+    exposure_by_hazard: dict[str, int] = {}
+    exposure_combined = None
+    exposure_geoms = [g for (grade, _), gs in by_grade_type.items() if grade == "exposure_grade" for g in gs]
+    flood_context_geoms = by_grade_type.get(("context_grade", "Flood"), [])
+    pop_path = h.ensure_population_source() if exposure_geoms or flood_context_geoms else None
+    flood_context_population = None
     if pop_path:
         with rasterio.open(pop_path) as src:
-            combined = safe_union(human_geoms)
+            combined = safe_union(exposure_geoms)
             if combined is not None:
-                population["combined_raw"] = int(h.raster_population(src, combined))
-            for typ in sorted(HUMAN_SPATIAL_TYPES):
-                union = safe_union(by_type.get(typ, []))
+                exposure_combined = int(h.raster_population(src, combined))
+            for typ in exposure_types:
+                union = safe_union(by_grade_type.get(("exposure_grade", typ), []))
                 if union is not None:
-                    population["by_hazard_raw"][typ] = int(h.raster_population(src, union))
+                    exposure_by_hazard[typ] = int(h.raster_population(src, union))
+            flood_union = safe_union(flood_context_geoms)
+            if flood_union is not None:
+                flood_context_population = int(h.raster_population(src, flood_union))
 
-    drought_union = safe_union(by_type.get("Drought", []))
+    drought_union = safe_union(by_grade_type.get(("risk_grade", "Drought"), []))
     crop_km2 = None
     if drought_union is not None and CROP_TIF.exists():
         crop_ha = raster_area_ha(CROP_TIF, drought_union, 1)
         crop_km2 = None if crop_ha is None else round(float(crop_ha) / 100.0, 1)
 
-    wildfire_union = safe_union(by_type.get("Wildfire", []))
+    wildfire_union = safe_union(by_grade_type.get(("exposure_grade", "Wildfire"), []))
     wildfire_unique_km2 = geodesic_area_km2(wildfire_union)
     wildfire_source_ha = 0.0
     wildfire_source_n = 0
     source_pop_sum = 0.0
     source_pop_n = 0
+    lifecycle_counts = Counter()
     for event in events.values():
         metrics = event.get("raw_metrics_max") or {}
         if event.get("type") == "Wildfire":
@@ -277,39 +391,48 @@ def compute_metrics(events: dict[str, Any]) -> dict[str, Any]:
             if n is not None:
                 wildfire_source_ha += n
                 wildfire_source_n += 1
-        _, pop = preferred_population_metric(event)
+        _, pop = preferred_population_metric_from(metrics, event.get("type"))
         if pop is not None:
             source_pop_sum += pop
             source_pop_n += 1
+        flags = lifecycle_flags(event, start, end, coverage_complete)
+        lifecycle_counts[flags["label"]] += 1
 
     alert_counts = Counter(str(e.get("max_alert_level") or "Unclassified") for e in events.values())
     type_counts = Counter(str(e.get("type") or "Unknown") for e in events.values())
     return {
         "unique_mapped_population_exposed": {
-            "raw_value": population["combined_raw"],
-            "by_hazard_raw": population["by_hazard_raw"],
-            "included_hazards": population["included_hazards"],
-            "method": "GHSL 2025 population inside the spatial union of reporting footprints for wildfire, storm and flood; overlapping mapped footprints are counted once",
-            "interpretation": "Derived mapped exposure estimate; not source-confirmed affected population or unique individual tracking.",
+            "raw_value": exposure_combined, "by_hazard_raw": exposure_by_hazard, "included_hazards": exposure_types,
+            "geometry_grade": "exposure_grade",
+            "method": "GHSL 2025 population inside the spatial union of public/significant exposure-grade footprints only; overlapping mapped footprints are counted once",
+            "interpretation": "Cross-hazard headline excludes context-grade flood event areas and risk-grade drought areas; it is mapped exposure, not verified unique affected individuals.",
+        },
+        "flood_reported_event_area_population_context": {
+            "raw_value": flood_context_population, "geometry_grade": "context_grade",
+            "method": "GHSL 2025 population inside the union of public/significant GDACS reported flood event/affected-area polygons",
+            "interpretation": "Context only: these polygons are not observed inundation extent and are excluded from the cross-hazard exposure headline.",
         },
         "event_deduped_source_population_sum": {
-            "raw_value": int(round(source_pop_sum)) if source_pop_n else None,
-            "contributing_events": source_pop_n,
-            "method": "maximum preferred source/model population metric per stable event, then event-level sum",
-            "interpretation": "Same event is counted once, but people shared by different event footprints may still be counted more than once; use unique_mapped_population_exposed for spatial deduplication.",
+            "raw_value": int(round(source_pop_sum)) if source_pop_n else None, "contributing_events": source_pop_n,
+            "method": "maximum preferred source/model population metric per public/significant stable event, then event-level sum",
+            "interpretation": "Stable events are counted once but people shared by different events may still be counted more than once; secondary diagnostic only.",
         },
         "drought_crop_area_within_mapped_risk_footprints_km2": {
-            "raw_value": crop_km2,
-            "method": "FAO CROPGRIDS 2020 physical crop area inside the spatial union of mapped drought footprints",
+            "raw_value": crop_km2, "geometry_grade": "risk_grade",
+            "method": "FAO CROPGRIDS 2020 physical crop area inside the spatial union of public/significant mapped drought risk/impact footprints",
             "interpretation": "Spatial crop exposure/context, not confirmed crop damage or crop loss.",
         },
         "wildfire_burned_area": {
+            "unique_mapped_union_km2": round(wildfire_unique_km2, 1) if wildfire_unique_km2 is not None else None,
+            "unique_mapped_union_ha": round(wildfire_unique_km2 * 100) if wildfire_unique_km2 is not None else None,
             "source_event_deduped_ha": round(wildfire_source_ha) if wildfire_source_n else None,
             "source_contributing_events": wildfire_source_n,
-            "mapped_spatial_union_km2": round(wildfire_unique_km2, 1) if wildfire_unique_km2 is not None else None,
+            "headline": "unique_mapped_union_ha",
         },
         "event_counts": {"total_unique_events": len(events), "by_hazard": dict(sorted(type_counts.items())), "by_max_alert": dict(sorted(alert_counts.items()))},
+        "lifecycle_counts": dict(sorted(lifecycle_counts.items())),
         "mapped_event_counts_by_hazard": dict(sorted(mapped_counts.items())),
+        "geometry_semantics_counts": dict(sorted(semantics_counts.items())),
     }
 
 
@@ -332,76 +455,110 @@ def html_escape(value: Any) -> str:
 
 def render_html(report: dict[str, Any]) -> str:
     m = report.get("metrics") or {}
-    unique = (m.get("unique_mapped_population_exposed") or {}).get("raw_value")
+    exposure = (m.get("unique_mapped_population_exposed") or {}).get("raw_value")
+    flood_context = (m.get("flood_reported_event_area_population_context") or {}).get("raw_value")
     crop = (m.get("drought_crop_area_within_mapped_risk_footprints_km2") or {}).get("raw_value")
     fires = m.get("wildfire_burned_area") or {}
     counts = m.get("event_counts") or {}
+    all_counts = report.get("all_monitored_event_counts") or {}
     coverage = report.get("data_coverage") or {}
-    status = "Frozen publication" if report.get("frozen") else "Rolling preview"
+    complete = bool(coverage.get("complete"))
+    status = report.get("publication_status") or ("Frozen publication" if report.get("frozen") else "Rolling preview")
+    badge = '<div class="warning"><strong>Partial coverage.</strong> Headline values are provisional because not every requested UTC day has a daily ledger.</div>' if not complete else '<div class="ok"><strong>Complete day coverage.</strong> Every requested UTC day has a reporting ledger.</div>'
     crop_text = "—" if crop is None else f"{float(crop):,.1f} km²"
-    fire_text = "—" if fires.get("source_event_deduped_ha") is None else f"{int(fires['source_event_deduped_ha']):,} ha"
-    by_hazard = "".join(f"<li><strong>{html_escape(k)}</strong>: {html_escape(v)}</li>" for k, v in (counts.get("by_hazard") or {}).items()) or "<li>No events in available ledger.</li>"
+    fire_text = "—" if fires.get("unique_mapped_union_ha") is None else f"{int(fires['unique_mapped_union_ha']):,} ha"
+    by_hazard = "".join(f"<li><strong>{html_escape(k)}</strong>: {html_escape(v)}</li>" for k, v in (counts.get("by_hazard") or {}).items()) or "<li>No significant events in available ledger.</li>"
+    life = "".join(f"<li><strong>{html_escape(k)}</strong>: {html_escape(v)}</li>" for k, v in (m.get("lifecycle_counts") or {}).items()) or "<li>No lifecycle records.</li>"
     top = "".join(
-        f"<tr><td>{html_escape(e.get('type'))}</td><td>{html_escape(e.get('title'))}</td><td>{html_escape(e.get('region'))}</td><td>{html_escape(e.get('max_alert_level') or '—')}</td><td>{html_escape(display_people(e.get('preferred_population_raw')))}</td></tr>"
-        for e in (report.get("events") or [])[:20]
-    ) or '<tr><td colspan="5">No events in the available reporting ledger.</td></tr>'
+        f"<tr><td>{html_escape(e.get('type'))}</td><td>{html_escape(e.get('title'))}</td><td>{html_escape(e.get('region'))}</td><td>{html_escape((e.get('lifecycle') or {}).get('label') or '—')}</td><td>{html_escape(e.get('max_alert_level') or '—')}</td><td>{html_escape(display_people(e.get('preferred_population_peak_raw')))}</td><td>{html_escape(display_people(e.get('preferred_population_latest_raw')))}</td></tr>"
+        for e in (report.get("events") or [])[:25]
+    ) or '<tr><td colspan="7">No public/significant events in the available reporting ledger.</td></tr>'
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html_escape(report['label'])} · Climate Pulse</title>
-<style>body{{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;background:#f4f8fa;color:#203746}}main{{max-width:980px;margin:auto;padding:24px}}a{{color:#17658e}}.hero,.card{{background:#fff;border:1px solid #dce7ed;border-radius:18px;padding:20px;margin-bottom:14px}}.hero h1{{margin:0 0 6px}}.muted{{color:#6c8190}}.grid{{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}}.metric{{border:1px solid #e1e9ee;border-radius:14px;padding:14px}}.metric b{{display:block;font-size:12px;text-transform:uppercase;color:#6b8190;margin-bottom:6px}}.metric span{{font-size:23px;font-weight:800}}table{{width:100%;border-collapse:collapse}}th,td{{padding:9px;border-bottom:1px solid #e6edf1;text-align:left;font-size:13px}}@media(max-width:760px){{.grid{{grid-template-columns:1fr 1fr}}main{{padding:12px}}.metric span{{font-size:19px}}table{{display:block;overflow:auto}}}}</style></head><body><main>
-<div class="hero"><a href="../../reports.html">← Reports</a><h1>{html_escape(report['label'])}</h1><div class="muted">{report['period']['start']} to {report['period']['end']} UTC · {status} · generated {html_escape(report['generated_at'])}</div></div>
-<div class="grid"><div class="metric"><b>Unique mapped population exposed</b><span>{html_escape(display_people(unique))}</span></div><div class="metric"><b>Drought crop area in mapped risk footprints</b><span>{html_escape(crop_text)}</span></div><div class="metric"><b>Wildfire source burned area · event deduped</b><span>{html_escape(fire_text)}</span></div><div class="metric"><b>Unique events</b><span>{html_escape(counts.get('total_unique_events',0))}</span></div></div>
-<div class="card"><h2>Coverage</h2><p>{coverage.get('days_with_ledger',0)} of {coverage.get('requested_days',0)} requested days have a reporting ledger; {coverage.get('monitor_runs',0)} monitoring runs are represented.</p><ul>{by_hazard}</ul></div>
-<div class="card"><h2>Event summary</h2><table><thead><tr><th>Hazard</th><th>Event</th><th>Region</th><th>Max alert</th><th>Preferred source/model population</th></tr></thead><tbody>{top}</tbody></table></div>
-<div class="card"><h2>Interpretation</h2><p><strong>Unique mapped population exposed</strong> is calculated from the spatial union of available wildfire, storm and flood reporting footprints before extracting GHSL population. It removes geographic overlap in mapped footprints; it is not a verified count of unique affected individuals.</p><p><strong>Drought crop area</strong> is FAO CROPGRIDS physical crop area inside the union of mapped drought risk/impact footprints. It is not confirmed crop loss.</p><p class="muted">Exact raw values are retained in the companion JSON report; webpage population values are rounded to the nearest thousand, and values below 1,000 are shown as &lt;1,000.</p></div>
+<style>body{{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;background:#f4f8fa;color:#203746}}main{{max-width:1100px;margin:auto;padding:24px}}a{{color:#17658e}}.hero,.card{{background:#fff;border:1px solid #dce7ed;border-radius:18px;padding:20px;margin-bottom:14px}}.hero h1{{margin:0 0 6px}}.muted{{color:#6c8190}}.grid{{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}}.metric{{border:1px solid #e1e9ee;border-radius:14px;padding:14px}}.metric b{{display:block;font-size:12px;text-transform:uppercase;color:#6b8190;margin-bottom:6px}}.metric span{{font-size:21px;font-weight:800}}.warning,.ok{{padding:11px 13px;border-radius:12px;margin-top:12px}}.warning{{background:#fff4e5;border:1px solid #edc483;color:#744b09}}.ok{{background:#eef8f2;border:1px solid #b8ddc5;color:#285d3a}}table{{width:100%;border-collapse:collapse}}th,td{{padding:8px;border-bottom:1px solid #e6edf1;text-align:left;font-size:12px;vertical-align:top}}@media(max-width:760px){{.grid{{grid-template-columns:1fr 1fr}}main{{padding:12px}}.metric span{{font-size:18px}}table{{display:block;overflow:auto}}}}</style></head><body><main>
+<div class="hero"><a href="../../reports.html">← Reports</a><h1>{html_escape(report['label'])}</h1><div class="muted">{report['period']['start']} to {report['period']['end']} UTC · {html_escape(status)} · generated {html_escape(report['generated_at'])}</div>{badge}</div>
+<div class="grid"><div class="metric"><b>Unique mapped population exposed · exposure-grade</b><span>{html_escape(display_people(exposure))}</span></div><div class="metric"><b>Flood reported-area population · context only</b><span>{html_escape(display_people(flood_context))}</span></div><div class="metric"><b>Drought crop area · risk footprints</b><span>{html_escape(crop_text)}</span></div><div class="metric"><b>Unique mapped wildfire burned area</b><span>{html_escape(fire_text)}</span></div><div class="metric"><b>Public/significant events</b><span>{html_escape(counts.get('total_unique_events',0))}</span></div></div>
+<div class="card"><h2>Coverage & event universes</h2><p>{coverage.get('days_with_ledger',0)} of {coverage.get('requested_days',0)} requested days have a ledger ({coverage.get('day_coverage_pct',0)}%); {coverage.get('monitor_runs',0)} monitor runs are represented. Nominal schedule would provide {coverage.get('expected_monitor_runs_nominal',0)} runs.</p><p><strong>Headline universe:</strong> events that met the public/significant display rule at least once in the period. <strong>All monitored universe:</strong> {html_escape(all_counts.get('total_unique_events',0))} stable events retained for audit.</p><ul>{by_hazard}</ul></div>
+<div class="card"><h2>Lifecycle</h2><ul>{life}</ul><p class="muted">Resolved status is only asserted when period day coverage is complete and the event is no longer observed by the period end; otherwise the report fails conservatively toward ongoing/unknown.</p></div>
+<div class="card"><h2>Significant-event summary</h2><table><thead><tr><th>Hazard</th><th>Event</th><th>Region</th><th>Lifecycle</th><th>Max alert</th><th>Peak source/model population</th><th>Latest source/model population</th></tr></thead><tbody>{top}</tbody></table></div>
+<div class="card"><h2>Interpretation</h2><p><strong>Cross-hazard population headline:</strong> only exposure-grade mapped wildfire/cyclone footprints are spatially unioned before GHSL extraction. Context-grade GDACS flood event areas are reported separately because they are not observed inundation extent. Risk-grade drought polygons are used for crop/risk context.</p><p><strong>Wildfire burned area:</strong> the headline is the spatial union of mapped wildfire footprints, so overlap is removed. The event-deduped sum of source burned-area values remains in JSON as a secondary diagnostic.</p><p><strong>Drought crop area:</strong> FAO CROPGRIDS physical crop area inside mapped drought risk/impact footprints; not confirmed crop loss.</p><p class="muted">Exact raw values are retained in companion JSON; displayed population counts are rounded to the nearest thousand, with values below 1,000 shown as &lt;1,000.</p></div>
 </main></body></html>"""
 
 
 def update_index(report: dict[str, Any], html_rel: str, json_rel: str) -> None:
     REPORT_DATA_ROOT.mkdir(parents=True, exist_ok=True)
-    idx = load_json(INDEX_PATH, {"schema_version": "1.0", "updated_at": None, "rolling": {}, "weekly": [], "monthly": []})
+    idx = load_json(INDEX_PATH, {"schema_version": "2.0", "updated_at": None, "rolling": {}, "weekly": [], "monthly": []})
+    idx["schema_version"] = "2.0"
     item = {
         "id": report["id"], "label": report["label"], "start": report["period"]["start"], "end": report["period"]["end"],
         "generated_at": report["generated_at"], "html": html_rel, "json": json_rel,
+        "coverage_complete": bool((report.get("data_coverage") or {}).get("complete")),
+        "coverage_days": (report.get("data_coverage") or {}).get("days_with_ledger"),
+        "requested_days": (report.get("data_coverage") or {}).get("requested_days"),
+        "publication_status": report.get("publication_status"),
     }
     if report["kind"] == "rolling":
         idx.setdefault("rolling", {})[report["id"]] = item
     else:
-        key = report["kind"]
-        rows = [x for x in (idx.get(key) or []) if x.get("id") != report["id"]]
+        rows = [x for x in (idx.get(report["kind"]) or []) if x.get("id") != report["id"]]
         rows.append(item)
         rows.sort(key=lambda x: x.get("id", ""), reverse=True)
-        idx[key] = rows
+        idx[report["kind"]] = rows
     idx["updated_at"] = report["generated_at"]
     INDEX_PATH.write_text(json.dumps(idx, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def counts_for(events: dict[str, Any]) -> dict[str, Any]:
+    return {"total_unique_events": len(events), "by_hazard": dict(sorted(Counter(str(e.get('type') or 'Unknown') for e in events.values()).items()))}
+
+
+def publication_status_for(frozen: bool, coverage_complete: bool) -> str:
+    if frozen and not coverage_complete:
+        return "withheld_incomplete_coverage"
+    if frozen:
+        return "complete_frozen_publication"
+    return "complete_preview" if coverage_complete else "partial_preview"
+
+
 def write_report(spec: dict[str, Any]) -> dict[str, Any]:
-    events, coverage = load_period(spec["start"], spec["end"])
-    metrics = compute_metrics(events) if events else {
-        "unique_mapped_population_exposed": {"raw_value": None, "by_hazard_raw": {}, "included_hazards": sorted(HUMAN_SPATIAL_TYPES)},
-        "event_deduped_source_population_sum": {"raw_value": None, "contributing_events": 0},
-        "drought_crop_area_within_mapped_risk_footprints_km2": {"raw_value": None},
-        "wildfire_burned_area": {"source_event_deduped_ha": None, "source_contributing_events": 0, "mapped_spatial_union_km2": None},
-        "event_counts": {"total_unique_events": 0, "by_hazard": {}, "by_max_alert": {}}, "mapped_event_counts_by_hazard": {},
-    }
+    all_events, coverage = load_period(spec["start"], spec["end"])
+    significant = {k: v for k, v in all_events.items() if v.get("public_significant")}
+    metrics = compute_metrics(significant, spec["start"], spec["end"], bool(coverage["complete"]))
+    generated = iso()
+    frozen = bool(spec["frozen"])
+    withheld = frozen and not coverage["complete"]
+    publication_status = publication_status_for(frozen, bool(coverage["complete"]))
     report = {
-        "schema_version": "1.0",
-        "kind": spec["kind"], "id": spec["id"], "label": spec["label"], "frozen": bool(spec["frozen"]),
-        "generated_at": iso(), "period": {"start": spec["start"].isoformat(), "end": spec["end"].isoformat(), "timezone": "UTC"},
-        "data_coverage": coverage, "metrics": metrics, "events": event_summaries(events),
+        "schema_version": "2.0", "kind": spec["kind"], "id": spec["id"], "label": spec["label"], "frozen": frozen,
+        "publication_status": publication_status, "generated_at": generated,
+        "period": {"start": spec["start"].isoformat(), "end": spec["end"].isoformat(), "timezone": "UTC"},
+        "data_coverage": coverage, "metrics": metrics,
+        "event_universe": {"headline": "public_significant", "all_monitored_count": len(all_events), "public_significant_count": len(significant)},
+        "all_monitored_event_counts": counts_for(all_events),
+        "events": event_summaries(significant, spec["start"], spec["end"], bool(coverage["complete"])),
+        "all_monitored_events": event_summaries(all_events, spec["start"], spec["end"], bool(coverage["complete"])),
         "authority": {"raw": "data/events/archive (3x-daily enriched snapshots)", "reporting_ledger": "data/history/daily", "population": "JRC GHSL GHS-WUP-POP R2025A epoch 2025", "crops": "FAO CROPGRIDS v1.08 2020"},
-        "deduplication": {"event": "stable source identity, preferring GDACS ID when available", "spatial": "union reporting footprints before GHSL/CROPGRIDS extraction"},
+        "deduplication": {"event": "stable source identity, preferring GDACS ID when available", "spatial": "union same-grade reporting footprints before raster extraction", "geometry_semantics": "exposure-grade headline; flood context-grade separate; drought risk-grade separate"},
     }
-    data_dir = REPORT_DATA_ROOT / spec["kind"]
-    html_dir = REPORT_HTML_ROOT / spec["kind"]
+    if withheld:
+        data_dir = REPORT_DATA_ROOT / "withheld" / spec["kind"]
+        html_dir = REPORT_HTML_ROOT / "withheld" / spec["kind"]
+    else:
+        data_dir = REPORT_DATA_ROOT / spec["kind"]
+        html_dir = REPORT_HTML_ROOT / spec["kind"]
     data_dir.mkdir(parents=True, exist_ok=True)
     html_dir.mkdir(parents=True, exist_ok=True)
     json_path = data_dir / f"{spec['id']}.json"
     html_path = html_dir / f"{spec['id']}.html"
     json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     html_path.write_text(render_html(report), encoding="utf-8")
-    update_index(report, str(html_path.relative_to(ROOT)), str(json_path.relative_to(ROOT)))
-    return {"kind": spec["kind"], "id": spec["id"], "json": str(json_path.relative_to(ROOT)), "html": str(html_path.relative_to(ROOT)), "events": len(events), "coverage_days": coverage["days_with_ledger"]}
+    if not withheld:
+        update_index(report, str(html_path.relative_to(ROOT)), str(json_path.relative_to(ROOT)))
+    return {
+        "kind": spec["kind"], "id": spec["id"], "json": str(json_path.relative_to(ROOT)), "html": str(html_path.relative_to(ROOT)),
+        "all_events": len(all_events), "significant_events": len(significant), "coverage_days": coverage["days_with_ledger"],
+        "coverage_complete": coverage["complete"], "publication_status": publication_status,
+    }
 
 
 def main() -> None:
