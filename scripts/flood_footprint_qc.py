@@ -24,7 +24,6 @@ from shapely.ops import nearest_points
 
 GEOD = Geod(ellps="WGS84")
 MAX_CENTER_DISTANCE_KM = 75.0
-HARD_MAX_CENTER_DISTANCE_KM = 150.0
 
 
 @dataclass
@@ -139,11 +138,7 @@ def candidates(features: list[dict[str, Any]], lon: float, lat: float) -> list[F
 
 
 def _rank(c: FloodCandidate) -> tuple:
-    """Lower tuple is better.
-
-    Spatial alignment dominates. Metadata is only a tie-breaker because GDACS
-    property shapes can change across hazards and episodes.
-    """
+    """Lower tuple is better; spatial alignment dominates metadata."""
     if c.center_inside:
         spatial_tier = 0
     elif c.center_distance_km <= 10:
@@ -167,9 +162,9 @@ def _rank(c: FloodCandidate) -> tuple:
 def select_flood_geometry(features: list[dict[str, Any]], lon: float, lat: float):
     """Return ``(geometry, qc)`` for a GDACS flood event.
 
-    QC is intentionally fail-closed. A source polygon farther than 150 km from the
-    event coordinate is not exposed as the event footprint and is not used for
-    downstream GDP/population calculations.
+    QC is intentionally fail-closed. A source polygon farther than 75 km from the
+    reported event coordinate is not exposed as the event footprint and is not
+    used for downstream GDP/population calculations.
     """
     cs = candidates(features, lon, lat)
     if not cs:
@@ -181,21 +176,21 @@ def select_flood_geometry(features: list[dict[str, Any]], lon: float, lat: float
         }
 
     best = min(cs, key=_rank)
-    if not math.isfinite(best.center_distance_km) or best.center_distance_km > HARD_MAX_CENTER_DISTANCE_KM:
+    if not math.isfinite(best.center_distance_km) or best.center_distance_km > MAX_CENTER_DISTANCE_KM:
         return None, {
             "status": "failed",
             "reason": "no_center_aligned_polygon",
             "candidate_polygon_features": len(cs),
             "selected_feature_index": None,
             "nearest_polygon_distance_km": None if not math.isfinite(best.center_distance_km) else round(best.center_distance_km, 1),
+            "selection_policy": "fail closed when no GDACS polygon feature is within 75 km of the reported event coordinate",
         }
 
     # Prefer one complete source feature rather than unioning unrelated resources.
     # If the chosen feature itself is MultiPolygon, all of its source parts are
     # retained because they belong to the same GDACS feature.
-    status = "pass" if best.center_inside or best.center_distance_km <= MAX_CENTER_DISTANCE_KM else "review"
     qc = {
-        "status": status,
+        "status": "pass",
         "reason": "center_aligned_source_feature" if best.center_inside else "nearest_source_feature",
         "candidate_polygon_features": len(cs),
         "selected_feature_index": best.index,
