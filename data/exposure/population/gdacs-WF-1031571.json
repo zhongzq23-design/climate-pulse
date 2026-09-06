@@ -4,7 +4,7 @@
   "event_type": "Wildfire",
   "title": "Forest fires in Mozambique",
   "region": "Mozambique",
-  "calculated_at": "2026-09-05T22:42:12Z",
+  "calculated_at": "2026-09-06T18:42:29Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -18,7 +18,7 @@
   "population_within_5km": 3088,
   "population_within_10km": 12806,
   "source_model": "GDACS/GWIS wildfire exposure",
-  "source_model_run": "202609052144244883",
+  "source_model_run": "202609061720047722",
   "source_model_status": "info: processing ok",
   "gdacs_event_id": "1031571",
   "gdacs_episode_id": 5,
@@ -53,7 +53,15 @@
       "source_field": "SUMPOP10.0",
       "method": "source_modelled",
       "derived_by_climate_pulse": false
+    },
+    "burned_area_ha": {
+      "source": "GDACS/GWIS",
+      "source_field": "severitytext",
+      "method": "source_reported_current_episode",
+      "derived_by_climate_pulse": false,
+      "gdacs_episode_id": 5
     }
   },
-  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation."
+  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
+  "burned_area_ha": 14572.0
 }

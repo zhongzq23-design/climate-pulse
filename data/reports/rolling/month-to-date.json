@@ -4,7 +4,7 @@
   "id": "month-to-date",
   "label": "Month to date",
   "frozen": false,
-  "generated_at": "2026-09-06T16:35:23Z",
+  "generated_at": "2026-09-06T18:48:40Z",
   "period": {
     "start": "2026-09-01",
     "end": "2026-09-06",
@@ -13,18 +13,18 @@
   "data_coverage": {
     "requested_days": 6,
     "days_with_ledger": 1,
-    "monitor_runs": 2,
+    "monitor_runs": 3,
     "ledger_files": [
       "data/history/daily/2026/09/06.json"
     ]
   },
   "metrics": {
     "unique_mapped_population_exposed": {
-      "raw_value": 354456252,
+      "raw_value": 354488231,
       "by_hazard_raw": {
         "Flood": 195521278,
         "Storm": 160457286,
-        "Wildfire": 24538
+        "Wildfire": 56518
       },
       "included_hazards": [
         "Flood",
@@ -35,8 +35,8 @@
       "interpretation": "Derived mapped exposure estimate; not source-confirmed affected population or unique individual tracking."
     },
     "event_deduped_source_population_sum": {
-      "raw_value": 15172584,
-      "contributing_events": 35,
+      "raw_value": 15212610,
+      "contributing_events": 69,
       "method": "maximum preferred source/model population metric per stable event, then event-level sum",
       "interpretation": "Same event is counted once, but people shared by different event footprints may still be counted more than once; use unique_mapped_population_exposed for spatial deduplication."
     },
@@ -46,30 +46,30 @@
       "interpretation": "Spatial crop exposure/context, not confirmed crop damage or crop loss."
     },
     "wildfire_burned_area": {
-      "source_event_deduped_ha": 561321,
-      "source_contributing_events": 26,
-      "mapped_spatial_union_km2": 5529.1
+      "source_event_deduped_ha": 1228853,
+      "source_contributing_events": 60,
+      "mapped_spatial_union_km2": 10853.2
     },
     "event_counts": {
-      "total_unique_events": 77,
+      "total_unique_events": 112,
       "by_hazard": {
         "Drought": 10,
         "Flood": 24,
-        "Storm": 13,
-        "Wildfire": 30
+        "Storm": 14,
+        "Wildfire": 64
       },
       "by_max_alert": {
-        "Green": 61,
+        "Green": 95,
         "Orange": 6,
         "Red": 1,
-        "Unclassified": 9
+        "Unclassified": 10
       }
     },
     "mapped_event_counts_by_hazard": {
       "Drought": 10,
       "Flood": 22,
       "Storm": 9,
-      "Wildfire": 26
+      "Wildfire": 60
     }
   },
   "events": [
@@ -158,6 +158,18 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1031168",
+      "type": "Wildfire",
+      "title": "Forest fires in The Democratic Republic of Congo",
+      "region": "The Democratic Republic of Congo",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 10791,
+      "burned_area_ha_max": 11947,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1031616",
       "type": "Wildfire",
       "title": "Forest fires in The Democratic Republic of Congo",
@@ -170,7 +182,43 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1031509",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 5053,
+      "burned_area_ha_max": 14947,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031572",
+      "type": "Wildfire",
+      "title": "Forest fires in Zambia",
+      "region": "Zambia",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 4867,
+      "burned_area_ha_max": 45500,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1031654",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 4606,
+      "burned_area_ha_max": 57134,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031587",
       "type": "Wildfire",
       "title": "Forest fires in Mozambique",
       "region": "Mozambique",
@@ -206,7 +254,55 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1031537",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 4157,
+      "burned_area_ha_max": 15729,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031174",
+      "type": "Wildfire",
+      "title": "Forest fires in The Democratic Republic of Congo",
+      "region": "The Democratic Republic of Congo",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 2959,
+      "burned_area_ha_max": 16094,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031241",
+      "type": "Wildfire",
+      "title": "Forest fires in The Democratic Republic of Congo",
+      "region": "The Democratic Republic of Congo",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 1828,
+      "burned_area_ha_max": 10013,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1031636",
+      "type": "Wildfire",
+      "title": "Forest fires in Zambia",
+      "region": "Zambia",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 1701,
+      "burned_area_ha_max": 14012,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031514",
       "type": "Wildfire",
       "title": "Forest fires in Zambia",
       "region": "Zambia",
@@ -242,6 +338,30 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1031496",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 1036,
+      "burned_area_ha_max": 12402,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031129",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 941,
+      "burned_area_ha_max": 13340,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1031634",
       "type": "Wildfire",
       "title": "Forest fires in Zambia",
@@ -251,6 +371,54 @@
       "preferred_population_metric": "population_direct",
       "preferred_population_raw": 898,
       "burned_area_ha_max": 12565,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031407",
+      "type": "Wildfire",
+      "title": "Forest fires in The Democratic Republic of Congo",
+      "region": "The Democratic Republic of Congo",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 503,
+      "burned_area_ha_max": 11178,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031138",
+      "type": "Wildfire",
+      "title": "Forest fires in Angola",
+      "region": "Angola",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 455,
+      "burned_area_ha_max": 15778,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031237",
+      "type": "Wildfire",
+      "title": "Forest fires in Zambia",
+      "region": "Zambia",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 448,
+      "burned_area_ha_max": 12709,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031175",
+      "type": "Wildfire",
+      "title": "Forest fires in The Democratic Republic of Congo",
+      "region": "The Democratic Republic of Congo",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 388,
+      "burned_area_ha_max": 12168,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -278,6 +446,18 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1031571",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 115,
+      "burned_area_ha_max": 14572,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1031117",
       "type": "Wildfire",
       "title": "Forest fires in Tanzania",
@@ -287,6 +467,30 @@
       "preferred_population_metric": "population_direct",
       "preferred_population_raw": 110,
       "burned_area_ha_max": 57649,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031467",
+      "type": "Wildfire",
+      "title": "Forest fires in Zambia",
+      "region": "Zambia",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 109,
+      "burned_area_ha_max": 11346,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031149",
+      "type": "Wildfire",
+      "title": "Forest fires in Brazil",
+      "region": "Brazil",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 47,
+      "burned_area_ha_max": 14088,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -302,6 +506,18 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1031056",
+      "type": "Wildfire",
+      "title": "Forest fires in Zambia",
+      "region": "Zambia",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 15,
+      "burned_area_ha_max": 20685,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1031413",
       "type": "Wildfire",
       "title": "Forest fires in Australia",
@@ -311,6 +527,30 @@
       "preferred_population_metric": "population_direct",
       "preferred_population_raw": 5,
       "burned_area_ha_max": 11123,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031156",
+      "type": "Wildfire",
+      "title": "Forest fires in Brazil",
+      "region": "Brazil",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 3,
+      "burned_area_ha_max": 11561,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031291",
+      "type": "Wildfire",
+      "title": "Forest fires in The Democratic Republic of Congo",
+      "region": "The Democratic Republic of Congo",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 2,
+      "burned_area_ha_max": 11009,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -350,10 +590,34 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1031452",
+      "type": "Wildfire",
+      "title": "Forest fires in Zimbabwe",
+      "region": "Zimbabwe",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 1,
+      "burned_area_ha_max": 10136,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031300",
+      "type": "Wildfire",
+      "title": "Forest fires in Montenegro",
+      "region": "Montenegro",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 1,
+      "burned_area_ha_max": 10645,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:TC:1001314",
       "type": "Storm",
-      "title": "Hurricane Karina",
-      "region": "22.20°, -143.90°",
+      "title": "Tropical Cyclone KARINA-26",
+      "region": "21.60°, -143.60°",
       "max_alert_level": "Green",
       "days_observed": 1,
       "preferred_population_metric": "population_ts_or_impact_footprint",
@@ -890,6 +1154,150 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1030993",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 27654,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031430",
+      "type": "Wildfire",
+      "title": "Forest fires in Russian Federation",
+      "region": "Russian Federation",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 11058,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031007",
+      "type": "Wildfire",
+      "title": "Forest fires in Angola",
+      "region": "Angola",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 10040,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031186",
+      "type": "Wildfire",
+      "title": "Forest fires in Russian Federation",
+      "region": "Russian Federation",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 18024,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031315",
+      "type": "Wildfire",
+      "title": "Forest fires in Russian Federation",
+      "region": "Russian Federation",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 36082,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031272",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 10122,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031205",
+      "type": "Wildfire",
+      "title": "Forest fires in Russian Federation",
+      "region": "Russian Federation",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 17484,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031429",
+      "type": "Wildfire",
+      "title": "Forest fires in Russian Federation",
+      "region": "Russian Federation",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 34438,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031102",
+      "type": "Wildfire",
+      "title": "Forest fires in Russian Federation",
+      "region": "Russian Federation",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 71206,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031069",
+      "type": "Wildfire",
+      "title": "Forest fires in Angola",
+      "region": "Angola",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 12690,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1031154",
+      "type": "Wildfire",
+      "title": "Forest fires in Russian Federation",
+      "region": "Russian Federation",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 25137,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1030896",
+      "type": "Wildfire",
+      "title": "Forest fires in Angola",
+      "region": "Angola",
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "preferred_population_metric": "population_direct",
+      "preferred_population_raw": 0,
+      "burned_area_ha_max": 26604,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "cems:WF:EMSR922",
       "type": "Wildfire",
       "title": "Wildfire in Montenegro and Bosnia and Herzegovina",
@@ -917,7 +1325,7 @@
       "stable_id": "eonet:TC:EONET_23738",
       "type": "Storm",
       "title": "Tropical Storm Krovanh",
-      "region": "25.50°, 130.20°",
+      "region": "25.70°, 131.00°",
       "max_alert_level": "",
       "days_observed": 1,
       "preferred_population_metric": null,
@@ -929,7 +1337,7 @@
       "stable_id": "eonet:TC:EONET_23800",
       "type": "Storm",
       "title": "Hurricane Marie",
-      "region": "22.30°, -121.00°",
+      "region": "23.30°, -122.30°",
       "max_alert_level": "",
       "days_observed": 1,
       "preferred_population_metric": null,
@@ -990,6 +1398,18 @@
       "type": "Wildfire",
       "title": "Wildfire in Huertgen Forest, Germany and Belgium",
       "region": "Germany",
+      "max_alert_level": "",
+      "days_observed": 1,
+      "preferred_population_metric": null,
+      "preferred_population_raw": null,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "eonet:TC:EONET_23611",
+      "type": "Storm",
+      "title": "Hurricane Karina",
+      "region": "22.60°, -144.70°",
       "max_alert_level": "",
       "days_observed": 1,
       "preferred_population_metric": null,
