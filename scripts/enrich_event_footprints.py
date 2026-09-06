@@ -6,10 +6,11 @@ simplified for browser orientation. The unsimplified source geometry is written
 only to ``.runtime/event_geometries`` for later exposure calculations in the
 same GitHub Actions job and is never committed.
 
-Wildfire and tropical-cyclone enrichment already carries GDACS event/episode IDs.
-Drought and flood footprints can be resolved directly from their GDACS source IDs,
-which means drought no longer needs a separate population-exposure pass merely to
-make a footprint available.
+Floods receive an additional source-geometry QC step. GDACS can return multiple
+polygon features with different roles; Climate Pulse selects one source feature
+that is spatially aligned with the reported event coordinate instead of blindly
+unioning unrelated polygons. If no credible center-aligned flood polygon exists,
+the footprint and downstream polygon-derived exposure are suppressed.
 """
 from __future__ import annotations
 
@@ -24,6 +25,7 @@ from shapely.geometry import mapping
 # Load the compatibility runner first so invalid GDACS polygons are repaired.
 import run_hazard_enrichment  # noqa: F401
 import enrich_hazard_exposure as h
+from flood_footprint_qc import select_flood_geometry
 
 ROOT = Path(__file__).resolve().parents[1]
 LATEST = ROOT / "data" / "events" / "latest.json"
@@ -53,7 +55,7 @@ def round_coords(value: Any, digits: int = 4) -> Any:
 def display_geometry(geom):
     minx, miny, maxx, maxy = geom.bounds
     span = max(maxx - minx, maxy - miny)
-    tolerance = min(0.05, max(0.001, span / 600.0))
+    tolerance = min(0.05, max(0.0002, span / 600.0))
     simplified = geom.simplify(tolerance, preserve_topology=True)
     if simplified.is_empty:
         simplified = geom
@@ -89,21 +91,41 @@ def source_descriptor(
     return code, eid, int(episode) if episode is not None else None, method or DEFAULT_METHOD[code]
 
 
-def fetch_geometry(event_type: str, event_id: str, episode_id: int | None):
+def fetch_geometry(
+    event_type: str, event_id: str, episode_id: int | None,
+    reported_lon: float | None = None, reported_lat: float | None = None,
+):
     feats = h.polygon_features(event_type, event_id, episode_id)
     if not feats:
-        return None, 0, DEFAULT_METHOD.get(event_type, "GDACS event polygon")
+        return None, 0, DEFAULT_METHOD.get(event_type, "GDACS event polygon"), {
+            "status": "failed", "reason": "no_source_features"
+        }
+
     if event_type == "TC":
         geom, method = h.tc_wind_union(feats)
-    else:
-        geom = h.polygons_union(feats)
-        method = DEFAULT_METHOD.get(event_type, "GDACS event polygon")
-    return geom, len(feats), method
+        return geom, len(feats), method, {"status": "not_applicable"}
+
+    if event_type == "FL":
+        try:
+            lon = float(reported_lon)
+            lat = float(reported_lat)
+        except (TypeError, ValueError):
+            return None, len(feats), DEFAULT_METHOD["FL"], {
+                "status": "failed", "reason": "missing_reported_coordinate"
+            }
+        geom, qc = select_flood_geometry(feats, lon, lat)
+        if qc.get("status") != "pass":
+            return None, len(feats), DEFAULT_METHOD["FL"], qc
+        return geom, len(feats), "GDACS flood event polygon · center-aligned source feature", qc
+
+    geom = h.polygons_union(feats)
+    method = DEFAULT_METHOD.get(event_type, "GDACS event polygon")
+    return geom, len(feats), method, {"status": "not_applicable"}
 
 
 def write_runtime_geometry(
     event: dict[str, Any], event_type: str, event_id: str,
-    episode_id: int | None, method: str, geom,
+    episode_id: int | None, method: str, geom, geometry_qc: dict[str, Any] | None,
 ) -> None:
     RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
     doc = {
@@ -113,6 +135,7 @@ def write_runtime_geometry(
         "gdacs_event_id": event_id,
         "gdacs_episode_id": episode_id,
         "footprint_method": method,
+        "geometry_qc": geometry_qc,
         "geometry": mapping(geom),
     }
     (RUNTIME_DIR / f"{safe_name(event.get('id'))}.json").write_text(
@@ -121,9 +144,16 @@ def write_runtime_geometry(
     )
 
 
+def remove_public_doc(event: dict[str, Any]) -> None:
+    p = OUT_DIR / f"{safe_name(event.get('id'))}.json"
+    if p.exists():
+        p.unlink()
+
+
 def write_doc(
     event: dict[str, Any], event_type: str, event_id: str,
     episode_id: int | None, method: str, geom, feature_count: int,
+    geometry_qc: dict[str, Any] | None,
 ) -> dict[str, Any]:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     simplified, tolerance = display_geometry(geom)
@@ -133,7 +163,7 @@ def write_doc(
     file_name = safe_name(event.get("id")) + ".json"
     rel = f"data/footprints/{file_name}"
     doc = {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "event_id": event.get("id"),
         "event_type": event.get("type"),
         "title": event.get("title"),
@@ -145,6 +175,7 @@ def write_doc(
         "reported_center": {"lat": event.get("lat"), "lon": event.get("lon")},
         "geometry": gj,
         "source_feature_count": feature_count,
+        "geometry_qc": geometry_qc,
         "display_simplification": {
             "applied": True,
             "tolerance_degrees": round(float(tolerance), 6),
@@ -152,14 +183,18 @@ def write_doc(
         },
         "scientific_note": (
             "This compact geometry is simplified for browser display. Exposure "
-            "calculations use the unsimplified mapped footprint."
+            "calculations use the unsimplified mapped source footprint. For floods, "
+            "unrelated GDACS polygon features are excluded by center-alignment QC."
         ),
     }
     (OUT_DIR / file_name).write_text(
         json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n",
         encoding="utf-8",
     )
-    return {"status": "ready", "path": rel, "source": "GDACS", "method": method}
+    return {
+        "status": "ready", "path": rel, "source": "GDACS", "method": method,
+        "qc_status": (geometry_qc or {}).get("status"),
+    }
 
 
 def enrich_list(
@@ -168,33 +203,60 @@ def enrich_list(
     episode_cache: dict[tuple[str, str], int | None],
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     out: list[dict[str, Any]] = []
-    diag = {"eligible": 0, "ready": 0, "missing": 0}
+    diag = {
+        "eligible": 0, "ready": 0, "missing": 0,
+        "flood_qc_pass": 0, "flood_qc_failed": 0,
+    }
     for original in events:
         event = deepcopy(original)
         event.pop("footprint", None)
+        event.pop("footprint_qc", None)
         desc = source_descriptor(event, episode_cache)
         if desc is None:
             out.append(event)
             continue
         diag["eligible"] += 1
         event_type, event_id, episode_id, requested_method = desc
-        key = (event_type, event_id, episode_id)
+        try:
+            lat_key = round(float(event.get("lat")), 4)
+            lon_key = round(float(event.get("lon")), 4)
+        except (TypeError, ValueError):
+            lat_key = lon_key = None
+        key = (event_type, event_id, episode_id, lat_key, lon_key)
         if key not in geometry_cache:
             try:
-                geometry_cache[key] = fetch_geometry(event_type, event_id, episode_id)
+                geometry_cache[key] = fetch_geometry(
+                    event_type, event_id, episode_id,
+                    event.get("lon"), event.get("lat"),
+                )
             except Exception as exc:  # noqa: BLE001
                 print(f"WARN footprint {event_type} {event_id}: {type(exc).__name__}: {exc}")
-                geometry_cache[key] = (None, 0, requested_method)
-        geom, feature_count, resolved_method = geometry_cache[key]
+                geometry_cache[key] = (
+                    None, 0, requested_method,
+                    {"status": "failed", "reason": f"exception:{type(exc).__name__}"},
+                )
+        geom, feature_count, resolved_method, geometry_qc = geometry_cache[key]
         method = resolved_method or requested_method
+
+        if event_type == "FL":
+            event["footprint_qc"] = deepcopy(geometry_qc)
+            if (geometry_qc or {}).get("status") == "pass":
+                diag["flood_qc_pass"] += 1
+            else:
+                diag["flood_qc_failed"] += 1
+
         if geom is None or geom.is_empty:
             diag["missing"] += 1
+            remove_public_doc(event)
             out.append(event)
             continue
 
-        write_runtime_geometry(event, event_type, event_id, episode_id, method, geom)
+        write_runtime_geometry(
+            event, event_type, event_id, episode_id, method, geom, geometry_qc
+        )
         event["footprint"] = write_doc(
-            event, event_type, event_id, episode_id, method, geom, feature_count
+            event, event_type, event_id, episode_id, method, geom, feature_count,
+            geometry_qc,
         )
         diag["ready"] += 1
         out.append(event)
@@ -225,7 +287,8 @@ def main() -> None:
         "source": "GDACS mapped polygons for wildfire, cyclone, drought and flood when available",
         "public_geometry": "topology-preserving simplified browser outline",
         "analysis_geometry": "unsimplified transient geometry used by same-run exposure enrichment",
-        "no_polygon_behavior": "do not display a footprint panel",
+        "flood_qc": "select one center-aligned GDACS polygon feature; do not union unrelated flood polygon resources; fail closed if no credible source footprint exists",
+        "no_polygon_behavior": "do not display a footprint panel or polygon-derived exposure metric",
     }
     snap["footprint_diagnostics"] = {
         "canonical": d1,
