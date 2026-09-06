@@ -4,7 +4,7 @@
   "event_type": "Wildfire",
   "title": "Forest fires in Australia",
   "region": "Australia",
-  "calculated_at": "2026-09-06T18:41:44Z",
+  "calculated_at": "2026-09-06T20:39:24Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -12,47 +12,24 @@
     "interpretation": "Population exposure, not observed casualties or economic loss"
   },
   "hazard": "wildfire",
-  "population_direct": 0,
-  "population_within_1km": 0,
-  "population_within_2km": 0,
-  "population_within_5km": 1,
-  "population_within_10km": 2,
-  "source_model": "GDACS/GWIS wildfire exposure",
-  "source_model_run": "202609061737264232",
-  "source_model_status": "info: processing ok",
   "gdacs_event_id": "1031198",
   "gdacs_episode_id": 37,
-  "quality": "source_modelled_exposure",
+  "footprint_method": "GDACS burned-area/event polygon",
+  "population_direct": 0,
+  "population_within_5km": 0,
+  "quality": "high_spatial_reference_fallback",
   "metric_provenance": {
     "population_direct": {
-      "source": "GDACS/GWIS",
-      "source_field": "POPAFFECTED",
-      "method": "source_modelled",
-      "derived_by_climate_pulse": false
-    },
-    "population_within_1km": {
-      "source": "GDACS/GWIS",
-      "source_field": "SUMPOP1.0",
-      "method": "source_modelled",
-      "derived_by_climate_pulse": false
-    },
-    "population_within_2km": {
-      "source": "GDACS/GWIS",
-      "source_field": "SUMPOP2.0",
-      "method": "source_modelled",
-      "derived_by_climate_pulse": false
+      "source": "Climate Pulse",
+      "source_field": "population_direct",
+      "method": "GDACS mapped fire polygon × JRC GHSL 2025",
+      "derived_by_climate_pulse": true
     },
     "population_within_5km": {
-      "source": "GDACS/GWIS",
-      "source_field": "SUMPOP5.0",
-      "method": "source_modelled",
-      "derived_by_climate_pulse": false
-    },
-    "population_within_10km": {
-      "source": "GDACS/GWIS",
-      "source_field": "SUMPOP10.0",
-      "method": "source_modelled",
-      "derived_by_climate_pulse": false
+      "source": "Climate Pulse",
+      "source_field": "population_within_5km",
+      "method": "GDACS mapped fire polygon + 5 km × JRC GHSL 2025",
+      "derived_by_climate_pulse": true
     },
     "burned_area_ha": {
       "source": "GDACS/GWIS",

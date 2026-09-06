@@ -4,7 +4,7 @@
   "event_type": "Wildfire",
   "title": "Forest fires in Zambia",
   "region": "Zambia",
-  "calculated_at": "2026-09-05T04:37:47Z",
+  "calculated_at": "2026-09-06T20:39:05Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -12,11 +12,56 @@
     "interpretation": "Population exposure, not observed casualties or economic loss"
   },
   "hazard": "wildfire",
+  "population_direct": 2180,
+  "population_within_1km": 2859,
+  "population_within_2km": 3173,
+  "population_within_5km": 5705,
+  "population_within_10km": 12277,
+  "source_model": "GDACS/GWIS wildfire exposure",
+  "source_model_run": "202609062209071105",
+  "source_model_status": "info: processing ok",
   "gdacs_event_id": "1031470",
-  "gdacs_episode_id": 8,
-  "footprint_method": "GDACS burned-area/event polygon",
-  "population_direct": 1885,
-  "population_within_5km": 5270,
-  "population_5km_ring": 3385,
-  "quality": "high_spatial_reference"
+  "gdacs_episode_id": 9,
+  "quality": "source_modelled_exposure",
+  "metric_provenance": {
+    "population_direct": {
+      "source": "GDACS/GWIS",
+      "source_field": "POPAFFECTED",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_within_1km": {
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP1.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_within_2km": {
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP2.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_within_5km": {
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP5.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_within_10km": {
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP10.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "burned_area_ha": {
+      "source": "GDACS/GWIS",
+      "source_field": "severitytext",
+      "method": "source_reported_current_episode",
+      "derived_by_climate_pulse": false,
+      "gdacs_episode_id": 9
+    }
+  },
+  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
+  "burned_area_ha": 23745.0
 }
