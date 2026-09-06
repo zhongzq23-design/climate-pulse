@@ -42,8 +42,8 @@ class FloodFootprintQcTests(unittest.TestCase):
             'geometry': {
                 'type': 'MultiPolygon',
                 'coordinates': [
-                    [[[[ -72.73, 19.40], [-72.64, 19.40], [-72.64, 19.49], [-72.73, 19.49], [-72.73, 19.40]]]],
-                    [[[[ -72.60, 19.42], [-72.58, 19.42], [-72.58, 19.44], [-72.60, 19.44], [-72.60, 19.42]]]],
+                    [[[-72.73, 19.40], [-72.64, 19.40], [-72.64, 19.49], [-72.73, 19.49], [-72.73, 19.40]]],
+                    [[[-72.60, 19.42], [-72.58, 19.42], [-72.58, 19.44], [-72.60, 19.44], [-72.60, 19.42]]],
                 ],
             },
         }
@@ -61,7 +61,7 @@ class FloodFootprintQcTests(unittest.TestCase):
     def test_nearby_polygon_can_be_selected_when_point_is_just_outside(self):
         geom, qc = select_flood_geometry([square(40.00, 40.00, 40.20, 40.20)], 40.21, 40.10)
         self.assertIsNotNone(geom)
-        self.assertIn(qc['status'], {'pass', 'review'})
+        self.assertEqual(qc['status'], 'pass')
         self.assertFalse(qc['reported_center_inside'])
         self.assertLess(qc['reported_center_distance_km'], 10.0)
 
