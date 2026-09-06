@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Climate Pulse rolling, weekly and monthly event reports.">
+  <title>Reports · Climate Pulse</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    .report-shell{max-width:980px;margin:0 auto;padding:18px}.report-head,.report-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}.report-head h1{margin:6px 0}.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.report-card h2{margin:0 0 8px;font-size:18px}.report-card p{color:var(--muted);line-height:1.5}.report-links{display:flex;flex-wrap:wrap;gap:8px}.report-links a{display:inline-block;padding:8px 11px;border:1px solid var(--line);border-radius:11px;text-decoration:none;color:var(--accent);font-weight:700}.report-list{display:grid;gap:8px}.report-row{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:10px}.report-row:first-child{border-top:0;padding-top:0}.report-row small{color:var(--muted)}@media(max-width:760px){.report-grid{grid-template-columns:1fr}.report-shell{padding:10px}.report-row{display:block}.report-row .report-links{margin-top:7px}}
+  </style>
+</head>
+<body>
+<main class="report-shell">
+  <section class="report-head"><a href="index.html">← Climate Pulse</a><h1>Weekly & monthly reports</h1><p>Rolling previews update with the monitoring pipeline. Frozen weekly and monthly reports are published on schedule from the stored daily reporting ledger.</p></section>
+  <section class="report-grid" id="rolling"><article class="report-card"><h2>Loading reports…</h2></article></section>
+  <section class="report-card"><h2>Published weekly reports</h2><div class="report-list" id="weekly"><p>No weekly report has been published yet.</p></div></section>
+  <section class="report-card"><h2>Published monthly reports</h2><div class="report-list" id="monthly"><p>No monthly report has been published yet.</p></div></section>
+  <section class="report-card"><h2>How totals are interpreted</h2><p><strong>Unique mapped population exposed</strong> is a Climate Pulse spatial estimate from the union of available mapped wildfire, storm and flood footprints before extracting GHSL population. It removes overlap in mapped footprints, but it is not verified tracking of unique individuals.</p><p>Drought crop area is physical crop area inside the union of mapped drought risk/impact footprints; it is not confirmed crop loss. Raw report JSON keeps exact values, while displayed population counts are rounded to the nearest thousand and values below 1,000 are shown as &lt;1,000.</p></section>
+</main>
+<script>
+(async()=>{
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const link=item=>`<div class="report-row"><div><strong>${esc(item.label)}</strong><br><small>${esc(item.start)} to ${esc(item.end)} UTC · generated ${esc(item.generated_at)}</small></div><div class="report-links"><a href="${esc(item.html)}">Open report</a><a href="${esc(item.json)}">JSON</a></div></div>`;
+  try{
+    const r=await fetch('data/reports/index.json',{cache:'no-store'}); if(!r.ok) throw new Error('not ready');
+    const idx=await r.json();
+    const rolling=idx.rolling||{}; const cards=[];
+    for(const id of ['last-7-days','month-to-date']){const x=rolling[id]; if(x) cards.push(`<article class="report-card"><h2>${esc(x.label)}</h2><p>${esc(x.start)} to ${esc(x.end)} UTC</p><div class="report-links"><a href="${esc(x.html)}">Open preview</a><a href="${esc(x.json)}">JSON</a></div></article>`)}
+    document.getElementById('rolling').innerHTML=cards.join('')||'<article class="report-card"><h2>Rolling previews</h2><p>The first preview will appear after the next monitoring run.</p></article>';
+    const weekly=idx.weekly||[]; document.getElementById('weekly').innerHTML=weekly.length?weekly.map(link).join(''):'<p>No weekly report has been published yet.</p>';
+    const monthly=idx.monthly||[]; document.getElementById('monthly').innerHTML=monthly.length?monthly.map(link).join(''):'<p>No monthly report has been published yet.</p>';
+  }catch(_){document.getElementById('rolling').innerHTML='<article class="report-card"><h2>Rolling previews</h2><p>The reporting ledger is being initialized. A preview will appear after the next monitoring run.</p></article>'}
+})();
+</script>
+</body>
+</html>
