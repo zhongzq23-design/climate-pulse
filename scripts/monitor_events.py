@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Climate Pulse background event monitor.
 
-Runs in GitHub Actions three times per day. It ingests NASA EONET, GDACS and
-Copernicus CEMS Rapid Mapping, applies the current Standard Event rules,
-creates a normalized repository snapshot, and stores a timestamped archive.
+Runs three times per day, ingests NASA EONET, GDACS and Copernicus CEMS,
+normalizes source records, separates source-update/event-start/event-end timing,
+and stores timestamped raw snapshots before downstream enrichment.
 """
 from __future__ import annotations
 
@@ -100,7 +100,7 @@ def parse_dt(value: Any) -> datetime | None:
 
 def date_label(value: Any, now: datetime) -> str:
     dt = parse_dt(value)
-    if not dt:
+    if not dt or dt > now + timedelta(minutes=5):
         return "Update time unavailable"
     hours = max(0, round((now - dt).total_seconds() / 3600))
     if hours < 1:
@@ -109,6 +109,14 @@ def date_label(value: Any, now: datetime) -> str:
         return f"Updated {hours} h ago"
     days = round(hours / 24)
     return f"Updated {days} day{'s' if days != 1 else ''} ago"
+
+
+def first_value(obj: dict[str, Any], keys: tuple[str, ...]) -> Any:
+    for key in keys:
+        value = obj.get(key)
+        if value not in (None, ""):
+            return value
+    return None
 
 
 def truncate(value: Any, n: int = 480) -> str:
@@ -181,7 +189,7 @@ def burned_ha(p: dict[str, Any]) -> float | None:
     values = [
         p.get("ha"), p.get("hectares"), p.get("burnedarea"), p.get("burnedArea"), p.get("burned_area"),
         p.get("burnedarea_ha"), p.get("burnedAreaHa"), p.get("area_ha"), severity.get("ha"), severity.get("hectares"),
-        severity.get("burnedarea"), severity.get("burnedArea"), severity.get("severitytext"), severity.get("severity")
+        severity.get("burnedarea"), severity.get("burnedArea"), severity.get("severitytext"), severity.get("severity"),
     ]
     for value in values:
         n = parse_ha(value)
@@ -209,14 +217,16 @@ def parse_eonet(data: Any, now: datetime) -> list[dict[str, Any]]:
             continue
         sources = e.get("sources") or []
         url = next((x.get("url") for x in sources if isinstance(x, dict) and x.get("url")), None) or e.get("link") or EONET_URL
-        event_date = g.get("date") if isinstance(g, dict) else None
+        latest = g.get("date") if isinstance(g, dict) else None
+        start = geoms[0].get("date") if geoms and isinstance(geoms[0], dict) else None
         out.append({
             "id": f"eonet-{e.get('id')}", "source_id": str(e.get("id")), "origin": "eonet",
             "title": e.get("title") or f"{typ} event", "type": typ,
             "region": f"{p['lat']:.2f}°, {p['lon']:.2f}°", "lat": p["lat"], "lon": p["lon"],
-            "status": "Open", "updated": date_label(event_date, now), "priority": "Standard", "climate_link": "Not assessed",
+            "status": "Open", "updated": date_label(latest, now), "priority": "Standard", "climate_link": "Not assessed",
             "summary": truncate(e.get("description") or f"{typ} event tracked by NASA EONET."),
-            "source": "NASA EONET", "source_url": url, "event_date": event_date,
+            "source": "NASA EONET", "source_url": url, "event_date": latest,
+            "source_updated_at": latest, "event_start": start, "event_end": None, "last_detection": latest,
         })
     return out
 
@@ -242,7 +252,9 @@ def parse_cems(data: Any, now: datetime) -> list[dict[str, Any]]:
         region = countries or f"{p['lat']:.2f}°, {p['lon']:.2f}°"
         code = str(e.get("code") or "")
         detail = f"{CEMS_DETAIL_URL}?{urllib.parse.urlencode({'code': code})}" if code else CEMS_URL
-        event_date = e.get("lastUpdate") or e.get("activationTime") or e.get("eventTime")
+        source_updated = e.get("lastUpdate")
+        event_start = e.get("eventTime") or e.get("activationTime")
+        event_date = source_updated or event_start
         fallback_id = f"{p['lat']:.2f}-{p['lon']:.2f}"
         summary = f"Copernicus EMS Rapid Mapping activation{f' {code}' if code else ''}."
         if e.get("gdacsId"):
@@ -250,8 +262,9 @@ def parse_cems(data: Any, now: datetime) -> list[dict[str, Any]]:
         out.append({
             "id": f"cems-{code or fallback_id}", "source_id": code or "unknown", "origin": "cems",
             "title": e.get("name") or f"{typ} activation", "type": typ, "region": region, "lat": p["lat"], "lon": p["lon"],
-            "status": "Active", "updated": date_label(event_date, now), "priority": "Review", "climate_link": "Not assessed",
+            "status": "Active", "updated": date_label(source_updated, now), "priority": "Review", "climate_link": "Not assessed",
             "summary": truncate(summary), "source": "Copernicus CEMS", "source_url": detail, "event_date": event_date,
+            "source_updated_at": source_updated, "event_start": event_start, "event_end": None, "last_detection": source_updated,
             "gdacs_id": e.get("gdacsId"),
         })
     return out
@@ -282,15 +295,21 @@ def parse_gdacs(data: Any, now: datetime, diag: dict[str, int]) -> list[dict[str
         region = str(q.get("country") or q.get("iso3") or f"{p['lat']:.2f}°, {p['lon']:.2f}°")
         sevdata = q.get("severitydata") or {}
         sev = sevdata.get("severitytext") or sevdata.get("severity") or ""
-        event_date = q.get("todate") or q.get("fromdate")
+        event_start = q.get("fromdate")
+        event_end = q.get("todate")
+        source_updated = first_value(q, ("lastupdate", "lastUpdate", "datemodified", "dateModified", "modified", "updated", "publicationdate", "publicationDate"))
+        last_detection = event_end if typ == "Wildfire" else None
+        operational = source_updated or last_detection or event_start or event_end
+        label_time = source_updated or last_detection
         summary = f"{'Burned area: ' + format(round(ha), ',') + ' ha. ' if ha is not None else ''}{sev or typ + ' event tracked by GDACS.'}{' Alert level: ' + str(q.get('alertlevel')) + '.' if q.get('alertlevel') else ''}"
         out.append({
             "id": f"gdacs-{q.get('eventtype') or 'EV'}-{eid}", "source_id": eid, "origin": "gdacs",
             "title": q.get("name") or f"{typ} in {region}", "type": typ, "region": region, "lat": p["lat"], "lon": p["lon"],
-            "status": "Recent", "updated": date_label(event_date, now), "priority": priority(q.get("alertlevel")), "climate_link": "Not assessed",
+            "status": "Recent", "updated": date_label(label_time, now), "priority": priority(q.get("alertlevel")), "climate_link": "Not assessed",
             "summary": truncate(summary), "source": f"GDACS{' · ' + str(q.get('alertlevel')) if q.get('alertlevel') else ''}",
             "source_url": f"https://www.gdacs.org/report.aspx?{urllib.parse.urlencode({'eventid': eid, 'eventtype': q.get('eventtype') or ''})}",
-            "event_date": event_date, "burned_area_ha": ha,
+            "event_date": operational, "source_updated_at": source_updated, "event_start": event_start, "event_end": event_end,
+            "last_detection": last_detection, "burned_area_ha": ha,
         })
     return out
 
@@ -331,6 +350,10 @@ def dedupe(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
             match["summary"] = e["summary"]
         if e.get("burned_area_ha") is not None and (match.get("burned_area_ha") is None or float(e["burned_area_ha"]) > float(match["burned_area_ha"])):
             match["burned_area_ha"] = e["burned_area_ha"]
+        if stamp(e) >= stamp(match):
+            for key in ("event_date", "source_updated_at", "event_start", "event_end", "last_detection", "updated", "status"):
+                if e.get(key) is not None:
+                    match[key] = e.get(key)
     return out
 
 
@@ -368,6 +391,9 @@ def cluster_fires(events: list[dict[str, Any]], radius: float = 180.0) -> list[d
             "climate_link": "Not assessed", "summary": f"{len(group)} nearby major-wildfire records are grouped for the world overview. Expand this event to inspect individual source records.",
             "source": " · ".join(dict.fromkeys(x["source"].split(" · ")[0] for x in group)), "source_url": group[0].get("source_url"),
             "source_urls": list(dict.fromkeys(x.get("source_url") for x in group if x.get("source_url"))), "event_date": latest.get("event_date"),
+            "source_updated_at": latest.get("source_updated_at"),
+            "event_start": min((x.get("event_start") for x in group if x.get("event_start")), default=None),
+            "event_end": latest.get("event_end"), "last_detection": latest.get("last_detection"),
             "burned_area_ha": sum(float(x.get("burned_area_ha") or 0) for x in group) or None, "member_count": len(group), "members": group,
         })
     all_events = other + clustered
@@ -400,7 +426,8 @@ def source_call(name: str, fn, previous: dict[str, Any]) -> tuple[list[dict[str,
 
 
 def update_lifecycle(source_events: list[dict[str, Any]], now_iso: str) -> dict[str, Any]:
-    state = load_json(LIFECYCLE_PATH, {"schema_version": "1.0", "events": {}})
+    state = load_json(LIFECYCLE_PATH, {"schema_version": "2.0", "events": {}})
+    state["schema_version"] = "2.0"
     table = state.setdefault("events", {})
     for e in source_events:
         key = e["id"]
@@ -412,6 +439,8 @@ def update_lifecycle(source_events: list[dict[str, Any]], now_iso: str) -> dict[
             "last_seen": now_iso, "observations": int(rec.get("observations", 0)) + 1,
             "origin": e.get("origin"), "source_id": e.get("source_id"), "type": e.get("type"), "title": e.get("title"),
             "lat": e.get("lat"), "lon": e.get("lon"), "latest_status": e.get("status"), "latest_event_date": e.get("event_date"),
+            "latest_source_updated_at": e.get("source_updated_at"), "latest_event_start": e.get("event_start"),
+            "latest_event_end": e.get("event_end"), "latest_last_detection": e.get("last_detection"),
             "latest_burned_area_ha": e.get("burned_area_ha"),
         })
     state["updated_at"] = now_iso
@@ -444,12 +473,13 @@ def main() -> None:
     canonical_events = dedupe(source_events)
     display_events = cluster_fires(canonical_events)
     snapshot = {
-        "schema_version": "1.1",
+        "schema_version": "2.0",
         "generated_at": now_iso,
         "monitor": {
             "cadence": "3x daily", "schedule_utc": ["00:17", "08:17", "16:17"], "window_days": WINDOW_DAYS,
             "wildfire_min_burned_area_ha": WILDFIRE_MIN_HA,
             "cems_endpoint": CEMS_URL,
+            "temporal_model": "source_updated_at, event_start, event_end and last_detection are stored separately; display update age never uses a future event end",
         },
         "source_status": {"eonet": s_eonet, "gdacs": s_gdacs, "cems": s_cems},
         "diagnostics": diag,
