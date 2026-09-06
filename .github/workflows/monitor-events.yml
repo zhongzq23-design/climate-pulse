@@ -9,11 +9,13 @@ on:
     paths:
       - 'scripts/monitor_events.py'
       - 'scripts/run_event_monitor.py'
+      - 'scripts/restore_recent_wildfires.py'
       - 'scripts/enrich_hazard_exposure.py'
       - 'scripts/run_hazard_enrichment.py'
       - 'scripts/source_metric_utils.py'
       - 'scripts/wildfire_episode_metrics.py'
       - 'scripts/sync_wildfire_episode_metrics.py'
+      - 'scripts/finalize_wildfire_display.py'
       - 'scripts/flood_footprint_qc.py'
       - 'scripts/enrich_event_footprints.py'
       - 'scripts/enrich_asset_exposure.py'
@@ -24,6 +26,7 @@ on:
       - 'scripts/run_periodic_reports.py'
       - 'tests/test_source_metric_utils.py'
       - 'tests/test_wildfire_episode_sync.py'
+      - 'tests/test_wildfire_display_freshness.py'
       - 'tests/test_flood_footprint_qc.py'
       - 'tests/test_reporting_storage.py'
       - '.github/workflows/monitor-events.yml'
@@ -73,6 +76,9 @@ jobs:
       - name: Fetch, normalize, deduplicate and archive events
         run: python scripts/run_event_monitor.py
 
+      - name: Recover recently active long-running wildfires
+        run: python scripts/restore_recent_wildfires.py
+
       - name: Enrich source-first wildfire and cyclone population metrics
         env:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
@@ -80,6 +86,9 @@ jobs:
 
       - name: Align wildfire headline metrics to the same GDACS episode
         run: python scripts/sync_wildfire_episode_metrics.py
+
+      - name: Finalize wildfire visibility with inclusive 10k boundary
+        run: python scripts/finalize_wildfire_display.py
 
       - name: Persist QC-passed mapped event footprints
         run: python scripts/enrich_event_footprints.py
