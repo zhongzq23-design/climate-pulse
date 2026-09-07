@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "event_id": "gdacs-TC-1001315",
+  "event_type": "Storm",
+  "title": "Tropical Cyclone LOWELL-26",
+  "region": "13.50°, -163.10°",
+  "calculated_at": "2026-09-07T00:58:05Z",
+  "exposure": {
+    "hazard": "tropical_cyclone",
+    "gdacs_event_id": "1001315",
+    "gdacs_episode_id": 39,
+    "footprint_method": "gdacs_wind_polygon",
+    "population_ts_or_impact_footprint": 177,
+    "quality": "high",
+    "metric_provenance": {
+      "population_ts_or_impact_footprint": {
+        "source": "Climate Pulse",
+        "source_field": "population_ts_or_impact_footprint",
+        "method": "GDACS TC polygon × JRC GHSL 2025",
+        "derived_by_climate_pulse": true
+      }
+    },
+    "potential_gdp_exposure_proxy_usd": 11460565,
+    "gdp_proxy_reference_year": 2024,
+    "gdp_proxy_indicator": "World Bank WDI NY.GDP.PCAP.CD (GDP per capita, current US$)",
+    "gdp_proxy_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "gdp_proxy_population_coverage_pct": 100.0,
+    "gdp_proxy_method": "sum over countries: GHSL population inside hazard footprint × WDI 2024 GDP per capita",
+    "gdp_proxy_country_components": [
+      {
+        "country": "United States",
+        "iso3": "USA",
+        "population_basis": 133,
+        "gdp_per_capita_usd_2024": 86169.66,
+        "proxy_usd": 11460565
+      }
+    ],
+    "gdp_proxy_interpretation": "Economic activity exposure proxy only; not observed loss, asset damage, business interruption, or a gridded local-GDP estimate."
+  }
+}
