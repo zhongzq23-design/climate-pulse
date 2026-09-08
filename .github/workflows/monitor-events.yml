@@ -24,6 +24,9 @@ on:
       - 'scripts/build_periodic_reports.py'
       - 'scripts/report_geometry_utils.py'
       - 'scripts/run_periodic_reports.py'
+      - 'assets/display-rounding-ui.js'
+      - 'assets/wildfire-source-sync-ui.js'
+      - 'tests/test_display_rounding.js'
       - 'tests/test_source_metric_utils.py'
       - 'tests/test_wildfire_episode_sync.py'
       - 'tests/test_wildfire_display_freshness.py'
@@ -70,8 +73,11 @@ jobs:
       - name: Run parser and reporting regression tests
         run: python -m unittest discover -s tests -v
 
-      - name: Check display-only population rounding script
-        run: node --check assets/display-rounding-ui.js
+      - name: Check population display scripts and locale rounding
+        run: |
+          node --check assets/display-rounding-ui.js
+          node --check assets/wildfire-source-sync-ui.js
+          node tests/test_display_rounding.js
 
       - name: Fetch, normalize, deduplicate and archive events
         run: python scripts/run_event_monitor.py
