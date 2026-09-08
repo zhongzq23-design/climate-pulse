@@ -1,24 +1,44 @@
 'use strict';
 
 // Display-only population rounding. Raw JSON values remain unchanged.
+// The site is English, so display grouping is intentionally fixed to en-US.
 (() => {
+  const integerFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+
+  function parsePopulationToken(value) {
+    if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+    const normalized = String(value ?? '')
+      .trim()
+      // Browsers may render locale grouping as comma, period, normal space,
+      // NBSP or narrow NBSP. Population values are integer counts, so these
+      // are grouping separators here rather than decimal punctuation.
+      .replace(/[,.\s\u00A0\u202F]/g, '');
+    if (!/^\d+$/.test(normalized)) return null;
+    const n = Number(normalized);
+    return Number.isFinite(n) ? n : null;
+  }
+
   function displayPopulation(value) {
-    const n = Number(String(value).replace(/,/g, ''));
-    if (!Number.isFinite(n)) return null;
+    const n = parsePopulationToken(value);
+    if (n === null) return null;
     if (n <= 0) return '0';
     if (n < 1000) return '<1,000';
     const rounded = Math.round(n / 1000) * 1000;
-    return `≈${rounded.toLocaleString()}`;
+    return `≈${integerFormatter.format(rounded)}`;
   }
 
+  // A grouped integer may contain locale-specific spaces. Only consume a
+  // whitespace separator when it is followed by another digit, so the final
+  // whitespace before “people” remains available to the suffix capture.
+  const groupedInteger = String.raw`\d(?:[\d,.]|\s(?=\d))*`;
   const patterns = [
-    /([<≈~])?(\d[\d,]*)(\s+people\b)/gi,
-    /([<≈~])?(\d[\d,]*)(\s+exposed in burned area\b)/gi,
-    /([<≈~])?(\d[\d,]*)(\s+within\s+(?:1|2|5|10)\s*km\b)/gi,
+    new RegExp(`([<≈~])?(${groupedInteger})(\\s+people\\b)`, 'gi'),
+    new RegExp(`([<≈~])?(${groupedInteger})(\\s+exposed in burned area\\b)`, 'gi'),
+    new RegExp(`([<≈~])?(${groupedInteger})(\\s+within\\s+(?:1|2|5|10)\\s*km\\b)`, 'gi'),
   ];
 
   function roundText(text) {
-    let out = text;
+    let out = String(text ?? '');
     for (const re of patterns) {
       out = out.replace(re, (_, prefix, number, suffix) => {
         if (prefix === '<') return `<${number}${suffix}`;
@@ -28,6 +48,10 @@
     }
     return out;
   }
+
+  const api = { parsePopulationToken, displayPopulation, roundText };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (typeof document === 'undefined') return;
 
   function apply(root = document.body) {
     if (!root) return;
