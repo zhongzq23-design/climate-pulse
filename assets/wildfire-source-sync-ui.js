@@ -2,6 +2,7 @@
 
 (() => {
   const baseDetailCells = detailCells;
+  const exactInteger = value => Number.isFinite(Number(value)) ? Math.round(Number(value)).toLocaleString('en-US') : null;
 
   const fmtDate = value => {
     const s = String(value || '').slice(0, 10);
@@ -26,6 +27,14 @@
       return `${src} · current episode${ep}`;
     }
     return src;
+  }
+
+  function sourceLabelWithRaw(e, key, fallback) {
+    const meta = metricSource(e, key);
+    const label = sourceLabel(meta, fallback);
+    if (!meta || meta.derived_by_climate_pulse) return label;
+    const raw = exactInteger(e?.exposure?.[key]);
+    return raw ? `${label} · GDACS/GWIS raw ${raw}` : label;
   }
 
   function appendCell(afterNode, label, value, meta) {
@@ -86,7 +95,20 @@
       if (b) b.textContent = 'People in burned area';
       const meta = direct.querySelector('.metric-source') || direct.appendChild(document.createElement('span'));
       meta.className = 'metric-source';
-      meta.textContent = `GDACS page label: “People affected” · ${sourceLabel(metricSource(e, 'population_direct'), 'GDACS/GWIS modelled exposure')}`;
+      meta.textContent = `GDACS page label: “People affected” · ${sourceLabelWithRaw(e, 'population_direct', 'GDACS/GWIS modelled exposure')}`;
+    }
+
+    for (const [label, key] of [
+      ['Population within 1 km', 'population_within_1km'],
+      ['Population within 2 km', 'population_within_2km'],
+      ['Population within 5 km', 'population_within_5km'],
+      ['Population within 10 km', 'population_within_10km'],
+    ]) {
+      const cell = byLabel(label);
+      if (!cell) continue;
+      const meta = cell.querySelector('.metric-source') || cell.appendChild(document.createElement('span'));
+      meta.className = 'metric-source';
+      meta.textContent = sourceLabelWithRaw(e, key, 'GDACS/GWIS modelled exposure');
     }
 
     return template.innerHTML;
