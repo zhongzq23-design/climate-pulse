@@ -11,6 +11,7 @@ on:
       - 'scripts/run_event_monitor.py'
       - 'scripts/restore_recent_wildfires.py'
       - 'scripts/wildfire_identity_policy.py'
+      - 'scripts/sync_wildfire_identity_docs.py'
       - 'scripts/enrich_hazard_exposure.py'
       - 'scripts/run_hazard_enrichment.py'
       - 'scripts/source_metric_utils.py'
@@ -117,12 +118,15 @@ jobs:
           CLIMATE_PULSE_CACHE_DIR: ~/.cache/climate-pulse
         run: python scripts/run_periodic_reports.py --mode rolling
 
+      - name: Sync wildfire identity policy documentation
+        run: python scripts/sync_wildfire_identity_docs.py
+
       - name: Commit event, exposure, history and report products
         shell: bash
         run: |
           git config user.name "climate-pulse-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports
+          git add data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports methods.html REPORTING.md
           if git diff --cached --quiet; then
             echo "No data changes to commit."
             exit 0
