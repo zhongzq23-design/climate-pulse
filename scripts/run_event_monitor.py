@@ -4,10 +4,15 @@
 Keep the 10,000 ha gate for Green wildfire records while retaining GDACS
 Orange/Red fires even when burned area is smaller. Green population eligibility
 is applied later by run_hazard_enrichment.py.
+
+Distinct wildfire records are preserved: proximity in space/time is not enough
+to merge separate wildfire source IDs, and the display layer does not cluster
+nearby fires into regional aggregate markers.
 """
 from __future__ import annotations
 
 import monitor_events as m
+from wildfire_identity_policy import dedupe_events_preserve_wildfires, individual_display
 
 _original_parse_gdacs = m.parse_gdacs
 _original_threshold = m.WILDFIRE_MIN_HA
@@ -41,6 +46,8 @@ def parse_gdacs_severity_aware(data, now, diag):
 
 
 m.parse_gdacs = parse_gdacs_severity_aware
+m.dedupe = dedupe_events_preserve_wildfires
+m.cluster_fires = individual_display
 
 if __name__ == "__main__":
     m.main()
