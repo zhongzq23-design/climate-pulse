@@ -7,6 +7,9 @@ fall out of the source list even though it remains operationally recent. This
 helper queries two older start-date bands and keeps only records whose explicit
 last_detection (falling back to the operational event date for legacy records)
 is still within the normal seven-day freshness window.
+
+Recovered wildfire records retain their individual source identity. Spatial or
+temporal proximity is not used to merge separate wildfire IDs.
 """
 from __future__ import annotations
 
@@ -17,10 +20,8 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
-from monitor_events import (
-    GDACS_URL, LATEST_PATH, cluster_fires, dedupe, fetch_json, parse_dt, parse_gdacs,
-    utcnow,
-)
+from monitor_events import GDACS_URL, LATEST_PATH, fetch_json, parse_dt, parse_gdacs, utcnow
+from wildfire_identity_policy import dedupe_events_preserve_wildfires, individual_display
 
 ROOT = Path(__file__).resolve().parents[1]
 FRESH_DAYS = 7
@@ -81,10 +82,10 @@ def main() -> None:
 
     recovered_by_id = {str(e.get("id")): e for e in recovered}
     source_events = merge_unique(snap.get("source_events") or [], list(recovered_by_id.values()))
-    canonical = dedupe(source_events)
+    canonical = dedupe_events_preserve_wildfires(source_events)
     snap["source_events"] = source_events
     snap["canonical_events"] = canonical
-    snap["events"] = cluster_fires(canonical)
+    snap["events"] = individual_display(canonical)
     snap.setdefault("monitor", {})["wildfire_discovery_extension"] = {
         "purpose": "recover wildfires started 8-21 days ago when last detection remains within the standard 7-day freshness window",
         "freshness_days": FRESH_DAYS,
@@ -92,6 +93,9 @@ def main() -> None:
         "recovered_source_events": len(recovered_by_id),
         "errors": errors,
     }
+    snap["monitor"]["wildfire_identity_policy"] = (
+        "distinct wildfire source IDs remain separate; no proximity-based wildfire dedupe or map clustering"
+    )
     LATEST_PATH.write_text(json.dumps(snap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({
         "status": "ok" if not errors else "completed_with_warnings",
