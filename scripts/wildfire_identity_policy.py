@@ -16,6 +16,8 @@ from typing import Any
 
 import monitor_events as m
 
+_BASE_DEDUPE = m.dedupe
+
 
 def _stamp(event: dict[str, Any]) -> float:
     dt = m.parse_dt(event.get("event_date"))
@@ -69,7 +71,7 @@ def dedupe_events_preserve_wildfires(events: list[dict[str, Any]]) -> list[dict[
     others = [deepcopy(e) for e in events if e.get("type") != "Wildfire"]
 
     # Keep the established cross-source proximity dedupe for non-wildfire hazards.
-    out = m.dedupe(others)
+    out = _BASE_DEDUPE(others)
 
     groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for event in wildfires:
