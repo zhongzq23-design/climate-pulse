@@ -6,6 +6,9 @@ layer. To avoid a threshold-edge event flickering out of Climate Pulse when the
 source reports exactly 10,000 people within 5 km, Climate Pulse uses an inclusive
 10,000-person threshold for public Green-wildfire visibility. Orange/Red remain
 visible regardless of this Green threshold.
+
+Each eligible wildfire is published as its own event. Nearby wildfire records are
+not combined into regional cluster markers.
 """
 from __future__ import annotations
 
@@ -14,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import enrich_hazard_exposure as h
-from monitor_events import cluster_fires
+from wildfire_identity_policy import individual_display
 
 ROOT = Path(__file__).resolve().parents[1]
 LATEST = ROOT / "data" / "events" / "latest.json"
@@ -51,19 +54,22 @@ def main() -> None:
         canonical.append(event)
 
     visible = [e for e in canonical if e.get("display_eligible", True)]
-    display = cluster_fires(visible)
-    for event in display:
-        h.enrich_cluster_exposure(event)
+    display = individual_display(visible)
 
     snap["canonical_events"] = canonical
     snap["events"] = display
     snap.setdefault("monitor", {})["wildfire_green_display_rule"] = (
         "current-episode burned_area_ha >= 10000 AND population_within_5km >= 10000"
     )
+    snap["monitor"]["wildfire_identity_policy"] = (
+        "distinct wildfire source IDs are published individually; proximity does not merge or cluster fires"
+    )
     snap["wildfire_display_diagnostics"] = {
         "visible_canonical_wildfires": visible_wildfires,
         "hidden_canonical_wildfires": hidden_wildfires,
+        "published_wildfire_clusters": 0,
         "green_boundary_policy": "inclusive at 10,000 people within 5 km to avoid source-rounding threshold flicker",
+        "identity_policy": "one eligible wildfire event per explicit source identity; no proximity clustering",
     }
     LATEST.write_text(json.dumps(snap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     h.rewrite_matching_archive(snap)
@@ -71,6 +77,7 @@ def main() -> None:
         "status": "ok",
         "visible_canonical_wildfires": visible_wildfires,
         "hidden_canonical_wildfires": hidden_wildfires,
+        "published_wildfire_clusters": 0,
         "display_events": len(display),
     }, indent=2))
 
