@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Enforce public science writing policy
+        run: python scripts/check_public_science_copy.py
+
       - name: Build lightweight public site artifact
         shell: bash
         run: |
