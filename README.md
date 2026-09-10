@@ -7,12 +7,12 @@ Climate Pulse is an early-stage public web product for tracking climate-related 
 - World map with the prime meridian centered.
 - Standard Events from NASA EONET, GDACS and Copernicus CEMS, collected by a GitHub Actions backend three times per day.
 - EONET is intentionally used for non-wildfire hazards; GDACS is the primary wildfire source to avoid the known EONET/GDACS global-wildfire duplicate path.
-- Major-wildfire rule: GDACS burned area must be **>= 10,000 ha** before it enters the main map.
-- Major wildfires are enriched with GHSL 2025 population in the mapped footprint and in a surrounding 5 km buffer.
-- Tropical cyclones use GDACS wind/impact polygons when available; remote Green events with no mapped population exposure can be hidden from the main map.
-- Nearby major-wildfire records may be grouped for map readability while retaining the underlying source records.
-- Event cards expand to show source IDs, update times, coordinates, source links and hazard-specific population-exposure fields.
-- A public **Methods & definitions** page documents operational rules and scientific limitations.
+- For the public map, Orange and Red GDACS wildfires remain visible. A Green wildfire must have **>= 10,000 ha** burned area and **>= 10,000 people within 5 km**, using current GDACS/GWIS source metrics when available.
+- Distinct wildfire source IDs remain separate events; spatial or temporal proximity alone does not merge or cluster nearby fires.
+- Wildfire population metrics use GDACS/GWIS first. Climate Pulse uses GHSL only as an explicitly labelled fallback when the equivalent source value is unavailable.
+- Tropical cyclones use structured GDACS advisory exposure and mapped hazard geometry when available; fallback exposure is clearly labelled.
+- Event cards expand to show source IDs, update times, coordinates, source links, hazard-specific exposure/impact fields, mapped footprints when available and long-term climate context.
+- A public **Methods & definitions** page documents operational rules, metric semantics and scientific limitations.
 - Climate context is explicitly separated from event attribution.
 
 ## Scientific reference data
@@ -22,8 +22,8 @@ Climate Pulse keeps large authoritative source archives outside Git but can publ
 ### Population
 
 - JRC GHSL GHS-WUP-POP R2025A, epoch 2025.
-- Authoritative ~1 km source is downloaded/cached transiently for event calculations.
-- A compact 0.1° population-count derivative is stored under `data/reference/population/`.
+- The authoritative ~1 km source is downloaded/cached transiently for event calculations.
+- Compact derived products and per-event results are stored in the repository as needed for reproducibility and reporting.
 
 ### CRU climate context
 
@@ -36,11 +36,29 @@ Climate Pulse keeps large authoritative source archives outside Git but can publ
 
 See [`methods.html`](methods.html) for public definitions and limitations.
 
+## Public scientific writing governance
+
+Public methods, definitions, explainers, report interpretations and other scientific-description pages follow [`docs/PUBLIC_SCIENCE_WRITING_RULES.md`](docs/PUBLIC_SCIENCE_WRITING_RULES.md).
+
+The policy requires:
+
+- scientific meaning to be preserved before stylistic improvement;
+- source-reported, modelled, derived, supplemental and observed quantities to remain distinct;
+- GPT/project agents to resolve routine editorial decisions using the current repository source of truth and, when needed, verified authoritative documentation or peer-reviewed research;
+- unresolved scientific ambiguity to be expressed neutrally or omitted rather than guessed;
+- SCFL (Structure -> Clarity -> Flow -> Language) and final invariant checks before publication;
+- no unresolved human-review/editorial placeholders in public scientific copy.
+
+`AGENTS.md` makes this policy binding for future GPT/Codex work. GitHub Pages also runs `scripts/check_public_science_copy.py` before deployment as a deterministic publication guard. This editorial policy does not replace event/data publication rules in `docs/REVIEW_POLICY.md`.
+
 ## Repository layout
 
 ```text
+AGENTS.md
 index.html
 methods.html
+reports.html
+REPORTING.md
 assets/
 data/
   events/
@@ -49,7 +67,13 @@ data/
     archive/
   exposure/
     population/
-    landcover/
+    assets/
+  footprints/
+  climate/
+    event_timeseries/
+  history/
+    daily/
+  reports/
   reference/
     population/
     climate/
@@ -62,20 +86,24 @@ data/
   derived/impact/
   schemas/
 docs/
+  DATA_ARCHITECTURE.md
+  PUBLIC_SCIENCE_WRITING_RULES.md
+  REVIEW_POLICY.md
 scripts/
+tests/
 ```
 
 ## Data strategy
 
 GitHub stores **compact, derived and versioned products**, not full global source archives. Full ERA5/ERA5-Land, monthly CRU source files, high-resolution land-cover rasters and authoritative global population rasters remain in their official services or backend cache. Climate Pulse stores provenance plus reproducible derivatives and per-event results.
 
-The GitHub Pages artifact is intentionally kept lightweight: it contains the website and the current event snapshot, while larger scientific reference files remain publicly accessible through the GitHub repository and `raw.githubusercontent.com`.
+The GitHub Pages artifact is intentionally kept lightweight: it contains the website and the current browser-facing event products, while larger scientific reference files remain publicly accessible through the GitHub repository and `raw.githubusercontent.com`.
 
 The website first checks `data/events/latest.json`. If a non-empty repository snapshot exists, it uses that versioned file. During bootstrap/failure modes it can fall back to direct live APIs.
 
 ## Scientific framing
 
-An event appearing in an authoritative hazard feed does not prove anthropogenic climate causation. Long-term local warming/drying context is background information; formal attribution evidence, when available, is a separate field and must be explicitly sourced.
+An event appearing in an authoritative hazard feed does not prove anthropogenic climate causation. Long-term local warming or drying context provides background information; formal attribution evidence, when available, is separate and must be explicitly sourced.
 
 ## Status
 
