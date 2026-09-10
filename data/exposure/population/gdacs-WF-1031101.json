@@ -4,7 +4,7 @@
   "event_type": "Wildfire",
   "title": "Forest fires in United States",
   "region": "United States",
-  "calculated_at": "2026-09-09T00:58:37Z",
+  "calculated_at": "2026-09-10T08:43:28Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -12,24 +12,47 @@
     "interpretation": "Population exposure, not observed casualties or economic loss"
   },
   "hazard": "wildfire",
+  "population_direct": 206,
+  "population_within_1km": 386,
+  "population_within_2km": 1058,
+  "population_within_5km": 3264,
+  "population_within_10km": 4747,
+  "source_model": "GDACS/GWIS wildfire exposure",
+  "source_model_run": "202609081841143101",
+  "source_model_status": "info: processing ok",
   "gdacs_event_id": "1031101",
-  "gdacs_episode_id": null,
-  "footprint_method": "GDACS burned-area/event polygon",
-  "population_direct": 234,
-  "population_within_5km": 3708,
-  "quality": "high_spatial_reference_fallback",
+  "gdacs_episode_id": 30,
+  "quality": "source_modelled_exposure",
   "metric_provenance": {
     "population_direct": {
-      "source": "Climate Pulse",
-      "source_field": "population_direct",
-      "method": "GDACS mapped fire polygon × JRC GHSL 2025",
-      "derived_by_climate_pulse": true
+      "source": "GDACS/GWIS",
+      "source_field": "POPAFFECTED",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_within_1km": {
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP1.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_within_2km": {
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP2.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
     },
     "population_within_5km": {
-      "source": "Climate Pulse",
-      "source_field": "population_within_5km",
-      "method": "GDACS mapped fire polygon + 5 km × JRC GHSL 2025",
-      "derived_by_climate_pulse": true
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP5.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
+    },
+    "population_within_10km": {
+      "source": "GDACS/GWIS",
+      "source_field": "SUMPOP10.0",
+      "method": "source_modelled",
+      "derived_by_climate_pulse": false
     },
     "burned_area_ha": {
       "source": "GDACS/GWIS",

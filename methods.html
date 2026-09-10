@@ -42,10 +42,10 @@
         <div class="method-note">A record appearing on Climate Pulse means that it passed the current operational rules. It does not mean Climate Pulse independently verifies every source statement.</div>
       </article>
       <article class="method-card">
-        <h2>3. Deduplication and map clustering</h2>
-        <p>Source IDs and links are retained. Obvious cross-source duplicates may be merged when they describe the same hazard type and occur close together in space and time.</p>
-        <div class="formula">candidate duplicate if: same hazard type AND distance &lt; 80 km AND |date₁ − date₂| ≤ 5 days</div>
-        <p>Major wildfire records may also be grouped visually when they occur within roughly 180 km and 7 days. A grouped marker is a display object rather than one source polygon. Member sums may overlap and are never labelled as unique-population totals.</p>
+        <h2>3. Deduplication and wildfire identity</h2>
+        <p>Source IDs and links are retained. For non-wildfire hazards, obvious cross-source duplicates may still be merged when they describe the same hazard type and occur close together in space and time.</p>
+        <div class="formula">non-wildfire candidate duplicate if: same hazard type AND distance &lt; 80 km AND |date₁ − date₂| ≤ 5 days</div>
+        <p><strong>Wildfires are not merged or clustered merely because they are nearby.</strong> Distinct GDACS wildfire event IDs are published as separate events, even when their locations and dates are close. Only an explicit shared source identity, such as the same source ID or a CEMS record that directly references the same GDACS ID, may be deduplicated as the same wildfire.</p>
       </article>
       <article class="method-card">
         <h2>4. Mapped event footprint</h2>

@@ -38,6 +38,10 @@ Reports retain two event universes:
 
 For screened hazards such as wildfire and tropical cyclone, legacy ledger records without a persisted display decision fail closed and are not promoted to the significant headline universe.
 
+### Wildfire event identity
+
+Distinct wildfire source IDs remain distinct stable events. Spatial/temporal proximity alone never merges wildfire records and the public map does not create regional wildfire cluster markers. An explicit source identity/link may still deduplicate two records that demonstrably refer to the same wildfire.
+
 ## Display precision
 
 Population counts are rounded **only in the browser/report presentation layer**:
