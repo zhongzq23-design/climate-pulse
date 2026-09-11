@@ -2,6 +2,16 @@
 
 These repository instructions are binding for GPT/Codex/other project agents.
 
+## Operational lessons
+
+Before changing GitHub Actions workflows, scheduled automation, data-publication logic, documentation-sync or migration scripts, or other code that can block unattended Climate Pulse updates, read and apply:
+
+`lesson.md`
+
+Treat the failure modes and corrective rules in `lesson.md` as repository-level operational constraints. In particular, recurring automation must be idempotent, machine state must not depend solely on large exact public-prose matches, and changes to publication-critical paths must account for downstream commit/publication failure domains.
+
+When a production or scheduled-run failure reveals a reusable operational lesson, add a concise incident entry to `lesson.md` before considering the incident fully closed. Preserve prior lessons unless the architecture has changed enough to make them obsolete, in which case document the reason.
+
 ## Public scientific copy
 
 Before creating, revising or publishing any public-facing methods, methodology, definition, explainer, scientific-description, report-interpretation or limitation text, read and apply:
