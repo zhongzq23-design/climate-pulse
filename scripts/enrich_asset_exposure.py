@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Add non-population asset exposure metrics to mapped Climate Pulse events.
+"""Add mapped asset exposure metrics and flood population context to Climate Pulse events.
 
 Public interpretation is deliberately conservative:
 - Drought: mapped area plus land, forest and crop area overlapping the polygon.
 - Wildfire: forest area overlapping the mapped fire polygon.
+- Flood: GHSL 2025 population inside the QC-passed reported event-area polygon,
+  labelled as potentially affected population rather than confirmed impact.
 - Flood / tropical cyclone: a GDP-exposure *proxy*, not economic loss, computed
   from GHSL 2025 residential population inside the mapped footprint by country
   multiplied by World Bank WDI 2024 GDP per capita (current US$).
@@ -191,6 +193,17 @@ def gdp_exposure_proxy(geom, pop_src, countries, gdp_pc) -> dict[str, Any] | Non
     }
 
 
+def flood_population_context(geom, pop_src) -> dict[str, Any]:
+    """Return population inside a QC-passed reported flood event-area polygon."""
+    population = h.raster_population(pop_src, geom)
+    return {
+        "potentially_affected_population": int(population),
+        "potentially_affected_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+        "potentially_affected_population_method": "GHSL 2025 residential population inside the QC-passed unsimplified GDACS reported flood event-area polygon",
+        "potentially_affected_population_interpretation": "Potentially affected population is a Climate Pulse spatial context estimate, not source-reported affected population and not observed inundation.",
+    }
+
+
 def write_asset_doc(event: dict[str, Any]) -> None:
     x = event.get("exposure")
     if not isinstance(x, dict):
@@ -228,6 +241,7 @@ def enrich_canonical(events: list[dict[str, Any]]) -> tuple[list[dict[str, Any]]
         "drought_landcover_ready": 0,
         "drought_crop_ready": 0,
         "wildfire_forest_ready": 0,
+        "flood_population_ready": 0,
         "flood_gdp_ready": 0,
         "storm_gdp_ready": 0,
     }
@@ -283,6 +297,21 @@ def enrich_canonical(events: list[dict[str, Any]]) -> tuple[list[dict[str, Any]]
                     diag["wildfire_forest_ready"] += 1
 
             elif typ in {"Flood", "Storm"} and geom is not None and runtime and pop_src is not None:
+                if typ == "Flood":
+                    x.setdefault("hazard", "flood")
+                    x.setdefault("gdacs_event_id", runtime.get("gdacs_event_id"))
+                    x.setdefault("gdacs_episode_id", runtime.get("gdacs_episode_id"))
+                    x.setdefault("footprint_method", runtime.get("footprint_method") or "GDACS flood event polygon")
+                    x.setdefault("quality", "mapped_event_footprint")
+                    x.update(flood_population_context(geom, pop_src))
+                    x.setdefault("metric_provenance", {})["potentially_affected_population"] = {
+                        "source": "Climate Pulse / JRC GHSL 2025",
+                        "method": "derived spatial overlap of population with a reported flood event-area context polygon",
+                        "derived_by_climate_pulse": True,
+                    }
+                    event["exposure"] = x
+                    diag["flood_population_ready"] += 1
+
                 proxy = gdp_exposure_proxy(geom, pop_src, countries, gdp_pc)
                 if proxy:
                     if typ == "Flood" and not x:
@@ -302,7 +331,7 @@ def enrich_canonical(events: list[dict[str, Any]]) -> tuple[list[dict[str, Any]]
 
             if isinstance(event.get("exposure"), dict) and any(k in event["exposure"] for k in (
                 "mapped_footprint_area_km2", "forest_area_in_wildfire_footprint_km2",
-                "potential_gdp_exposure_proxy_usd"
+                "potentially_affected_population", "potential_gdp_exposure_proxy_usd"
             )):
                 write_asset_doc(event)
             out.append(event)
@@ -360,6 +389,7 @@ def main() -> None:
     snap["asset_exposure"].update({
         "drought": "mapped area; MODIS 2024 land/forest area and FAO CROPGRIDS 2020 crop physical area when prepared",
         "wildfire": "MODIS 2024 forest area within mapped wildfire footprint when prepared",
+        "flood_population": "GHSL 2025 population inside the QC-passed GDACS reported flood event-area polygon; labelled potentially affected population, not confirmed impact",
         "flood_and_tc_gdp": "GHSL 2025 population within country-split mapped footprint × World Bank WDI 2024 GDP per capita; exposure proxy only",
         "diagnostics": diag,
     })
