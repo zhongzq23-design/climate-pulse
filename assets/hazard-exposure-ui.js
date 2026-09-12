@@ -103,6 +103,10 @@
       if (hasNum(x.population_within_300km_of_center)) rows.push(row('Population within 300 km · screening only', `${fmtPop(x.population_within_300km_of_center)} people`, sourceText(provenance(e, 'population_within_300km_of_center'), 'Climate Pulse · fallback'), 'fallback'));
       if (hasNum(x.potential_gdp_exposure_proxy_usd)) rows.push(row('Supplemental · potential GDP exposure proxy', fmtGDP(x.potential_gdp_exposure_proxy_usd), 'Climate Pulse · WDI 2024 × GHSL 2025; not economic loss', 'supplemental'));
     } else if (e.type === 'Flood') {
+      if (hasNum(x.potentially_affected_population)) {
+        const meta = sourceText(provenance(e, 'potentially_affected_population'), 'Climate Pulse · GHSL 2025 derived estimate');
+        rows.push(row('Potentially affected population', `${fmtPop(x.potentially_affected_population)} people`, `${meta} · reported event-area context; not confirmed affected population`, 'supplemental'));
+      }
       if (hasNum(x.potential_gdp_exposure_proxy_usd)) rows.push(row('Supplemental · potential GDP exposure proxy', fmtGDP(x.potential_gdp_exposure_proxy_usd), 'Climate Pulse · WDI 2024 × GHSL 2025; not economic loss', 'supplemental'));
     } else if (e.type === 'Drought') {
       const agArea = sourceMetric(e, 'agricultural_drought_impact_area_km2');
@@ -147,7 +151,13 @@
       const gt = gdpText(x);
       return `${bits.length ? `${bits.join('; ')}. Source exposure is modelled, not observed harm.` : ''}${gt ? ` ${gt}` : ''}`.trim();
     }
-    if (e?.type === 'Flood') return gdpText(x);
+    if (e?.type === 'Flood') {
+      const bits = [];
+      if (hasNum(x.potentially_affected_population)) bits.push(`${fmtPop(x.potentially_affected_population)} potentially affected people inside the QC-passed GDACS reported flood event-area polygon`);
+      const populationText = bits.length ? `${bits.join('; ')}. This is a Climate Pulse × GHSL 2025 spatial context estimate, not source-reported affected population and not observed inundation.` : '';
+      const gt = gdpText(x);
+      return `${populationText}${gt ? ` ${gt}` : ''}`.trim();
+    }
     return '';
   }
 
