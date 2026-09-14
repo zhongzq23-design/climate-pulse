@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-05T06:04:31Z",
+  "dataset": "CRU-TS v4.10",
+  "resolution_degrees": 0.5,
+  "purpose": "compact seasonal context without storing the full 1901-2025 monthly archive",
+  "products": {
+    "climatology_1981_2010": {
+      "period": [
+        1981,
+        2010
+      ],
+      "path": "data/reference/climate/cru_ts_4.10/monthly/climatology_1981_2010.nc",
+      "size_bytes": 7983682
+    },
+    "recent_2016_2025": {
+      "period": [
+        2016,
+        2025
+      ],
+      "path": "data/reference/climate/cru_ts_4.10/monthly/recent_2016_2025.nc",
+      "size_bytes": 7447693
+    }
+  },
+  "variables": {
+    "tmp": "same-calendar-month mean temperature, degC",
+    "pre": "same-calendar-month mean precipitation total, mm/month",
+    "vpd": "same-calendar-month mean VPD, hPa, derived month-by-month from CRU tmp and vap"
+  },
+  "comparison": {
+    "reference_normal": [
+      1981,
+      2010
+    ],
+    "recent_period": [
+      2016,
+      2025
+    ],
+    "interpretation": "For an event occurring in month M, compare the recent mean for month M with the 1981-2010 normal for the same month. This controls for the seasonal cycle.",
+    "not_event_month_observation": "CRU-TS v4.10 ends in 2025, so current 2026 event-month weather is not represented. A near-real-time source would be needed for a true event-month anomaly."
+  },
+  "vpd": {
+    "formula": "VPD = SVP - AVP; AVP = CRU vap; SVP = 6.1078*exp(a*T/(T+b)) hPa",
+    "constants": {
+      "T_ge_0C": {
+        "a": 17.269,
+        "b": 237.3
+      },
+      "T_lt_0C": {
+        "a": 21.875,
+        "b": 265.5
+      }
+    },
+    "reference": "Zhong Z, Chen HW, Dai A et al. (2025), Nature Communications 16, 8247",
+    "reference_url": "https://doi.org/10.1038/s41467-025-63672-z",
+    "caveat": "Monthly-mean temperature omits sub-daily and diurnal temperature variability; VPD here is long-term climate context, not high-frequency atmospheric dryness."
+  },
+  "cru_reference": "Harris I, Osborn TJ, Jones P and Lister D (2020), Scientific Data 7, 109",
+  "cru_reference_url": "https://doi.org/10.1038/s41597-020-0453-3",
+  "source_page": "https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/"
+}

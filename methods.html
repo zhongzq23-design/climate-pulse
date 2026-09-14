@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Methods and operational definitions used by Climate Pulse.">
+  <title>Methods & definitions · Climate Pulse</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/methods.css">
+  <link rel="stylesheet" href="assets/source-first.css">
+</head>
+<body>
+  <main class="methods-shell">
+    <nav class="methods-nav" aria-label="Methods navigation">
+      <a href="index.html">← Back to Climate Pulse</a>
+      <a href="https://github.com/zhongzq23-design/climate-pulse" target="_blank" rel="noopener">Public repository ↗</a>
+    </nav>
+
+    <header>
+      <h1 class="methods-title">Methods & definitions</h1>
+      <p class="methods-lead">Climate Pulse separates three kinds of information that can look similar on a map: <strong>source-reported hazard metrics</strong>, <strong>Climate Pulse-derived estimates or context</strong>, and <strong>local climate background</strong>. The default rule is source first: when GDACS or an upstream hazard system publishes a usable metric, Climate Pulse reports that value. An equivalent metric is calculated only when the source value is unavailable, and the result is explicitly labelled as derived.</p>
+      <div class="method-note"><strong>How to read this page:</strong> the sections below explain how events enter the map, how hazard-specific metrics are selected, how derived quantities are calculated, and what each quantity does—and does not—mean.</div>
+      <div class="badge-row">
+        <span class="method-badge">Source-first metrics</span><span class="method-badge">Footprint-based exposure</span><span class="method-badge">3× daily monitoring</span><span class="method-badge">GDACS / GDO / GWIS</span><span class="method-badge">GHSL fallback</span><span class="method-badge">CRU-TS v4.10 · 1901–2025</span><span class="method-badge">Exposure ≠ impact</span>
+      </div>
+    </header>
+
+    <section class="methods-grid">
+      <article class="method-card">
+        <h2>1. How Climate Pulse chooses a metric</h2>
+        <p>Climate Pulse does not recalculate the same quantity by default. For each metric, the project follows a fixed authority order:</p>
+        <div class="formula">structured GDACS / upstream metric → Climate Pulse fallback estimate → optional supplemental context</div>
+        <p>This order preserves both provenance and meaning. A source-first value can still be modelled rather than directly observed, so the interface distinguishes exposure, impact, proximity and derived estimates explicitly.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>Exposed population</b><span>Resident population spatially co-located with a physically defined hazard footprint. Exposure does not imply observed harm.</span></div>
+          <div class="definition"><b>Proximity population</b><span>Population inside a separately labelled distance buffer around a hazard footprint. It is not interchangeable with primary footprint exposure.</span></div>
+          <div class="definition"><b>Affected population</b><span>Used only when a source reports an actual impact. It is not inferred from a polygon overlay.</span></div>
+          <div class="definition"><b>Displaced population</b><span>Used only for source-reported displacement or evacuation-type impacts.</span></div>
+          <div class="definition"><b>Estimated population exposed</b><span>A Climate Pulse-derived spatial estimate used only when the required footprint semantics are suitable and an upstream equivalent is unavailable.</span></div>
+          <div class="definition"><b>Context population</b><span>Population inside a broad reported event/administrative area whose physical hazard coverage is not established; context is excluded from the exposure headline.</span></div>
+        </div>
+      </article>
+
+      <article class="method-card">
+        <h2>2. How events enter the map</h2>
+        <p>The Standard Events backend is scheduled three times per day, at <strong>00:17, 08:17 and 16:17 UTC</strong>. Each run checks NASA EONET, GDACS and Copernicus CEMS Rapid Mapping, normalizes source records into a common event structure and archives the resulting snapshot before downstream enrichment.</p>
+        <ul>
+          <li><strong>NASA EONET</strong> — event discovery and source metadata.</li>
+          <li><strong>GDACS</strong> — disaster records, alert levels, mapped hazard/event geometry and hazard-specific impact or exposure resources.</li>
+          <li><strong>Copernicus CEMS</strong> — emergency mapping activations and related source metadata.</li>
+        </ul>
+        <div class="method-note">Publication on Climate Pulse means that a record passed the current operational rules. It does not mean Climate Pulse independently verifies every statement made by the upstream source.</div>
+      </article>
+
+      <article class="method-card">
+        <h2>3. Event identity and deduplication</h2>
+        <p>Source IDs and links are retained so an event can be traced back to its origin. For <strong>non-wildfire hazards</strong>, close records from different feeds can be treated as duplicates when they have the same hazard type and occur within the current spatial and temporal thresholds:</p>
+        <div class="formula">same hazard type AND distance &lt; 80 km AND |date₁ − date₂| ≤ 5 days</div>
+        <p><strong>Wildfires use a stricter identity rule.</strong> Distinct GDACS wildfire event IDs remain separate even when they occur near one another at similar times. A wildfire record is deduplicated only when an explicit shared identity shows that two records refer to the same event, such as a CEMS record that directly references the same GDACS ID.</p>
+      </article>
+
+      <article class="method-card" id="population-exposure-standard">
+        <h2>4. Mapped footprints & population-exposure standard</h2>
+        <p>Climate Pulse does <strong>not</strong> use one universal radius around every disaster to estimate exposed population. The primary method is hazard-specific spatial overlay: a physically meaningful hazard footprint is intersected with gridded resident population. This is consistent with the UNDRR concept of exposure as people or assets located in hazard-prone areas.</p>
+        <div class="formula">primary mapped exposure = hazard footprint × gridded resident population</div>
+        <p>When GDACS provides a usable polygon for a wildfire, tropical cyclone, drought or flood, Climate Pulse can show that geometry in the expanded event details. The browser map uses a topology-preserving simplified copy for readability, while Climate Pulse-derived spatial calculations use the unsimplified source geometry.</p>
+        <div class="formula">browser footprint = topology-preserving simplify(mapped source geometry)</div>
+        <div class="formula">derived spatial calculation = unsimplified mapped source geometry × reference dataset</div>
+        <p>Every reporting geometry has a semantic role. These roles are deliberately not interchangeable:</p>
+        <div class="definition-grid">
+          <div class="definition"><b>Exposure-grade</b><span>A physically meaningful hazard footprint suitable for direct population aggregation. Only this grade can enter the cross-hazard population headline.</span></div>
+          <div class="definition"><b>Proximity-grade</b><span>A documented distance buffer used for a separate near-hazard measure. It never silently replaces primary footprint exposure.</span></div>
+          <div class="definition"><b>Context-grade</b><span>A broad reported event/affected area, forecast envelope or otherwise insufficiently verified hazard geometry. Population inside it is context only.</span></div>
+          <div class="definition"><b>Risk-grade</b><span>A hazard-risk or potential-impact footprint used for risk/crop context rather than a direct human-exposure claim.</span></div>
+        </div>
+        <p>A wildfire polygon is exposure-grade only after its GDACS/GWIS burned-area provenance, same-episode alignment and coarse area-integrity check have passed. A tropical-cyclone polygon qualifies only when its wind threshold and <strong>observed/actual</strong> temporal semantics are both explicit and machine-verifiable. Current generic GDACS wind-labelled cyclone polygons are context-grade until that validation is available. GDACS flood polygons are <strong>context-grade reported event/affected areas</strong>, not observed inundation extent. Drought polygons are <strong>risk-grade</strong>, not confirmed human impact or crop loss.</p>
+        <p>The periodic-report headline <strong>Unique mapped population exposed</strong> is calculated from the spatial union of public/significant exposure-grade footprints before GHSL extraction. Geographic overlap is counted once:</p>
+        <div class="formula">Unique mapped population exposed = GHSL population inside UNION(all eligible exposure-grade footprints)</div>
+        <p>Wildfire geometry that fails admission QC, context-grade flood areas, unverified tropical-cyclone polygons, proximity buffers and risk-grade drought areas are excluded from that headline. The metric is spatially deduplicated mapped exposure, not verified tracking of unique affected individuals.</p>
+        <div class="method-note"><strong>Fail-closed rule:</strong> if the physical meaning of a geometry is ambiguous, Climate Pulse keeps it out of the primary exposure headline. A hazard type or keyword is not sufficient evidence by itself: wildfire geometry must pass source and episode QC, and for tropical cyclones the word <em>wind</em> alone is not sufficient evidence of a specific threshold or observed status.</div>
+        <p>The canonical policy is maintained in <a href="https://github.com/zhongzq23-design/climate-pulse/blob/main/docs/POPULATION_EXPOSURE_STANDARD.md" target="_blank" rel="noopener"><strong>Population Exposure Standard v1.2</strong> ↗</a>.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>5. Wildfire: perimeter exposure after admission QC</h2>
+        <p>GDACS forest-fire events are supplied by the <strong>Global Wildfire Information System (GWIS)</strong>. GDACS documents the GWIS near-real-time burned-area product as using MODIS and VIIRS active-fire information to define individual wildfire perimeters and estimate burned area. Climate Pulse therefore uses a GWIS perimeter as the primary wildfire exposure concept, but the event type alone is not enough to make a polygon exposure-grade.</p>
+        <p>For each GDACS wildfire, Climate Pulse first reads the <strong>current GDACS episode</strong> and its GWIS impact resource. Burned area and population exposure are kept aligned to the same GDACS/GWIS episode so a card does not mix metrics from different wildfire updates. The population fields are modelled exposure, not observed harm.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>POPAFFECTED</b><span>Population exposed in the burned area; equivalent to <code>SUMPOP0.0</code>. Climate Pulse treats the perimeter/burned-area value as the primary wildfire exposure concept.</span></div>
+          <div class="definition"><b>SUMPOP1.0</b><span>Population within 1 km of the burned area; proximity metric.</span></div>
+          <div class="definition"><b>SUMPOP2.0</b><span>Population within 2 km; proximity metric.</span></div>
+          <div class="definition"><b>SUMPOP5.0</b><span>Population within 5 km; proximity metric. OECD (2022) documents a 5 km wildfire-buffer methodology for population exposure, but Climate Pulse keeps this separate from the primary cross-hazard headline.</span></div>
+          <div class="definition"><b>SUMPOP10.0</b><span>Population within 10 km; proximity metric.</span></div>
+        </div>
+        <p>Before a mapped wildfire polygon can contribute to the cross-hazard population headline, Climate Pulse requires four pieces of evidence: GDACS/GWIS source provenance for the burned-area metric, the <strong>same GDACS/GWIS episode</strong> for the burned area and footprint, a valid source-reported burned-area value, and a <strong>coarse area-integrity check</strong> between the mapped polygon and that source value.</p>
+        <div class="formula">wildfire exposure-grade admission = GDACS/GWIS provenance + same episode + valid burned area + 0.5 ≤ mapped area / source burned area ≤ 2.0</div>
+        <div class="method-warning method-note"><strong>Area-integrity boundary:</strong> the factor-of-two range is a deliberately broad corruption/semantic guard, <strong>not an uncertainty interval</strong>. A mapped/source difference above 25% is retained as a warning even when the polygon still passes. Missing provenance, episode mismatch or a gross area mismatch causes the geometry to fail closed to context-grade.</div>
+        <p>If the corresponding GDACS/GWIS primary population field is unavailable, Climate Pulse can estimate population inside a wildfire perimeter with JRC GHSL 2025 only when that geometry itself has passed the admission gate. The fallback is labelled as a Climate Pulse-derived estimate and never silently replaces a source value.</p>
+        <div class="formula">fallback primary wildfire exposure = GHSL population inside QC-admitted wildfire perimeter</div>
+        <p>This perimeter-based primary exposure follows the same basic spatial concept used by Modaresi Rad et al. (2023), who define primary human exposure as population residing within large-wildfire perimeters.</p>
+        <p>Wildfire identity and wildfire visibility are separate rules. Nearby wildfire IDs are not merged. For display, <strong>Orange and Red GDACS wildfires remain visible</strong>, while a Green wildfire must satisfy both current thresholds:</p>
+        <div class="formula">burned area ≥ 10,000 ha AND population within 5 km ≥ 10,000</div>
+        <p>The 5 km value in this display rule is a <strong>screening/proximity criterion</strong>; it is not promoted into the primary cross-hazard population headline. MODIS forest overlap is retained only as supplemental spatial context and is not labelled as confirmed forest loss.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>6. Tropical cyclones: advisory exposure first, geometry fails closed</h2>
+        <p>For GDACS tropical cyclones, Climate Pulse reads the current episode's advisory timeline and prefers the current/actual advisory entry when available. Structured advisory population values remain useful <strong>source-modelled event-level exposure</strong>; they are kept separate from the spatially deduplicated cross-hazard headline unless a corresponding mapped geometry passes the stricter exposure-grade gate.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>pop39</b><span>Raw GDACS timeline field retained for traceability. Climate Pulse does not interpret the numeric suffix as a 39-kt scientific threshold; the documented GDACS population-exposure method uses a 34 kt wind buffer.</span></div>
+          <div class="definition"><b>pop74</b><span>Raw GDACS timeline field retained for traceability. Climate Pulse does not interpret the numeric suffix as a 74-kt scientific threshold; the documented GDACS population-exposure method uses a 64 kt wind buffer.</span></div>
+          <div class="definition"><b>popstormsurge</b><span>Population in the modelled storm-surge zone. It is a separate source/model exposure metric and does not certify a wind polygon.</span></div>
+          <div class="definition"><b>actual / current</b><span>Describes the advisory timeline entry. It does not by itself prove that a separate mapped polygon is an observed wind footprint.</span></div>
+        </div>
+        <p>For a mapped tropical-cyclone polygon to enter the cross-hazard population headline, it must explicitly identify a supported wind threshold—currently <strong>34 kt</strong> or <strong>64 kt</strong>—and must explicitly establish <strong>observed/actual</strong> rather than forecast or unspecified temporal semantics. The geometry must also be a wind polygon rather than a generic event area, centre-distance buffer, storm-surge area or mixed impact polygon.</p>
+        <div class="formula">TC exposure-grade = explicit wind polygon + (34 kt OR 64 kt) + observed/actual semantics</div>
+        <div class="method-warning method-note"><strong>Current implementation:</strong> the existing GDACS polygon selector can identify wind-labelled geometry, but a generic wind-labelled polygon such as <code>gdacs_wind_polygon</code> does not prove the exact wind threshold or whether the polygon is observed rather than forecast. It is therefore context-grade and <strong>excluded from the cross-hazard headline</strong>.</div>
+        <p>If a future extractor can verify these properties, it may persist an explicit method such as <code>gdacs_observed_wind_34kt_polygon</code> or <code>gdacs_observed_wind_64kt_polygon</code>. Only such validated geometry can be promoted to exposure-grade. Forecast wind envelopes, generic event-polygon fallbacks and EONET-only 300-km centre-proximity screens remain context/screening only. Orange and Red GDACS storms can still remain visible even when their mapped geometry is not headline-eligible.</p>
+        <p>A World Bank/GHSL GDP exposure proxy may also be shown as supplemental context. It is not a replacement for GDACS human-exposure metrics and is not an estimate of economic loss.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>7. Drought: threshold/risk context, not crop-loss claims</h2>
+        <p>GDACS drought classification draws on the <strong>Global Drought Observatory (GDO)</strong> and its agricultural drought risk/impact framework. When GDACS publishes an agricultural drought impact/risk area, Climate Pulse reports that source value first.</p>
+        <p>The public label is intentionally <strong>“Agricultural drought potential-impact/risk area”</strong>. It should not be interpreted as failed-crop area, crop-loss area or confirmed agricultural damage.</p>
+        <div class="method-warning method-note">The current drought integration does not provide the same structured population-exposure fields that Climate Pulse uses for wildfire and tropical cyclone. Climate Pulse therefore does not manufacture an “affected population” from a drought polygon.</div>
+        <p>MODIS land/forest overlap and FAO CROPGRIDS crop physical area can be added as supplemental spatial context:</p>
+        <div class="formula">supplemental crop overlap = Σ CROPGRIDS crop physical area inside mapped drought risk/impact geometry</div>
+        <p>If a future drought human-exposure metric is added, it must use an explicit, documented hazard threshold or risk definition over a defined time scale, then intersect that threshold footprint with population. An arbitrary circular buffer around an event centre is not the primary method.</p>
+        <p>Green droughts keep the compact display focused on source severity/risk and mapped context. Orange and Red events may show additional asset context. A Red event can show a Human impact section, but values appear only when a reliable source provides them; any Climate Pulse-derived population estimate must be labelled <strong>Estimated population exposed</strong>.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>8. Flood: inundation exposure vs reported-area context</h2>
+        <p>For floods, source-reported human impacts take precedence over any Climate Pulse spatial screening. The preferred spatial definition of flood exposure is population inside a physically mapped inundation footprint, without adding a generic event-centre buffer. Tellman et al. (2021), for example, estimate population exposure using satellite-observed flood inundation.</p>
+        <div class="formula">primary flood exposure = population inside validated inundation footprint</div>
+        <p><strong>Current implementation:</strong> when GDACS provides usable flood geometry, Climate Pulse treats it as a <strong>reported event/affected-area context polygon</strong>, not as an observed inundation map. It therefore remains context-grade and does not enter the cross-hazard exposure headline.</p>
+        <p>Before retaining that context polygon, Climate Pulse performs a source-feature selection QC. It keeps one GDACS polygon feature aligned to the reported event coordinate and suppresses the footprint when no candidate lies within <strong>75 km</strong>. This prevents unrelated polygon resources from being blindly unioned.</p>
+        <div class="method-warning method-note"><strong>What this QC does not do:</strong> center-alignment only checks that the selected source feature is plausibly associated with the reported event. It <strong>does not establish inundation</strong>. Very large selected reported areas are explicitly warned as context and must not be interpreted as flooded land area.</div>
+        <p>A future satellite-observed or otherwise physically explicit inundation product can be promoted to exposure-grade only after source-specific quality control and explicit persistence of its geometry semantics. Climate Pulse will not reinterpret the current GDACS reported-area polygon as inundation simply because it is available.</p>
+        <p>A population or GDP calculation made from the reported event area describes what lies inside that mapped context; it does not establish that every person, asset or location within the polygon was flooded.</p>
+        <p>Climate Pulse may calculate a country-split GDP exposure proxy from the mapped flood event area, GHSL 2025 population and World Bank WDI 2024 GDP per capita:</p>
+        <div class="formula">GDP exposure proxy = Σcountry [GHSL population in mapped flood event area × WDI 2024 GDP per capita]</div>
+        <div class="method-warning method-note"><strong>This is supplemental context, not economic loss.</strong> It does not replace source-reported fatalities, displacement, affected population, asset damage or business interruption.</div>
+      </article>
+
+      <article class="method-card">
+        <h2>9. Reference datasets for fallback and context</h2>
+        <p>Climate Pulse uses external reference datasets only when they serve a defined fallback or contextual role. They do not silently overwrite an equivalent upstream hazard metric.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>Population fallback</b><span>JRC GHSL GHS-WUP-POP R2025A, epoch 2025, approximately 1 km. It represents gridded resident population, not real-time human presence.</span></div>
+          <div class="definition"><b>Land / forest context</b><span>NASA MODIS MCD12C1.061, 2024, 0.05°, IGBP sub-pixel class percentages.</span></div>
+          <div class="definition"><b>Crop context</b><span>FAO CROPGRIDS v1.08, 2020, 0.05°, crop physical area.</span></div>
+          <div class="definition"><b>GDP context</b><span>World Bank WDI NY.GDP.PCAP.CD, 2024 GDP per capita in current US$.</span></div>
+        </div>
+        <div class="method-note">The interface identifies whether a displayed value is source-reported/modelled, a Climate Pulse-derived fallback, proximity screening, or supplemental context.</div>
+      </article>
+
+      <article class="method-card" id="climate-context">
+        <h2>10. Local climate background</h2>
+        <p>The climate panel answers a different question from the event feed: <strong>what has the long-term climate background at this location looked like?</strong> It does not provide real-time weather and does not attribute an individual event to climate change.</p>
+        <p>The public view uses annual values from <strong>CRU-TS v4.10</strong>, a 0.5° global land dataset covering 1901–2025 except Antarctica. Climate Pulse extracts the nearest valid CRU land cell. If the reported event coordinate is offshore, the backend can use the nearest valid land cell within 500 km and reports that distance.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>Drought</b><span>Temperature + precipitation + VPD</span></div>
+          <div class="definition"><b>Wildfire / Heat</b><span>Temperature + precipitation + VPD</span></div>
+          <div class="definition"><b>Flood / Storm / Landslide</b><span>Temperature + precipitation</span></div>
+        </div>
+        <p>Monthly anomalies and near-real-time weather are not used in the current public climate panel.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>11. Long-term annual indicators</h2>
+        <p>For each selected climate variable, Climate Pulse retains the 1901–2025 annual series and summarizes it with the same three quantities: an early baseline, a recent ten-year mean and a long-term linear trend.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>Early baseline</b><span>1901–1930 annual mean.</span></div>
+          <div class="definition"><b>Recent annual mean</b><span>2016–2025 annual mean.</span></div>
+          <div class="definition"><b>Long-term trend</b><span>Ordinary least-squares slope for 1901–2025, reported per century.</span></div>
+        </div>
+        <div class="formula">Change = mean(2016–2025) − mean(1901–1930)</div>
+        <div class="formula">Trend = OLS slope(annual value ~ year) × 100 years</div>
+        <p>The public chart shows annual values and a 5-year moving mean for readability. No significance badge or p-value is displayed.</p>
+      </article>
+
+      <article class="method-card" id="vpd-calculation">
+        <h2>12. CRU VPD calculation</h2>
+        <p><strong>Vapour pressure deficit (VPD)</strong> is a widely used measure of atmospheric dryness. It is the difference between saturation vapour pressure—the amount of water vapour air could hold at saturation at a given temperature—and actual vapour pressure. Higher VPD therefore indicates air that is farther from saturation and, in general, greater atmospheric evaporative demand.</p>
+        <p>CRU provides monthly actual vapour pressure (<strong>AVP</strong>) as <code>vap</code>. Climate Pulse calculates saturation vapour pressure (<strong>SVP</strong>) from monthly mean temperature <strong>T</strong>, then calculates monthly VPD before annual aggregation:</p>
+        <div class="formula">VPD = SVP − AVP</div>
+        <div class="formula">SVP = 6.1078 × exp(aT / (T + b)) &nbsp; [hPa]</div>
+        <p>For <strong>T ≥ 0°C</strong>, <code>a = 17.269</code> and <code>b = 237.3</code>. For <strong>T &lt; 0°C</strong>, <code>a = 21.875</code> and <code>b = 265.5</code>.</p>
+        <p>VPD is closely related to <strong>relative humidity (RH)</strong>. RH expresses actual vapour pressure as a percentage of saturation vapour pressure:</p>
+        <div class="formula">RH = 100 × AVP / SVP &nbsp; [%]</div>
+        <div class="formula">VPD = SVP × (1 − RH / 100)</div>
+        <p>At a fixed temperature, lower RH corresponds to higher VPD. But SVP rises nonlinearly with temperature, so the same RH can correspond to a larger VPD in warmer air. RH and VPD are therefore related but not interchangeable measures of atmospheric moisture conditions.</p>
+        <div class="method-warning method-note"><strong>Temporal-resolution limitation:</strong> calculating SVP from monthly mean temperature does not retain the diurnal temperature cycle or sub-daily asymmetric warming. The resulting VPD is used as long-term climate context, not as a high-frequency atmospheric-dryness metric.</div>
+        <p>See <a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener"><strong>Zhong, Z., Chen, H.W., Dai, A. et al. (2025), “Sub-diurnal asymmetric warming has amplified atmospheric dryness since the 1980s,” Nature Communications 16, 8247</strong> ↗</a>.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>13. Climate context is not event attribution</h2>
+        <p>Climate Pulse uses the historical climate series to describe local background conditions and long-term change. A warming, drying or VPD trend at an event location does <strong>not</strong>, by itself, show that anthropogenic climate change caused that event.</p>
+        <p>Formal event attribution requires separate, event-specific evidence and is treated as a distinct information layer. Climate Pulse therefore keeps <strong>event detection</strong>, <strong>source impact/exposure metrics</strong>, <strong>Climate Pulse-derived fallback/context</strong>, <strong>local climate background</strong> and <strong>formal attribution</strong> conceptually separate.</p>
+      </article>
+
+      <article class="method-card">
+        <h2>14. Main limitations</h2>
+        <ul>
+          <li>GDACS event records, episodes, mapped polygons and impact resources can change as an event evolves.</li>
+          <li>GDACS/GWIS wildfire and tropical-cyclone population values are modelled exposure, not observed harm.</li>
+          <li>Wildfire population enters the cross-hazard headline only when the mapped geometry passes GDACS/GWIS provenance, same-episode and coarse area-integrity QC; the factor-of-two area check is an operational integrity guard, not a measurement-uncertainty estimate.</li>
+          <li>Current generic GDACS tropical-cyclone wind-labelled geometry is excluded from the cross-hazard headline until both an explicit 34-kt or 64-kt threshold and observed/actual status are machine-verified.</li>
+          <li>Different hazard polygons have different meanings; a flood reported-area polygon is not equivalent to an observed inundation map, a forecast wind envelope is not equivalent to an observed wind footprint, a proximity buffer is not equivalent to a primary hazard footprint, and a drought risk area is not confirmed crop loss.</li>
+          <li>Only explicitly exposure-grade geometry enters the cross-hazard population headline; context-grade, proximity-grade and risk-grade areas are excluded.</li>
+          <li>Browser footprints are simplified for display; Climate Pulse-derived spatial calculations use unsimplified source geometry.</li>
+          <li>The non-wildfire proximity rule is an operational cross-source deduplication heuristic; source IDs and links are retained for traceability.</li>
+          <li>Gridded residential population does not represent real-time human presence.</li>
+          <li>Forest and crop overlap describe spatial context, not ecological damage, crop failure or yield loss.</li>
+          <li>The GDP indicator is a country-level per-capita exposure proxy and does not represent observed economic loss or within-country economic concentration.</li>
+          <li>CRU-TS is land-only; offshore events may use the nearest valid land cell within the configured search distance.</li>
+          <li>CRU-derived VPD from monthly mean temperature omits sub-daily temperature variability.</li>
+        </ul>
+      </article>
+
+      <article class="method-card">
+        <h2>15. Source documentation & methodological anchors</h2>
+        <ul>
+          <li><a href="https://www.undrr.org/terminology/exposure" target="_blank" rel="noopener">UNDRR Sendai Framework terminology: Exposure ↗</a></li>
+          <li><a href="https://doi.org/10.1038/s41586-021-03695-w" target="_blank" rel="noopener">Tellman et al. (2021), satellite-observed flood inundation and population exposure, Nature ↗</a></li>
+          <li><a href="https://doi.org/10.1038/s41893-023-01163-z" target="_blank" rel="noopener">Modaresi Rad et al. (2023), primary wildfire exposure within fire perimeters, Nature Sustainability ↗</a></li>
+          <li><a href="https://www.oecd.org/en/publications/oecd-regions-and-cities-at-a-glance-2022_14108660-en/full-report/component-36.html" target="_blank" rel="noopener">OECD (2022), wildfire population exposure using a 5 km buffer ↗</a></li>
+          <li><a href="https://www.gdacs.org/Knowledge/models_WF.aspx" target="_blank" rel="noopener">GDACS forest-fire methodology: GWIS near-real-time wildfire perimeters and burned area ↗</a></li>
+          <li><a href="https://doc.emdat.be/docs/data-structure-and-content/impact-variables/human/" target="_blank" rel="noopener">EM-DAT human impact variables and affected-person terminology ↗</a></li>
+          <li><a href="https://www.gdacs.org/gdacsapi/swagger/index.html" target="_blank" rel="noopener">GDACS API ↗</a></li>
+          <li><a href="https://www.gdacs.org/Documents/2025/GDACS_API_quickstart_v2.pdf" target="_blank" rel="noopener">GDACS API quick start ↗</a></li>
+          <li><a href="https://www.gdacs.org/documents/2025/GDACS_MHEWS_guide.pdf" target="_blank" rel="noopener">GDACS multi-hazard methods guide: wildfire methodology and tropical-cyclone exposure using 34-kt and 64-kt wind buffers ↗</a></li>
+          <li><a href="https://data.gdacs.org/Knowledge/models_dr.aspx" target="_blank" rel="noopener">GDACS drought methodology ↗</a></li>
+          <li><a href="https://eonet.gsfc.nasa.gov/docs/v3" target="_blank" rel="noopener">NASA EONET API ↗</a></li>
+          <li><a href="https://human-settlement.emergency.copernicus.eu/ghs_wup_pop_r2025a.php" target="_blank" rel="noopener">JRC GHSL GHS-WUP-POP R2025A ↗</a></li>
+          <li><a href="https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/" target="_blank" rel="noopener">CRU-TS v4.10 source release ↗</a></li>
+          <li><a href="https://doi.org/10.1038/s41597-020-0453-3" target="_blank" rel="noopener">CRU-TS reference: Harris et al. (2020) ↗</a></li>
+          <li><a href="https://www.fao.org/agroinformatics/training-and-resources/data-sets/data-set-detail/cropgrids-data-on-harvested-and-crop-areas/en" target="_blank" rel="noopener">FAO CROPGRIDS ↗</a></li>
+          <li><a href="https://doi.org/10.5067/MODIS/MCD12C1.061" target="_blank" rel="noopener">NASA MCD12C1.061 ↗</a></li>
+          <li><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener">World Bank WDI GDP per capita ↗</a></li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-05T05:28:08Z",
+  "dataset": "CRU-TS v4.10",
+  "release_date": "2026-06-25",
+  "source_period": [
+    1901,
+    2025
+  ],
+  "spatial_resolution_degrees": 0.5,
+  "spatial_coverage": "global land areas except Antarctica",
+  "source_page": "https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/",
+  "source_release_folder": "cruts.2604091129.v4.10",
+  "source_variables": {
+    "tmp": "monthly average daily mean temperature, degC",
+    "pre": "monthly precipitation total, mm/month",
+    "vap": "monthly actual vapour pressure, hPa"
+  },
+  "annual_variables": {
+    "tmp": "calendar-day-weighted annual mean, degC",
+    "pre": "annual sum, mm/year",
+    "vap": "calendar-day-weighted annual mean, hPa",
+    "vpd": "calendar-day-weighted annual mean of monthly derived VPD, hPa"
+  },
+  "vpd": {
+    "monthly_formula": "VPD = SVP - AVP; AVP = CRU vap; SVP = 6.1078*exp(a*T/(T+b)) hPa",
+    "svp_constants": {
+      "T_ge_0C": {
+        "a": 17.269,
+        "b": 237.3
+      },
+      "T_lt_0C": {
+        "a": 21.875,
+        "b": 265.5
+      }
+    },
+    "temperature_input": "CRU monthly mean tmp (degC)",
+    "actual_vapour_pressure_input": "CRU monthly vap (hPa)",
+    "negative_values_clipped": false,
+    "reference": "Zhong Z, Chen HW, Dai A et al. (2025), Nature Communications 16, 8247",
+    "reference_url": "https://doi.org/10.1038/s41467-025-63672-z",
+    "caveat": "SVP is nonlinear in temperature. Calculating VPD from monthly-mean temperature omits sub-daily/diurnal temperature variability and can differ from an average of VPD calculated at sub-daily resolution. Use as long-term climate context rather than high-frequency atmospheric dryness."
+  },
+  "cru_reference": "Harris I, Osborn TJ, Jones P and Lister D (2020), Scientific Data 7, 109",
+  "cru_reference_url": "https://doi.org/10.1038/s41597-020-0453-3",
+  "license": "Open Database License / Database Contents License, Attribution and Share-Alike; attribute Climatic Research Unit, University of East Anglia",
+  "annual_directory": "data/reference/climate/cru_ts_4.10/annual",
+  "file_count": 125,
+  "total_size_bytes": 113102930,
+  "manifest": "data/reference/climate/cru_ts_4.10/annual/index.json"
+}
