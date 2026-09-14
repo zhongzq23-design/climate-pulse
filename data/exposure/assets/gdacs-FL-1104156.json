@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "event_id": "gdacs-FL-1104156",
+  "event_type": "Flood",
+  "title": "Flood in Bangladesh",
+  "region": "Bangladesh",
+  "calculated_at": "2026-09-14T11:58:00Z",
+  "exposure": {
+    "hazard": "flood",
+    "gdacs_event_id": "1104156",
+    "gdacs_episode_id": 1,
+    "footprint_method": "GDACS reported flood event/affected-area polygon · center-aligned context feature",
+    "quality": "mapped_event_footprint",
+    "potentially_affected_population": 5126396,
+    "potentially_affected_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "potentially_affected_population_method": "GHSL 2025 residential population inside the QC-passed unsimplified GDACS reported flood event-area polygon",
+    "potentially_affected_population_interpretation": "Potentially affected population is a Climate Pulse spatial context estimate, not source-reported affected population and not observed inundation.",
+    "metric_provenance": {
+      "potentially_affected_population": {
+        "source": "Climate Pulse / JRC GHSL 2025",
+        "method": "derived spatial overlap of population with a reported flood event-area context polygon",
+        "derived_by_climate_pulse": true
+      }
+    },
+    "potential_gdp_exposure_proxy_usd": 13294839520,
+    "gdp_proxy_reference_year": 2024,
+    "gdp_proxy_indicator": "World Bank WDI NY.GDP.PCAP.CD (GDP per capita, current US$)",
+    "gdp_proxy_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "gdp_proxy_population_coverage_pct": 100.0,
+    "gdp_proxy_method": "sum over countries: GHSL population inside hazard footprint × WDI 2024 GDP per capita",
+    "gdp_proxy_country_components": [
+      {
+        "country": "Bangladesh",
+        "iso3": "BGD",
+        "population_basis": 5097557,
+        "gdp_per_capita_usd_2024": 2593.42,
+        "proxy_usd": 13220086480
+      },
+      {
+        "country": "India",
+        "iso3": "IND",
+        "population_basis": 28840,
+        "gdp_per_capita_usd_2024": 2591.99,
+        "proxy_usd": 74753039
+      }
+    ],
+    "gdp_proxy_interpretation": "Economic activity exposure proxy only; not observed loss, asset damage, business interruption, or a gridded local-GDP estimate."
+  }
+}
