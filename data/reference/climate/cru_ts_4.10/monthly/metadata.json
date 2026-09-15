@@ -20,6 +20,14 @@
       ],
       "path": "data/reference/climate/cru_ts_4.10/monthly/recent_2016_2025.nc",
       "size_bytes": 7447693
+    },
+    "climatology_1901_1930": {
+      "period": [
+        1901,
+        1930
+      ],
+      "path": "data/reference/climate/cru_ts_4.10/monthly/climatology_1901_1930.nc",
+      "size_bytes": 7808693
     }
   },
   "variables": {
@@ -57,5 +65,21 @@
   },
   "cru_reference": "Harris I, Osborn TJ, Jones P and Lister D (2020), Scientific Data 7, 109",
   "cru_reference_url": "https://doi.org/10.1038/s41597-020-0453-3",
-  "source_page": "https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/"
+  "source_page": "https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/",
+  "product_provenance": {
+    "climatology_1901_1930": {
+      "source_release_folder": "cruts.2604091129.v4.10",
+      "source_period": [
+        1901,
+        1930
+      ],
+      "source_variables": [
+        "tmp",
+        "pre",
+        "vap"
+      ],
+      "aggregation": "same-calendar-month mean across 1901-1930",
+      "vpd_method": "VPD = SVP(CRU monthly mean tmp) - CRU monthly vap; negative numerical/data inconsistencies clipped to zero"
+    }
+  }
 }
