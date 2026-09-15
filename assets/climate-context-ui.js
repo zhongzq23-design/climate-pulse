@@ -23,6 +23,8 @@
   };
   const getPeriod = (ctx, key) => (ctx.comparison?.periods || []).find(p => p.key === key) || null;
   const getRecent = ctx => getPeriod(ctx, 'recent_7d') || getPeriod(ctx, 'current_24h');
+  const safeEventId = id => String(id || 'event').replace(/[^A-Za-z0-9_.-]+/g, '_').slice(0, 160);
+  const fallbackPathForEvent = event => `data/climate/event_timeseries/${safeEventId(event?.id)}.json`;
   const compactUtc = iso => {
     if (!iso) return '';
     const d = new Date(iso);
@@ -137,21 +139,27 @@
       slot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3></div></div><div class="climate-status climate-error">${html(ref.reason || 'No suitable CRU land grid cell was available for this event location.')}</div>`;
       return;
     }
-    if (ref.status !== 'ready' || !ref.path) {
-      slot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3><p>Waiting for climate enrichment.</p></div></div><div class="climate-status"><span class="climate-loading">Waiting for the next monitoring run…</span></div>`;
-      return;
-    }
 
-    slot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3><p>Loading same-month historical normals and recent 7-day context…</p></div></div><div class="climate-status"><span class="climate-loading">Loading climate context…</span></div>`;
+    // A repository snapshot can lag behind the already-published per-event climate file.
+    // Never leave the UI stuck on a stale "waiting" flag: try the deterministic
+    // per-event path directly whenever the snapshot reference is missing or not ready.
+    const contextPath = ref.status === 'ready' && ref.path ? ref.path : fallbackPathForEvent(event);
+    slot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3><p>Loading same-month historical normals and recent 7-day context…</p></div></div><div class="climate-status"><span class="climate-loading">Checking climate context…</span></div>`;
+
     try {
-      const ctx = await fetchContext(ref.path);
+      const ctx = await fetchContext(contextPath);
       if (token !== renderToken) return;
       const currentSlot = document.getElementById(`event-${event.id}`)?.querySelector('.climate-inline-context');
       if (currentSlot) currentSlot.innerHTML = renderReady(ctx, event);
     } catch (err) {
       if (token !== renderToken) return;
       const currentSlot = document.getElementById(`event-${event.id}`)?.querySelector('.climate-inline-context');
-      if (currentSlot) currentSlot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3></div></div><div class="climate-status climate-error">Climate context could not be loaded yet · ${html(err?.message || err)}</div>`;
+      if (!currentSlot) return;
+      if (ref.status === 'ready' && ref.path) {
+        currentSlot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3></div></div><div class="climate-status climate-error">Climate context could not be loaded · ${html(err?.message || err)}</div>`;
+      } else {
+        currentSlot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3></div></div><div class="climate-status">Climate context is not available for this event yet. The page will retry whenever the event is reopened or the data are refreshed.</div>`;
+      }
     }
   }
 
