@@ -212,7 +212,12 @@ async function cpLoadRepositorySnapshot() {
     const r = await fetch('data/events/latest.json', { cache: 'no-store' });
     if (!r.ok) return null;
     const j = await r.json();
-    return Array.isArray(j.events) && j.events.length ? j : null;
+    const snapshotEvents = Array.isArray(j.canonical_events) && j.canonical_events.length
+      ? j.canonical_events
+      : Array.isArray(j.events) && j.events.length
+        ? j.events
+        : null;
+    return snapshotEvents ? { ...j, events: snapshotEvents } : null;
   } catch { return null; }
 }
 async function cpLoadLive(setStatus) {
