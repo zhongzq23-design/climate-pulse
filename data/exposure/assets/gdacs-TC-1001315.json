@@ -4,20 +4,41 @@
   "event_type": "Storm",
   "title": "Tropical Cyclone LOWELL-26",
   "region": "United States",
-  "calculated_at": "2026-09-15T08:36:10Z",
+  "calculated_at": "2026-09-15T10:58:15Z",
   "exposure": {
-    "hazard": "storm",
-    "footprint_method": "300_km_point_population_fallback",
-    "population_within_300km_of_center": 0,
-    "quality": "screening",
+    "hazard": "tropical_cyclone",
+    "population_wind_39kt": 0,
+    "population_wind_74kt": 0,
+    "population_storm_surge": 0,
+    "gdacs_event_id": "1001315",
+    "gdacs_episode_id": 60,
+    "advisory_id": "278164",
+    "advisory_number": "60",
+    "advisory_datetime": "11 Sep 2026 03:00",
+    "advisory_actual": true,
+    "advisory_current": true,
+    "quality": "source_modelled_exposure",
     "metric_provenance": {
-      "population_within_300km_of_center": {
-        "source": "Climate Pulse",
-        "source_field": "population_within_300km_of_center",
-        "method": "300 km centre proximity × JRC GHSL 2025",
-        "derived_by_climate_pulse": true
+      "population_wind_39kt": {
+        "source": "GDACS/NOAA",
+        "source_field": "pop39",
+        "method": "source_modelled",
+        "derived_by_climate_pulse": false
+      },
+      "population_wind_74kt": {
+        "source": "GDACS/NOAA",
+        "source_field": "pop74",
+        "method": "source_modelled",
+        "derived_by_climate_pulse": false
+      },
+      "population_storm_surge": {
+        "source": "GDACS/NOAA",
+        "source_field": "popstormsurge",
+        "method": "source_modelled",
+        "derived_by_climate_pulse": false
       }
     },
+    "interpretation": "GDACS advisory exposure is modelled population within defined hazard zones; it is not observed harm.",
     "potential_gdp_exposure_proxy_usd": 83891338238,
     "gdp_proxy_reference_year": 2024,
     "gdp_proxy_indicator": "World Bank WDI NY.GDP.PCAP.CD (GDP per capita, current US$)",
