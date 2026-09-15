@@ -1,16 +1,25 @@
 {
-  "schema_version": "3.0",
-  "generated_at": "2026-09-15T16:38:21Z",
+  "schema_version": "3.1",
+  "generated_at": "2026-09-15T17:41:02Z",
   "historical_dataset": "CRU-TS v4.10",
-  "current_dataset": "ECMWF/NRT_FORECAST/IFS/OPER",
+  "recent_dataset": "ECMWF/NRT_FORECAST/IFS/OPER",
   "comparison_month": 9,
-  "current_window": {
+  "recent_window": {
     "status": "ready",
     "source": "ECMWF IFS Near-Realtime forecast via Google Earth Engine",
     "dataset_id": "ECMWF/NRT_FORECAST/IFS/OPER",
-    "cycle_time": "2026-09-14T12:00:00Z",
-    "window_start": "2026-09-14T12:00:00Z",
+    "window_start": "2026-09-08T12:00:00Z",
     "window_end": "2026-09-15T12:00:00Z",
+    "day_count": 7,
+    "daily_cycle_times": [
+      "2026-09-08T12:00:00Z",
+      "2026-09-09T12:00:00Z",
+      "2026-09-10T12:00:00Z",
+      "2026-09-11T12:00:00Z",
+      "2026-09-12T12:00:00Z",
+      "2026-09-13T12:00:00Z",
+      "2026-09-14T12:00:00Z"
+    ],
     "forecast_steps_hours": [
       0,
       3,
@@ -22,9 +31,9 @@
       21,
       24
     ],
-    "temperature_aggregation": "3-hourly trapezoidal time-weighted mean over forecast hours 0-24",
-    "vpd_aggregation": "SVP(24-hour mean temperature) minus 24-hour mean actual vapour pressure derived from 3-hourly dew-point temperature",
-    "precipitation_aggregation": "forecast-hour-24 cumulative precipitation minus forecast-hour-0 cumulative precipitation",
+    "temperature_aggregation": "mean of seven complete daily IFS 0-24 h temperature means; each daily mean is a 3-hourly trapezoidal time-weighted mean",
+    "vpd_aggregation": "mean of seven daily VPD values; each day uses SVP(daily mean temperature) minus daily mean actual vapour pressure derived from 3-hourly dew-point temperature",
+    "precipitation_aggregation": "sum of seven daily 0-24 h accumulated precipitation totals divided by 7",
     "resolution_degrees": 0.25
   },
   "event_context_count": 54,
@@ -32,272 +41,272 @@
     {
       "event_id": "gdacs-FL-1103888",
       "path": "data/climate/event_timeseries/gdacs-FL-1103888.json",
-      "signature": "climate-compare-v1|39.25|-82.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|39.25|-82.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104053",
       "path": "data/climate/event_timeseries/gdacs-FL-1104053.json",
-      "signature": "climate-compare-v1|37.75|14.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|37.75|14.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104099",
       "path": "data/climate/event_timeseries/gdacs-FL-1104099.json",
-      "signature": "climate-compare-v1|19.75|-99.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|19.75|-99.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104140",
       "path": "data/climate/event_timeseries/gdacs-FL-1104140.json",
-      "signature": "climate-compare-v1|41.25|141.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|41.25|141.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104159",
       "path": "data/climate/event_timeseries/gdacs-FL-1104159.json",
-      "signature": "climate-compare-v1|-4.25|39.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-4.25|39.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104158",
       "path": "data/climate/event_timeseries/gdacs-FL-1104158.json",
-      "signature": "climate-compare-v1|5.75|-0.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|5.75|-0.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104157",
       "path": "data/climate/event_timeseries/gdacs-FL-1104157.json",
-      "signature": "climate-compare-v1|27.75|83.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|27.75|83.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104081",
       "path": "data/climate/event_timeseries/gdacs-FL-1104081.json",
-      "signature": "climate-compare-v1|47.25|126.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|47.25|126.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1027567",
       "path": "data/climate/event_timeseries/gdacs-DR-1027567.json",
-      "signature": "climate-compare-v1|9.75|15.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|9.75|15.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1027575",
       "path": "data/climate/event_timeseries/gdacs-DR-1027575.json",
-      "signature": "climate-compare-v1|11.75|76.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|11.75|76.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1027465",
       "path": "data/climate/event_timeseries/gdacs-DR-1027465.json",
-      "signature": "climate-compare-v1|0.75|33.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|0.75|33.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1027491",
       "path": "data/climate/event_timeseries/gdacs-DR-1027491.json",
-      "signature": "climate-compare-v1|48.25|82.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|48.25|82.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1027450",
       "path": "data/climate/event_timeseries/gdacs-DR-1027450.json",
-      "signature": "climate-compare-v1|11.25|39.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|11.25|39.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1027449",
       "path": "data/climate/event_timeseries/gdacs-DR-1027449.json",
-      "signature": "climate-compare-v1|15.75|-90.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|15.75|-90.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1023877",
       "path": "data/climate/event_timeseries/gdacs-DR-1023877.json",
-      "signature": "climate-compare-v1|7.25|-67.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|7.25|-67.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1027448",
       "path": "data/climate/event_timeseries/gdacs-DR-1027448.json",
-      "signature": "climate-compare-v1|-6.75|-46.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-6.75|-46.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1018545",
       "path": "data/climate/event_timeseries/gdacs-DR-1018545.json",
-      "signature": "climate-compare-v1|12.25|104.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|12.25|104.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1018546",
       "path": "data/climate/event_timeseries/gdacs-DR-1018546.json",
-      "signature": "climate-compare-v1|42.75|-105.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|42.75|-105.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1018431",
       "path": "data/climate/event_timeseries/gdacs-DR-1018431.json",
-      "signature": "climate-compare-v1|-19.25|47.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-19.25|47.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1018332",
       "path": "data/climate/event_timeseries/gdacs-DR-1018332.json",
-      "signature": "climate-compare-v1|48.25|10.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|48.25|10.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-DR-1018344",
       "path": "data/climate/event_timeseries/gdacs-DR-1018344.json",
-      "signature": "climate-compare-v1|-2.25|13.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-2.25|13.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104156",
       "path": "data/climate/event_timeseries/gdacs-FL-1104156.json",
-      "signature": "climate-compare-v1|23.75|88.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|23.75|88.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104141",
       "path": "data/climate/event_timeseries/gdacs-FL-1104141.json",
-      "signature": "climate-compare-v1|11.75|108.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|11.75|108.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104122",
       "path": "data/climate/event_timeseries/gdacs-FL-1104122.json",
-      "signature": "climate-compare-v1|18.75|99.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|18.75|99.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104155",
       "path": "data/climate/event_timeseries/gdacs-FL-1104155.json",
-      "signature": "climate-compare-v1|-0.75|73.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-0.75|73.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104154",
       "path": "data/climate/event_timeseries/gdacs-FL-1104154.json",
-      "signature": "climate-compare-v1|24.25|92.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|24.25|92.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104148",
       "path": "data/climate/event_timeseries/gdacs-FL-1104148.json",
-      "signature": "climate-compare-v1|-22.75|-47.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-22.75|-47.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031985",
       "path": "data/climate/event_timeseries/gdacs-WF-1031985.json",
-      "signature": "climate-compare-v1|-16.75|35.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-16.75|35.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031930",
       "path": "data/climate/event_timeseries/gdacs-WF-1031930.json",
-      "signature": "climate-compare-v1|-15.25|39.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-15.25|39.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031827",
       "path": "data/climate/event_timeseries/gdacs-WF-1031827.json",
-      "signature": "climate-compare-v1|-10.25|29.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-10.25|29.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031975",
       "path": "data/climate/event_timeseries/gdacs-WF-1031975.json",
-      "signature": "climate-compare-v1|-16.25|36.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-16.25|36.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031943",
       "path": "data/climate/event_timeseries/gdacs-WF-1031943.json",
-      "signature": "climate-compare-v1|-16.75|36.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-16.75|36.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104153",
       "path": "data/climate/event_timeseries/gdacs-FL-1104153.json",
-      "signature": "climate-compare-v1|43.75|16.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|43.75|16.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104145",
       "path": "data/climate/event_timeseries/gdacs-FL-1104145.json",
-      "signature": "climate-compare-v1|-10.25|-76.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-10.25|-76.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031885",
       "path": "data/climate/event_timeseries/gdacs-WF-1031885.json",
-      "signature": "climate-compare-v1|-10.25|31.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-10.25|31.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031846",
       "path": "data/climate/event_timeseries/gdacs-WF-1031846.json",
-      "signature": "climate-compare-v1|-11.25|29.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-11.25|29.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031565",
       "path": "data/climate/event_timeseries/gdacs-WF-1031565.json",
-      "signature": "climate-compare-v1|-7.25|15.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-7.25|15.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031707",
       "path": "data/climate/event_timeseries/gdacs-WF-1031707.json",
-      "signature": "climate-compare-v1|-15.25|37.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-15.25|37.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104152",
       "path": "data/climate/event_timeseries/gdacs-FL-1104152.json",
-      "signature": "climate-compare-v1|45.75|13.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|45.75|13.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104105",
       "path": "data/climate/event_timeseries/gdacs-FL-1104105.json",
-      "signature": "climate-compare-v1|8.75|7.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|8.75|7.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031776",
       "path": "data/climate/event_timeseries/gdacs-WF-1031776.json",
-      "signature": "climate-compare-v1|37.25|35.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|37.25|35.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104151",
       "path": "data/climate/event_timeseries/gdacs-FL-1104151.json",
-      "signature": "climate-compare-v1|38.75|1.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|38.75|1.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104150",
       "path": "data/climate/event_timeseries/gdacs-FL-1104150.json",
-      "signature": "climate-compare-v1|47.75|9.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|47.75|9.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104149",
       "path": "data/climate/event_timeseries/gdacs-FL-1104149.json",
-      "signature": "climate-compare-v1|44.75|6.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|44.75|6.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104011",
       "path": "data/climate/event_timeseries/gdacs-FL-1104011.json",
-      "signature": "climate-compare-v1|16.75|96.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|16.75|96.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104131",
       "path": "data/climate/event_timeseries/gdacs-FL-1104131.json",
-      "signature": "climate-compare-v1|39.75|41.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|39.75|41.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104147",
       "path": "data/climate/event_timeseries/gdacs-FL-1104147.json",
-      "signature": "climate-compare-v1|37.25|55.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|37.25|55.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104143",
       "path": "data/climate/event_timeseries/gdacs-FL-1104143.json",
-      "signature": "climate-compare-v1|49.75|-103.75|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|49.75|-103.75|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031616",
       "path": "data/climate/event_timeseries/gdacs-WF-1031616.json",
-      "signature": "climate-compare-v1|-4.25|19.75|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-4.25|19.75|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031454",
       "path": "data/climate/event_timeseries/gdacs-WF-1031454.json",
-      "signature": "climate-compare-v1|-15.75|38.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-15.75|38.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031572",
       "path": "data/climate/event_timeseries/gdacs-WF-1031572.json",
-      "signature": "climate-compare-v1|-11.75|31.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-11.75|31.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-WF-1031514",
       "path": "data/climate/event_timeseries/gdacs-WF-1031514.json",
-      "signature": "climate-compare-v1|-11.25|31.25|tmp-pre-vpd|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|-11.25|31.25|tmp-pre-vpd|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104146",
       "path": "data/climate/event_timeseries/gdacs-FL-1104146.json",
-      "signature": "climate-compare-v1|2.25|99.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|2.25|99.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     },
     {
       "event_id": "gdacs-FL-1104132",
       "path": "data/climate/event_timeseries/gdacs-FL-1104132.json",
-      "signature": "climate-compare-v1|12.75|103.25|tmp-pre|m09|1901-1930|1981-2010"
+      "signature": "climate-compare-v2|12.75|103.25|tmp-pre|m09|1901-1930|1981-2010|recent7d"
     }
   ]
 }

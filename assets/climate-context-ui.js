@@ -1,6 +1,6 @@
 'use strict';
 
-// Same-month historical normals vs a latest complete 24-hour IFS forecast window.
+// Same-month historical normals vs a recent seven-day mean from complete IFS daily windows.
 (() => {
   const CACHE = new Map();
   let renderToken = 0;
@@ -22,6 +22,7 @@
     return `${n.toFixed(n < 10 ? 1 : 0)} mm/day`;
   };
   const getPeriod = (ctx, key) => (ctx.comparison?.periods || []).find(p => p.key === key) || null;
+  const getRecent = ctx => getPeriod(ctx, 'recent_7d') || getPeriod(ctx, 'current_24h');
   const compactUtc = iso => {
     if (!iso) return '';
     const d = new Date(iso);
@@ -29,9 +30,9 @@
     return `${d.getUTCDate()} ${d.toLocaleString('en', { month: 'short', timeZone: 'UTC' })} ${String(d.getUTCHours()).padStart(2, '0')}Z`;
   };
 
-  function deltaText(variable, current, modern) {
-    if (!finite(current) || !finite(modern)) return 'Current comparison unavailable';
-    const c = Number(current), m = Number(modern);
+  function deltaText(variable, recent, modern) {
+    if (!finite(recent) || !finite(modern)) return 'Recent comparison unavailable';
+    const c = Number(recent), m = Number(modern);
     if (variable === 'pre') {
       if (Math.abs(m) < 1e-9) return `${signed(c - m, 1)} mm/day vs 1981–2010`;
       const pct = (c - m) / m * 100;
@@ -56,9 +57,9 @@
     const monthLabel = ctx.comparison?.month_label || '';
     const early = getPeriod(ctx, '1901_1930');
     const modern = getPeriod(ctx, '1981_2010');
-    const current = getPeriod(ctx, 'current_24h');
-    const delta = deltaText(variable, current?.values?.[variable], modern?.values?.[variable]);
-    return `<article class="comparison-card"><div class="comparison-variable"><span class="comparison-dot" style="background:${COLORS[variable]}"></span><div><h4>${html(META[variable].label)}</h4><div class="comparison-delta">${html(delta)}</div></div></div><div class="comparison-periods">${periodCell(variable, early, monthLabel)}${periodCell(variable, modern, monthLabel)}${periodCell(variable, current, monthLabel)}</div></article>`;
+    const recent = getRecent(ctx);
+    const delta = deltaText(variable, recent?.values?.[variable], modern?.values?.[variable]);
+    return `<article class="comparison-card"><div class="comparison-variable"><span class="comparison-dot" style="background:${COLORS[variable]}"></span><div><h4>${html(META[variable].label)}</h4><div class="comparison-delta">${html(delta)}</div></div></div><div class="comparison-periods">${periodCell(variable, early, monthLabel)}${periodCell(variable, modern, monthLabel)}${periodCell(variable, recent, monthLabel)}</div></article>`;
   }
 
   async function fetchContext(path) {
@@ -88,24 +89,27 @@
   }
 
   function legacyMessage() {
-    return `<div class="climate-status">This event still has the previous annual climate-context schema. It will switch to the new same-month comparison on the next backend refresh.</div>`;
+    return `<div class="climate-status">This event still has the previous climate-context schema. It will switch to the recent 7-day comparison on the next backend refresh.</div>`;
   }
 
   function renderReady(ctx, event) {
     if (!ctx.comparison?.periods) return legacyMessage();
     const vars = Array.isArray(ctx.variable_profile) ? ctx.variable_profile : (event.climate_context?.variables || ['tmp', 'pre']);
     const monthLabel = ctx.comparison.month_label || '';
-    const current = getPeriod(ctx, 'current_24h');
+    const recent = getRecent(ctx);
+    const isV2 = recent?.key === 'recent_7d';
     const location = ctx.comparison_location || {};
     const method = location.selection_method === 'nearest_valid_land_cell' ? 'nearest valid CRU land cell' : 'nearest CRU grid cell';
-    const currentMeta = current?.status === 'ready'
-      ? `IFS 0.25° · complete 24h ending ${html(compactUtc(current.window_end))}`
-      : 'IFS current window pending';
+    const recentMeta = recent?.status === 'ready'
+      ? `IFS 0.25° · ${isV2 ? '7 complete days' : 'complete 24h'} ending ${html(compactUtc(recent.window_end))}`
+      : 'IFS recent window pending';
     const cards = vars.filter(v => META[v]).map(v => variableCard(v, ctx)).join('');
-    const windowNote = current?.status === 'ready'
-      ? `Current 24h uses the latest fully elapsed IFS 0–24 h forecast window (${compactUtc(current.window_start)} → ${compactUtc(current.window_end)}), rather than an instantaneous value.`
-      : `Historical normals are ready; Current 24h is unavailable until the backend Earth Engine credential is active.`;
-    return `<div class="climate-inline-head"><div><h3>Climate comparison · ${html(monthLabel)}</h3><p>Same-calendar-month climate normals compared with a complete 24-hour current forecast window.</p></div><div class="climate-context-meta">CRU-TS v4.10 · 0.5°<br>${html(currentMeta)}<br>${html(method)}${finite(location.distance_km_from_reported_coordinate) ? ` · ${Number(location.distance_km_from_reported_coordinate).toFixed(0)} km` : ''}</div></div><div class="comparison-period-header"><span></span><span>Early climate</span><span>Modern normal</span><span>Current</span></div><div class="comparison-cards">${cards}</div><div class="climate-footer-note"><span>${html(windowNote)} Historical precipitation is converted to mean mm/day for a like-for-like comparison. Current IFS is a model forecast, not an observation or causal attribution.</span><a href="methods.html#climate-context">Methods & definitions →</a></div>`;
+    const windowNote = recent?.status === 'ready'
+      ? isV2
+        ? `Recent values average seven consecutive fully elapsed IFS 0–24 h forecast windows (${compactUtc(recent.window_start)} → ${compactUtc(recent.window_end)}). Precipitation is the seven-day total divided by 7.`
+        : `Current 24h uses the latest fully elapsed IFS 0–24 h forecast window (${compactUtc(recent.window_start)} → ${compactUtc(recent.window_end)}).`
+      : `Historical normals are ready; the recent IFS comparison is temporarily unavailable.`;
+    return `<div class="climate-inline-head"><div><h3>Climate comparison · ${html(monthLabel)}</h3><p>Same-calendar-month climate normals compared with the recent 7-day mean.</p></div><div class="climate-context-meta">CRU-TS v4.10 · 0.5°<br>${html(recentMeta)}<br>${html(method)}${finite(location.distance_km_from_reported_coordinate) ? ` · ${Number(location.distance_km_from_reported_coordinate).toFixed(0)} km` : ''}</div></div><div class="comparison-period-header"><span></span><span>Early climate</span><span>Modern normal</span><span>Recent 7-day</span></div><div class="comparison-cards">${cards}</div><div class="climate-footer-note"><span>${html(windowNote)} Historical precipitation is converted to climatological mean mm/day for comparison. IFS values are model-forecast context, not observations or causal attribution.</span><a href="methods.html#climate-context">Methods & definitions →</a></div>`;
   }
 
   async function renderInlineClimate() {
@@ -138,7 +142,7 @@
       return;
     }
 
-    slot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3><p>Loading same-month historical normals and current 24-hour context…</p></div></div><div class="climate-status"><span class="climate-loading">Loading climate context…</span></div>`;
+    slot.innerHTML = `<div class="climate-inline-head"><div><h3>Climate comparison</h3><p>Loading same-month historical normals and recent 7-day context…</p></div></div><div class="climate-status"><span class="climate-loading">Loading climate context…</span></div>`;
     try {
       const ctx = await fetchContext(ref.path);
       if (token !== renderToken) return;

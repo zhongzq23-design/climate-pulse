@@ -21,7 +21,7 @@
       <p class="methods-lead">Climate Pulse separates three kinds of information that can look similar on a map: <strong>source-reported hazard metrics</strong>, <strong>Climate Pulse-derived estimates or context</strong>, and <strong>local climate background</strong>. The default rule is source first: when GDACS or an upstream hazard system publishes a usable metric, Climate Pulse reports that value. An equivalent metric is calculated only when the source value is unavailable, and the result is explicitly labelled as derived.</p>
       <div class="method-note"><strong>How to read this page:</strong> the sections below explain how events enter the map, how hazard-specific metrics are selected, how derived quantities are calculated, and what each quantity does—and does not—mean.</div>
       <div class="badge-row">
-        <span class="method-badge">Source-first metrics</span><span class="method-badge">Footprint-based exposure</span><span class="method-badge">3× daily monitoring</span><span class="method-badge">GDACS / GDO / GWIS</span><span class="method-badge">GHSL fallback</span><span class="method-badge">CRU-TS v4.10 · 1901–2025</span><span class="method-badge">Exposure ≠ impact</span>
+        <span class="method-badge">Source-first metrics</span><span class="method-badge">Footprint-based exposure</span><span class="method-badge">3× daily monitoring</span><span class="method-badge">GDACS / GDO / GWIS</span><span class="method-badge">GHSL fallback</span><span class="method-badge">CRU-TS normals + IFS 7-day context</span><span class="method-badge">Exposure ≠ impact</span>
       </div>
     </header>
 
@@ -157,49 +157,56 @@
       </article>
 
       <article class="method-card" id="climate-context">
-        <h2>10. Local climate background</h2>
-        <p>The climate panel answers a different question from the event feed: <strong>what has the long-term climate background at this location looked like?</strong> It does not provide real-time weather and does not attribute an individual event to climate change.</p>
-        <p>The public view uses annual values from <strong>CRU-TS v4.10</strong>, a 0.5° global land dataset covering 1901–2025 except Antarctica. Climate Pulse extracts the nearest valid CRU land cell. If the reported event coordinate is offshore, the backend can use the nearest valid land cell within 500 km and reports that distance.</p>
+        <h2>10. Local climate comparison</h2>
+        <p>The climate panel compares a location's historical same-calendar-month climate with a short recent weather-context window. It is designed to answer <strong>how recent conditions compare with historical climate normals at this location</strong>. It does not attribute an individual event to climate change.</p>
+        <p>Historical normals use <strong>CRU-TS v4.10</strong> on the 0.5° global land grid. Climate Pulse extracts the nearest valid CRU land cell; when an event coordinate is offshore, the backend can use the nearest valid land cell within 500 km and reports that distance. The recent IFS value is sampled at the same comparison coordinate.</p>
+        <div class="definition-grid">
+          <div class="definition"><b>Early climate</b><span>1901–1930 same-calendar-month CRU normal.</span></div>
+          <div class="definition"><b>Modern normal</b><span>1981–2010 same-calendar-month CRU normal.</span></div>
+          <div class="definition"><b>Recent 7-day</b><span>Mean across seven consecutive fully elapsed ECMWF IFS 0–24 h short-range forecast windows from the same UTC cycle hour.</span></div>
+        </div>
         <div class="definition-grid">
           <div class="definition"><b>Drought</b><span>Temperature + precipitation + VPD</span></div>
           <div class="definition"><b>Wildfire / Heat</b><span>Temperature + precipitation + VPD</span></div>
           <div class="definition"><b>Flood / Storm / Landslide</b><span>Temperature + precipitation</span></div>
         </div>
-        <p>Monthly anomalies and near-real-time weather are not used in the current public climate panel.</p>
+        <div class="method-warning method-note"><strong>Recent does not mean observed.</strong> The seven-day column is constructed from IFS short-range model forecasts whose full daily valid windows have elapsed. It is weather context, not a station or reanalysis observation.</div>
       </article>
 
       <article class="method-card">
-        <h2>11. Long-term annual indicators</h2>
-        <p>For each selected climate variable, Climate Pulse retains the 1901–2025 annual series and summarizes it with the same three quantities: an early baseline, a recent ten-year mean and a long-term linear trend.</p>
+        <h2>11. Same-month normals and recent 7-day operators</h2>
+        <p>The two historical columns use the calendar month containing the end of the recent seven-day window. For example, a window ending in September is compared with the 30 Septembers in 1901–1930 and the 30 Septembers in 1981–2010.</p>
         <div class="definition-grid">
-          <div class="definition"><b>Early baseline</b><span>1901–1930 annual mean.</span></div>
-          <div class="definition"><b>Recent annual mean</b><span>2016–2025 annual mean.</span></div>
-          <div class="definition"><b>Long-term trend</b><span>Ordinary least-squares slope for 1901–2025, reported per century.</span></div>
+          <div class="definition"><b>Historical temperature</b><span>30-year mean of the CRU monthly mean temperature for the selected calendar month.</span></div>
+          <div class="definition"><b>Historical precipitation</b><span>30-year mean monthly precipitation total divided by the mean number of calendar days in that month, reported as climatological mm/day.</span></div>
+          <div class="definition"><b>Historical VPD</b><span>30-year mean of monthly VPD calculated from CRU monthly mean temperature and actual vapour pressure.</span></div>
+          <div class="definition"><b>Recent temperature</b><span>Mean of seven complete daily temperature means; each daily mean uses 3-hourly IFS values with trapezoidal time weighting over forecast hours 0–24.</span></div>
+          <div class="definition"><b>Recent precipitation</b><span>Sum of seven complete daily 0–24 h IFS precipitation accumulations divided by 7, reported as mm/day.</span></div>
+          <div class="definition"><b>Recent VPD</b><span>Mean of seven daily mean-state VPD values; each day uses its mean temperature and mean actual vapour pressure derived from 3-hourly dew-point temperature.</span></div>
         </div>
-        <div class="formula">Change = mean(2016–2025) − mean(1901–1930)</div>
-        <div class="formula">Trend = OLS slope(annual value ~ year) × 100 years</div>
-        <p>The public chart shows annual values and a 5-year moving mean for readability. No significance badge or p-value is displayed.</p>
+        <div class="formula">Recent precipitation (mm/day) = Σ(seven daily 0–24 h totals) / 7</div>
+        <p>Using seven complete days reduces sensitivity to a single wet or dry day and avoids comparing an instantaneous daytime/nighttime value with a monthly climate normal. It does not remove all sampling variability, especially for precipitation.</p>
       </article>
 
       <article class="method-card" id="vpd-calculation">
-        <h2>12. CRU VPD calculation</h2>
-        <p><strong>Vapour pressure deficit (VPD)</strong> is a widely used measure of atmospheric dryness. It is the difference between saturation vapour pressure—the amount of water vapour air could hold at saturation at a given temperature—and actual vapour pressure. Higher VPD therefore indicates air that is farther from saturation and, in general, greater atmospheric evaporative demand.</p>
-        <p>CRU provides monthly actual vapour pressure (<strong>AVP</strong>) as <code>vap</code>. Climate Pulse calculates saturation vapour pressure (<strong>SVP</strong>) from monthly mean temperature <strong>T</strong>, then calculates monthly VPD before annual aggregation:</p>
+        <h2>12. VPD calculation</h2>
+        <p><strong>Vapour pressure deficit (VPD)</strong> is the difference between saturation vapour pressure (SVP) and actual vapour pressure (AVP). Higher VPD generally indicates greater atmospheric evaporative demand.</p>
         <div class="formula">VPD = SVP − AVP</div>
         <div class="formula">SVP = 6.1078 × exp(aT / (T + b)) &nbsp; [hPa]</div>
         <p>For <strong>T ≥ 0°C</strong>, <code>a = 17.269</code> and <code>b = 237.3</code>. For <strong>T &lt; 0°C</strong>, <code>a = 21.875</code> and <code>b = 265.5</code>.</p>
-        <p>VPD is closely related to <strong>relative humidity (RH)</strong>. RH expresses actual vapour pressure as a percentage of saturation vapour pressure:</p>
+        <p>For historical CRU normals, AVP comes from monthly <code>vap</code> and SVP is calculated from monthly mean temperature. Monthly VPD is calculated first and then averaged across the 30 years in each normal period.</p>
+        <p>For the recent IFS column, AVP is calculated from 2 m dew-point temperature at each 3-hour step. Climate Pulse forms a daily mean AVP and daily mean temperature, calculates <code>SVP(daily mean T) − daily mean AVP</code>, and then averages those seven daily VPD values.</p>
+        <p>VPD is related to relative humidity (RH):</p>
         <div class="formula">RH = 100 × AVP / SVP &nbsp; [%]</div>
         <div class="formula">VPD = SVP × (1 − RH / 100)</div>
-        <p>At a fixed temperature, lower RH corresponds to higher VPD. But SVP rises nonlinearly with temperature, so the same RH can correspond to a larger VPD in warmer air. RH and VPD are therefore related but not interchangeable measures of atmospheric moisture conditions.</p>
-        <div class="method-warning method-note"><strong>Temporal-resolution limitation:</strong> calculating SVP from monthly mean temperature does not retain the diurnal temperature cycle or sub-daily asymmetric warming. The resulting VPD is used as long-term climate context, not as a high-frequency atmospheric-dryness metric.</div>
+        <div class="method-warning method-note"><strong>Temporal-resolution limitation:</strong> historical CRU VPD is based on monthly means, whereas the recent IFS operator preserves 3-hourly information when constructing each daily mean. The two columns are useful climate-context comparisons, not identical sampling distributions.</div>
         <p>See <a href="https://doi.org/10.1038/s41467-025-63672-z" target="_blank" rel="noopener"><strong>Zhong, Z., Chen, H.W., Dai, A. et al. (2025), “Sub-diurnal asymmetric warming has amplified atmospheric dryness since the 1980s,” Nature Communications 16, 8247</strong> ↗</a>.</p>
       </article>
 
       <article class="method-card">
         <h2>13. Climate context is not event attribution</h2>
-        <p>Climate Pulse uses the historical climate series to describe local background conditions and long-term change. A warming, drying or VPD trend at an event location does <strong>not</strong>, by itself, show that anthropogenic climate change caused that event.</p>
-        <p>Formal event attribution requires separate, event-specific evidence and is treated as a distinct information layer. Climate Pulse therefore keeps <strong>event detection</strong>, <strong>source impact/exposure metrics</strong>, <strong>Climate Pulse-derived fallback/context</strong>, <strong>local climate background</strong> and <strong>formal attribution</strong> conceptually separate.</p>
+        <p>The comparison describes local background climate and recent modelled weather context. A warmer, drier or higher-VPD recent week at an event location does <strong>not</strong>, by itself, show that anthropogenic climate change caused that event.</p>
+        <p>Formal event attribution requires separate, event-specific evidence and is treated as a distinct information layer. Climate Pulse therefore keeps <strong>event detection</strong>, <strong>source impact/exposure metrics</strong>, <strong>Climate Pulse-derived fallback/context</strong>, <strong>local climate comparison</strong> and <strong>formal attribution</strong> conceptually separate.</p>
       </article>
 
       <article class="method-card">
@@ -217,6 +224,9 @@
           <li>Forest and crop overlap describe spatial context, not ecological damage, crop failure or yield loss.</li>
           <li>The GDP indicator is a country-level per-capita exposure proxy and does not represent observed economic loss or within-country economic concentration.</li>
           <li>CRU-TS is land-only; offshore events may use the nearest valid land cell within the configured search distance.</li>
+          <li>Historical CRU monthly normals and a recent seven-day IFS mean have different temporal sampling and spatial resolution.</li>
+          <li>IFS recent values are model forecasts, not observations; model error can affect temperature, humidity and precipitation.</li>
+          <li>Precipitation is intermittent. A seven-day average is more stable than one day but can still differ strongly from a 30-year monthly climatological daily rate.</li>
           <li>CRU-derived VPD from monthly mean temperature omits sub-daily temperature variability.</li>
         </ul>
       </article>
@@ -238,6 +248,8 @@
           <li><a href="https://human-settlement.emergency.copernicus.eu/ghs_wup_pop_r2025a.php" target="_blank" rel="noopener">JRC GHSL GHS-WUP-POP R2025A ↗</a></li>
           <li><a href="https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_4.10/" target="_blank" rel="noopener">CRU-TS v4.10 source release ↗</a></li>
           <li><a href="https://doi.org/10.1038/s41597-020-0453-3" target="_blank" rel="noopener">CRU-TS reference: Harris et al. (2020) ↗</a></li>
+          <li><a href="https://developers.google.com/earth-engine/datasets/catalog/ECMWF_NRT_FORECAST_IFS_OPER" target="_blank" rel="noopener">Google Earth Engine: ECMWF IFS Near-Realtime forecast collection ↗</a></li>
+          <li><a href="https://www.ecmwf.int/en/forecasts/datasets/open-data" target="_blank" rel="noopener">ECMWF Open Data documentation ↗</a></li>
           <li><a href="https://www.fao.org/agroinformatics/training-and-resources/data-sets/data-set-detail/cropgrids-data-on-harvested-and-crop-areas/en" target="_blank" rel="noopener">FAO CROPGRIDS ↗</a></li>
           <li><a href="https://doi.org/10.5067/MODIS/MCD12C1.061" target="_blank" rel="noopener">NASA MCD12C1.061 ↗</a></li>
           <li><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener">World Bank WDI GDP per capita ↗</a></li>
