@@ -1,1 +1,230 @@
-.climate-inline-context{margin-top:18px;border-top:1px solid var(--line);padding-top:16px;cursor:default}.climate-inline-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}.climate-inline-head h3{margin:0;font-size:18px;letter-spacing:-.02em}.climate-inline-head p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.climate-context-meta{font-size:11px;color:var(--muted);text-align:right;line-height:1.5}.comparison-period-header{display:grid;grid-template-columns:minmax(145px,.8fr) repeat(3,minmax(0,1fr));gap:8px;padding:0 10px 5px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.055em;text-transform:uppercase}.comparison-period-header span:not(:first-child){padding-left:10px}.comparison-cards{display:grid;gap:9px}.comparison-card{display:grid;grid-template-columns:minmax(145px,.8fr) minmax(0,3fr);gap:8px;border:1px solid #e2ebf0;background:#fff;border-radius:15px;padding:10px}.comparison-variable{display:flex;gap:9px;align-items:flex-start;padding:7px 7px 5px}.comparison-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:0 0 auto}.comparison-variable h4{margin:0;font-size:14px}.comparison-delta{margin-top:5px;color:var(--muted);font-size:11px;line-height:1.35}.comparison-periods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.comparison-period{border-left:1px solid #edf2f5;padding:6px 10px;min-width:0}.comparison-period-label{font-size:11px;color:var(--muted);font-weight:750}.comparison-value{font-size:20px;font-weight:850;letter-spacing:-.03em;line-height:1.25;margin-top:2px;color:var(--ink)}.comparison-period-sub{font-size:10px;color:var(--muted);line-height:1.35;margin-top:4px;overflow-wrap:anywhere}.comparison-period.is-missing .comparison-value{color:#95a4ae}.comparison-period.is-missing .comparison-period-sub{color:#9a6a58}.climate-footer-note{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:11px;line-height:1.5;margin-top:10px}.climate-footer-note span{max-width:850px}.climate-footer-note a{color:var(--accent);font-weight:700;text-decoration:none}.climate-footer-note a:hover,.climate-footer-note a:focus{text-decoration:underline}.climate-status{border:1px dashed var(--line);border-radius:14px;padding:14px;color:var(--muted);background:#fbfdfe}.climate-error{color:#9a4e38}.climate-loading{display:inline-flex;align-items:center;gap:8px}.climate-loading:before{content:"";width:13px;height:13px;border:2px solid #c9d9e3;border-top-color:#1f6aa5;border-radius:50%;animation:cp-spin .8s linear infinite}@keyframes cp-spin{to{transform:rotate(360deg)}}@media(max-width:900px){.climate-inline-head{display:block}.climate-context-meta{text-align:left;margin-top:7px}.comparison-period-header{display:none}.comparison-card{grid-template-columns:1fr;padding:9px}.comparison-variable{padding-bottom:2px}.comparison-periods{grid-template-columns:1fr}.comparison-period{border-left:0;border-top:1px solid #edf2f5;padding:8px 7px}.comparison-period-label{font-size:10px}.comparison-value{font-size:19px}.comparison-period-sub{font-size:10px}}
+.climate-inline-context{
+  margin-top:18px;
+  border-top:1px solid var(--line);
+  padding-top:16px;
+  cursor:default;
+}
+.climate-inline-head{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
+  margin-bottom:12px;
+}
+.climate-inline-head h3{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.climate-inline-head p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+.climate-context-meta{
+  font-size:11px;
+  color:var(--muted);
+  text-align:right;
+  line-height:1.5;
+}
+.comparison-cards{
+  display:grid;
+  gap:12px;
+}
+.comparison-card{
+  border:1px solid #e2ebf0;
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 1px 0 rgba(20,52,73,.025);
+}
+.comparison-card-head{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+  margin-bottom:9px;
+}
+.comparison-variable{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  min-width:145px;
+}
+.comparison-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  margin-top:5px;
+  flex:0 0 auto;
+}
+.comparison-variable h4{
+  margin:0;
+  font-size:14px;
+}
+.comparison-delta{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.35;
+}
+.comparison-summary{
+  margin:0;
+  max-width:620px;
+  color:#506674;
+  font-size:12px;
+  line-height:1.45;
+}
+.comparison-card-body{
+  display:grid;
+  grid-template-columns:minmax(210px,.9fr) minmax(0,2.1fr);
+  gap:14px;
+  align-items:stretch;
+}
+.comparison-chart-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:132px;
+  border:1px solid #edf2f5;
+  border-radius:13px;
+  padding:5px 8px 2px;
+  background:linear-gradient(180deg,#fbfdfe 0%,#f7fafc 100%);
+}
+.comparison-chart{
+  width:100%;
+  min-width:0;
+}
+.comparison-chart svg{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:132px;
+  overflow:visible;
+}
+.climate-mini-zero{
+  stroke:#cfdbe2;
+  stroke-width:1;
+  stroke-dasharray:3 3;
+}
+.climate-mini-bar{
+  fill:currentColor;
+}
+.climate-mini-group.is-early .climate-mini-bar{opacity:.38}
+.climate-mini-group.is-modern .climate-mini-bar{opacity:.64}
+.climate-mini-group.is-recent .climate-mini-bar{opacity:1}
+.climate-mini-label{
+  fill:#6b7f8c;
+  font-size:10px;
+  font-weight:750;
+}
+.climate-mini-missing{
+  fill:#98a8b2;
+  font-size:20px;
+  font-weight:700;
+}
+.comparison-chart-empty{
+  color:var(--muted);
+  font-size:11px;
+}
+.comparison-periods{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  min-width:0;
+}
+.comparison-period{
+  border-left:1px solid #edf2f5;
+  padding:8px 10px;
+  min-width:0;
+}
+.comparison-period-label{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:750;
+}
+.comparison-value{
+  font-size:20px;
+  font-weight:850;
+  letter-spacing:-.03em;
+  line-height:1.25;
+  margin-top:2px;
+  color:var(--ink);
+}
+.comparison-period-sub{
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.35;
+  margin-top:4px;
+  overflow-wrap:anywhere;
+}
+.comparison-period.is-missing .comparison-value{color:#95a4ae}
+.comparison-period.is-missing .comparison-period-sub{color:#9a6a58}
+.climate-footer-note{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+  margin-top:10px;
+}
+.climate-footer-note span{max-width:850px}
+.climate-footer-note a{
+  color:var(--accent);
+  font-weight:700;
+  text-decoration:none;
+}
+.climate-footer-note a:hover,.climate-footer-note a:focus{text-decoration:underline}
+.climate-status{
+  border:1px dashed var(--line);
+  border-radius:14px;
+  padding:14px;
+  color:var(--muted);
+  background:#fbfdfe;
+}
+.climate-error{color:#9a4e38}
+.climate-loading{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.climate-loading:before{
+  content:"";
+  width:13px;
+  height:13px;
+  border:2px solid #c9d9e3;
+  border-top-color:#1f6aa5;
+  border-radius:50%;
+  animation:cp-spin .8s linear infinite;
+}
+@keyframes cp-spin{to{transform:rotate(360deg)}}
+
+@media(max-width:900px){
+  .climate-inline-head{display:block}
+  .climate-context-meta{text-align:left;margin-top:7px}
+  .comparison-card{padding:11px}
+  .comparison-card-head{display:block;margin-bottom:8px}
+  .comparison-summary{margin-top:7px}
+  .comparison-card-body{grid-template-columns:1fr;gap:9px}
+  .comparison-chart-wrap{min-height:118px;padding:2px 5px 0}
+  .comparison-chart svg{max-height:122px}
+  .comparison-periods{grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid #edf2f5}
+  .comparison-period{border-left:1px solid #edf2f5;padding:8px 7px}
+  .comparison-period:first-child{border-left:0}
+  .comparison-period-label{font-size:9px}
+  .comparison-value{font-size:17px}
+  .comparison-period-sub{font-size:9px}
+}
+
+@media(max-width:560px){
+  .comparison-periods{grid-template-columns:1fr}
+  .comparison-period{border-left:0;border-top:1px solid #edf2f5;padding:8px 7px}
+  .comparison-period:first-child{border-top:0}
+  .comparison-period-label{font-size:10px}
+  .comparison-value{font-size:19px}
+  .comparison-period-sub{font-size:10px}
+  .comparison-chart-wrap{min-height:128px}
+}
