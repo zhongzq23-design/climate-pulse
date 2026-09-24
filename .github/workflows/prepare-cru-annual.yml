@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install --disable-pip-version-check numpy netCDF4
+      - run: python -m pip install --disable-pip-version-check numpy==2.5.3 netCDF4==1.7.4
       - run: python -m py_compile scripts/prepare_cru_annual.py
       - run: python scripts/prepare_cru_annual.py
       - name: Commit annual CRU derivative
