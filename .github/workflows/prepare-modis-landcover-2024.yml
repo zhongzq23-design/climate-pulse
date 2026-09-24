@@ -13,15 +13,24 @@ concurrency:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    environment: production-secrets
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: main
+      - name: Checkout isolated production data
+        uses: actions/checkout@v4
+        with:
+          ref: production-data
+          path: .production-data
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Restore latest generated reference
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/reference/landcover/modis_mcd12c1_2024
       - uses: actions/cache@v4
         with:
           path: ~/.cache/climate-pulse/modis
@@ -32,7 +41,11 @@ jobs:
           CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
           EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
         run: python scripts/prepare_modis_landcover_2024.py
+      - name: Publish generated reference into isolated data checkout
+        if: ${{ hashFiles('data/reference/landcover/modis_mcd12c1_2024/land_forest_area_ha_0p05.tif') != '' }}
+        run: python scripts/production_data_branch.py publish --store .production-data --paths data/reference/landcover/modis_mcd12c1_2024
       - name: Commit derived reference when built
+        working-directory: .production-data
         run: |
           set -euo pipefail
           if [ ! -f data/reference/landcover/modis_mcd12c1_2024/land_forest_area_ha_0p05.tif ]; then
@@ -44,5 +57,5 @@ jobs:
           git add data/reference/landcover/modis_mcd12c1_2024
           git diff --cached --quiet && exit 0
           git commit -m 'data: prepare NASA MODIS 2024 land and forest reference'
-          git pull --rebase origin main
-          git push origin main
+          git pull --rebase origin production-data
+          git push origin HEAD:production-data
