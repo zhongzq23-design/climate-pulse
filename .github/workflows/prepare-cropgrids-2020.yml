@@ -19,9 +19,17 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+      - name: Checkout isolated production data
+        uses: actions/checkout@v4
+        with:
+          ref: production-data
+          path: .production-data
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Restore latest generated reference
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/reference/crops/cropgrids_2020
       - uses: actions/cache@v4
         with:
           path: ~/.cache/climate-pulse/cropgrids
@@ -30,7 +38,10 @@ jobs:
       - env:
           CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
         run: python scripts/prepare_cropgrids_2020.py
+      - name: Publish generated reference into isolated data checkout
+        run: python scripts/production_data_branch.py publish --store .production-data --paths data/reference/crops/cropgrids_2020
       - name: Commit derived reference
+        working-directory: .production-data
         run: |
           set -euo pipefail
           git config user.name 'climate-pulse-bot'
@@ -38,5 +49,5 @@ jobs:
           git add data/reference/crops/cropgrids_2020
           git diff --cached --quiet && exit 0
           git commit -m 'data: prepare FAO CROPGRIDS 2020 crop-area reference'
-          git pull --rebase origin main
-          git push origin main
+          git pull --rebase origin production-data
+          git push origin HEAD:production-data
