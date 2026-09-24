@@ -30,9 +30,17 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+      - name: Checkout isolated production data
+        uses: actions/checkout@v4
+        with:
+          ref: production-data
+          path: .production-data
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Restore latest report state
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/reports reports
       - uses: actions/cache@v4
         with:
           path: ~/.cache/climate-pulse/population
@@ -57,7 +65,10 @@ jobs:
         env:
           CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
         run: python scripts/run_periodic_reports.py --mode "${{ steps.period.outputs.mode }}"
+      - name: Publish reports into isolated data checkout
+        run: python scripts/production_data_branch.py publish --store .production-data --paths data/reports reports
       - name: Commit report publication
+        working-directory: .production-data
         shell: bash
         run: |
           set -euo pipefail
@@ -69,5 +80,5 @@ jobs:
             exit 0
           fi
           git commit -m "reports: publish ${{ steps.period.outputs.mode }} $(date -u +'%Y-%m-%dT%H:%MZ')"
-          git pull --rebase origin main
-          git push origin main
+          git pull --rebase origin production-data
+          git push origin HEAD:production-data
