@@ -48,6 +48,21 @@ class WorkflowSecurityTests(unittest.TestCase):
                 offenders.append(str(path.relative_to(ROOT)))
         self.assertEqual(offenders, [])
 
+    def test_pages_redeploys_after_same_repo_production_writers(self):
+        text = (WORKFLOWS / "pages.yml").read_text(encoding="utf-8")
+        self.assertIn("workflow_run:", text)
+        for workflow_name in (
+            "Monitor climate events",
+            "Publish Climate Pulse reports",
+            "Prepare FAO CROPGRIDS 2020 reference",
+            "Prepare CRU annual climate context",
+            "Prepare CRU monthly seasonal context",
+            "Prepare NASA MODIS 2024 landcover reference",
+            "Prepare population reference",
+        ):
+            self.assertIn(workflow_name, text)
+        self.assertIn("github.event.workflow_run.conclusion == 'success'", text)
+
 
 if __name__ == "__main__":
     unittest.main()

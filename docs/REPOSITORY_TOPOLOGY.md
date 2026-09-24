@@ -1,6 +1,6 @@
 # Climate Pulse repository topology
 
-Status: **public-monorepo cutover target**  
+Status: **canonical public-monorepo production architecture**  
 Effective date: 2026-09-24
 
 ## Canonical production repository
@@ -40,6 +40,8 @@ QC / enrichment / reports
         ↓
 same-repository commit with GITHUB_TOKEN
         ↓
+workflow_run completion trigger
+        ↓
 scripts/build_public_dist.py --check
         ↓
 GitHub Pages filtered artifact
@@ -55,7 +57,7 @@ GitHub Pages filtered artifact
 6. The former `PUBLIC_REPO_TOKEN` cross-repository publication dependency is retired.
 7. No workflow may dump the complete environment, enable xtrace, or echo secret values.
 8. All production writers share a serialization lock where they can touch overlapping products.
-9. Pages uploads only `public-dist`, never the whole source tree.
+9. Pages uploads only `public-dist`, never the whole source tree.\n10. Pages listens to successful production `workflow_run` completions so same-repository `GITHUB_TOKEN` commits do not rely on recursive `push` workflow triggering.
 
 ## Cutover rule
 
