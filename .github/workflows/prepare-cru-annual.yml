@@ -19,13 +19,24 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+      - name: Checkout isolated production data
+        uses: actions/checkout@v4
+        with:
+          ref: production-data
+          path: .production-data
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Restore latest generated reference
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/reference/climate/cru_ts_4.10
       - run: python -m pip install --disable-pip-version-check numpy==2.5.3 netCDF4==1.7.4
       - run: python -m py_compile scripts/prepare_cru_annual.py
       - run: python scripts/prepare_cru_annual.py
+      - name: Publish generated reference into isolated data checkout
+        run: python scripts/production_data_branch.py publish --store .production-data --paths data/reference/climate/cru_ts_4.10
       - name: Commit annual CRU derivative
+        working-directory: .production-data
         run: |
           set -euo pipefail
           git config user.name 'climate-pulse-bot'
@@ -33,5 +44,5 @@ jobs:
           git add data/reference/climate/cru_ts_4.10
           git diff --cached --quiet && exit 0
           git commit -m 'data: add CRU-TS v4.10 annual climate context'
-          git pull --rebase origin main
-          git push origin main
+          git pull --rebase origin production-data
+          git push origin HEAD:production-data
