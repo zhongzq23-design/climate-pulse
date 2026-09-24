@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-"""Build the code-free public Climate Pulse website artifact.
+"""Build the browser-facing Climate Pulse Pages artifact.
 
-The private backend is the authority for ingestion, GEE/Python processing, QC and
-report generation. This exporter copies only explicitly approved website/output
-paths into ``public-dist``. It intentionally excludes backend implementation,
-tests, operational lessons, migration material, private workflows, and the
-public repository's GitHub Pages workflow. The Pages workflow is maintained
-separately in the public repository so the cross-repository publisher token only
-needs Contents read/write permission and never needs workflow-management scope.
+The public repository is the operational source repository and contains both
+backend processing code and website content.  GitHub Pages must still publish
+only an explicitly approved browser-facing subset.  This builder creates that
+subset in `public-dist` and excludes processing code, tests, workflows,
+operational lessons and credential-like material.
 """
 from __future__ import annotations
 
@@ -39,7 +37,7 @@ FORBIDDEN_NAME_TOKENS = {
     "service_account", ".env",
 }
 
-PUBLIC_README = """# Climate Pulse\n\nPublic website and generated output artifacts for Climate Pulse.\n\nThe operational backend, Python/GEE processing code, quality-control logic and\nscheduled data-processing workflows are maintained in a separate private\nrepository. Public scientific methods and generated event/report data remain\navailable here for transparency and reproducibility of interpretation.\n"""
+PUBLIC_README = """# Climate Pulse\n\nBrowser-facing Climate Pulse site artifact generated from the public operational source repository.\n\nProcessing code, tests, CI workflows and secrets are intentionally excluded from the GitHub Pages artifact even though the source repository itself is public.\n"""
 
 
 def copy_path(src_rel: Path, out_root: Path) -> None:
@@ -77,8 +75,8 @@ def assert_public_boundary(out_root: Path) -> None:
 def assert_text_only_climate_context(out_root: Path) -> None:
     """Keep the user-approved climate background presentation text-only.
 
-    The private backend is the publishing authority.  A previous public-only
-    rollback was overwritten by the next scheduled publish because the backend
+    The public repository is now the source and execution authority. A previous
+    presentation rollback was overwritten by a later automated refresh because the source
     still contained an older mini-chart implementation.  Treat the absence of
     chart rendering as a publication contract so that this cannot silently
     regress again.
