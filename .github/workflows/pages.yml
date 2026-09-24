@@ -4,6 +4,17 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Monitor climate events
+      - Publish Climate Pulse reports
+      - Prepare FAO CROPGRIDS 2020 reference
+      - Prepare CRU annual climate context
+      - Prepare CRU monthly seasonal context
+      - Prepare NASA MODIS 2024 landcover reference
+      - Prepare population reference
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -16,6 +27,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
