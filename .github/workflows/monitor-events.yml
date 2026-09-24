@@ -37,7 +37,7 @@ jobs:
           python-version: '3.12'
 
       - name: Restore latest production state
-        run: python scripts/production_data_branch.py restore --store .production-data --paths data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports data/reference/crops/cropgrids_2020 data/reference/climate/cru_ts_4.10 data/reference/landcover/modis_mcd12c1_2024 data/reference/population data/reference/crops/cropgrids_2020 data/reference/climate/cru_ts_4.10 data/reference/landcover/modis_mcd12c1_2024 data/reference/population
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports data/reference/crops/cropgrids_2020 data/reference/climate/cru_ts_4.10 data/reference/landcover/modis_mcd12c1_2024 data/reference/population
 
       - name: Detect Earth Engine configuration
         id: ee
