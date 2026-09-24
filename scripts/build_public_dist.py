@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -36,6 +37,22 @@ FORBIDDEN_NAME_TOKENS = {
     "credential", "credentials", "secret", "secrets", "service-account",
     "service_account", ".env",
 }
+
+SECRET_SCAN_SUFFIXES = {
+    ".html", ".htm", ".js", ".mjs", ".css", ".json", ".geojson", ".txt",
+    ".md", ".csv", ".tsv", ".xml", ".svg", ".map",
+}
+SECRET_PATTERNS: tuple[tuple[str, re.Pattern[bytes]], ...] = (
+    ("PEM private key", re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----")),
+    ("GitHub token", re.compile(rb"\b(?:gh[pousr]_[A-Za-z0-9]{20,255}|github_pat_[A-Za-z0-9_]{20,255})\b")),
+    ("Google API key", re.compile(rb"\bAIza[0-9A-Za-z_-]{35}\b")),
+    ("Google OAuth token", re.compile(rb"\bya29\.[0-9A-Za-z_-]{20,}\b")),
+    ("AWS access key", re.compile(rb"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b")),
+    ("Slack token", re.compile(rb"\bxox[baprs]-[A-Za-z0-9-]{10,}\b")),
+    ("Bearer token", re.compile(rb"(?i)\bBearer[ \t]+[A-Za-z0-9._~+/=-]{20,}\b")),
+)
+SERVICE_ACCOUNT_TYPE_RE = re.compile(rb'"type"\s*:\s*"service_account"')
+SERVICE_ACCOUNT_PRIVATE_KEY_RE = re.compile(rb'"private_key"\s*:')
 
 PUBLIC_README = """# Climate Pulse\n\nBrowser-facing Climate Pulse site artifact generated from the public operational source repository.\n\nProcessing code, tests, CI workflows and secrets are intentionally excluded from the GitHub Pages artifact even though the source repository itself is public.\n"""
 
@@ -70,6 +87,33 @@ def assert_public_boundary(out_root: Path) -> None:
             violations.append(f"workflow/config YAML is managed outside the publisher artifact: {rel}")
     if violations:
         raise RuntimeError("Public artifact boundary failed:\n" + "\n".join(sorted(set(violations))))
+
+
+def assert_no_embedded_secrets(out_root: Path) -> None:
+    """Fail closed if the browser-facing artifact contains credential material."""
+    violations: list[str] = []
+    scanned_files = 0
+    for path in out_root.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in SECRET_SCAN_SUFFIXES:
+            continue
+        data = path.read_bytes()
+        if b"\x00" in data[:4096]:
+            continue
+
+        scanned_files += 1
+        rel = path.relative_to(out_root)
+        if SERVICE_ACCOUNT_TYPE_RE.search(data) and SERVICE_ACCOUNT_PRIVATE_KEY_RE.search(data):
+            violations.append(f"Google service-account JSON: {rel}")
+        for label, pattern in SECRET_PATTERNS:
+            if pattern.search(data):
+                violations.append(f"{label}: {rel}")
+
+    if violations:
+        raise RuntimeError(
+            "Public artifact secret scan failed:\n"
+            + "\n".join(sorted(set(violations)))
+        )
+    print(f"Public artifact secret scan passed: {scanned_files} text-like files checked")
 
 
 def assert_text_only_climate_context(out_root: Path) -> None:
@@ -191,6 +235,7 @@ def build(out_root: Path) -> None:
 
     (out_root / "README.md").write_text(PUBLIC_README, encoding="utf-8")
     assert_public_boundary(out_root)
+    assert_no_embedded_secrets(out_root)
     assert_text_only_climate_context(out_root)
     assert_browser_snapshot_contract(out_root)
 
