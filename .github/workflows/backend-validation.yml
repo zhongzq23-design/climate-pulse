@@ -1,0 +1,87 @@
+name: Validate Climate Pulse
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/events/**'
+      - 'data/exposure/**'
+      - 'data/footprints/**'
+      - 'data/climate/event_timeseries/**'
+      - 'data/history/daily/**'
+      - 'data/reports/**'
+      - 'reports/**'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install scientific dependencies
+        run: python -m pip install --disable-pip-version-check numpy rasterio shapely pyproj netCDF4 earthengine-api
+
+      - name: Compile processing scripts
+        run: >-
+          python -m py_compile
+          scripts/prepare_cru_early_climatology.py
+          scripts/enrich_climate_context.py
+          scripts/run_climate_context_enrichment.py
+          scripts/sync_climate_context_refs.py
+          scripts/refresh_gate.py
+          scripts/refresh_gate_v2.py
+          scripts/run_incremental_event_refresh.py
+          scripts/stabilize_climate_products.py
+
+      - name: Validate committed CRU monthly normals
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from netCDF4 import Dataset
+          paths = [
+              'data/reference/climate/cru_ts_4.10/monthly/climatology_1901_1930.nc',
+              'data/reference/climate/cru_ts_4.10/monthly/climatology_1981_2010.nc',
+          ]
+          for path in paths:
+              with Dataset(path) as ds:
+                  months = np.asarray(ds.variables['month'][:])
+                  assert months.tolist() == list(range(1, 13)), (path, months.tolist())
+                  shape = ds.variables['tmp'].shape
+                  assert shape[0] == 12 and shape == ds.variables['pre'].shape == ds.variables['vpd'].shape
+                  for name in ('tmp', 'pre', 'vpd'):
+                      valid = np.asarray(np.ma.asarray(ds.variables[name][8, :, :]).compressed(), dtype='float64')
+                      assert valid.size > 10000, (path, name, valid.size)
+                      assert np.isfinite(valid).all(), (path, name)
+                  print('CRU_COMMITTED_NORMAL_VALIDATION=PASS path=' + path)
+          PY
+
+      - name: Run regression suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Validate public scientific copy
+        run: python scripts/check_public_science_copy.py
+
+      - name: Build and validate Pages artifact
+        run: python scripts/build_public_dist.py --check
+
+      - name: Check browser JavaScript syntax
+        run: |
+          node --check assets/sources.js
+          node --check assets/display-rounding-ui.js
+          node --check assets/wildfire-source-sync-ui.js
+          node --check assets/hazard-exposure-ui.js
+          node --check assets/climate-context-ui.js
+          node tests/test_display_rounding.js

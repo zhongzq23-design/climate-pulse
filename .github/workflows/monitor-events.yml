@@ -1,0 +1,192 @@
+name: Monitor climate events
+
+on:
+  schedule:
+    - cron: '17 0,8,16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: climate-pulse-production-write-lock
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Detect Earth Engine configuration
+        id: ee
+        env:
+          EE_SERVICE_ACCOUNT_JSON: ${{ secrets.EE_SERVICE_ACCOUNT_JSON || secrets.GEE_SERVICE_ACCOUNT_JSON }}
+        shell: bash
+        run: |
+          if [ -n "${EE_SERVICE_ACCOUNT_JSON:-}" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo 'Earth Engine service-account secret is not configured; climate-only refresh will be skipped.'
+          fi
+
+      - name: Preserve previous source state
+        run: cp data/events/latest.json /tmp/climate-pulse-previous-latest.json
+
+      - name: Fetch and normalize primary events
+        run: python scripts/run_event_monitor.py
+
+      - name: Recover still-active older wildfires before gating
+        run: python scripts/restore_recent_wildfires.py
+
+      - name: Decide which production layers need refresh
+        id: refresh
+        run: |
+          python scripts/refresh_gate.py             --previous /tmp/climate-pulse-previous-latest.json             --current data/events/latest.json             --climate-index data/climate/event_timeseries/index.json             --github-event "${GITHUB_EVENT_NAME}"
+
+      - name: Revert source-polling churn when source state is unchanged
+        if: ${{ steps.refresh.outputs.full_refresh != 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git reset --hard HEAD
+          git clean -fd data/events/archive
+
+      - name: Report no-op refresh
+        if: ${{ steps.refresh.outputs.any_refresh != 'true' }}
+        env:
+          REFRESH_REASON: ${{ steps.refresh.outputs.reason }}
+        run: echo "Scheduled refresh skipped; $REFRESH_REASON"
+
+      - name: Report incremental event scope
+        if: ${{ steps.refresh.outputs.incremental_refresh == 'true' }}
+        env:
+          CHANGED_EVENT_COUNT: ${{ steps.refresh.outputs.changed_event_count }}
+          CHANGED_SOURCE_COUNT: ${{ steps.refresh.outputs.changed_source_count }}
+          REMOVED_SOURCE_COUNT: ${{ steps.refresh.outputs.removed_source_count }}
+        run: |
+          echo "INCREMENTAL_EVENT_REFRESH_V1 changed_event_count=$CHANGED_EVENT_COUNT"
+          echo "changed_source_count=$CHANGED_SOURCE_COUNT removed_source_count=$REMOVED_SOURCE_COUNT"
+
+      - name: Restore GHSL population cache
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' && (steps.refresh.outputs.incremental_refresh != 'true' || steps.refresh.outputs.changed_event_count != '0') }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/climate-pulse/population
+          key: ghsl-wup-pop-r2025a-e2025-1km-v1
+
+      - name: Install Earth Engine client
+        if: ${{ steps.refresh.outputs.climate_refresh == 'true' && steps.ee.outputs.configured == 'true' }}
+        run: python -m pip install --disable-pip-version-check earthengine-api
+
+      - name: Install full geospatial dependencies
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' || steps.refresh.outputs.maintenance_refresh == 'true' }}
+        run: python -m pip install --disable-pip-version-check numpy rasterio shapely pyproj netCDF4
+
+      - name: Install climate-only dependencies
+        if: ${{ steps.refresh.outputs.climate_refresh == 'true' && steps.refresh.outputs.full_refresh != 'true' && steps.refresh.outputs.maintenance_refresh != 'true' && steps.ee.outputs.configured == 'true' }}
+        run: python -m pip install --disable-pip-version-check numpy netCDF4
+
+      - name: Verify committed climate normals
+        if: ${{ steps.refresh.outputs.climate_refresh == 'true' && steps.ee.outputs.configured == 'true' }}
+        run: |
+          test -s data/reference/climate/cru_ts_4.10/monthly/climatology_1901_1930.nc
+          test -s data/reference/climate/cru_ts_4.10/monthly/climatology_1981_2010.nc
+
+      - name: Incrementally refresh changed event products
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' && steps.refresh.outputs.incremental_refresh == 'true' }}
+        env:
+          CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
+          CHANGED_EVENT_IDS: ${{ steps.refresh.outputs.changed_event_ids }}
+        run: |
+          python scripts/run_incremental_event_refresh.py             --previous /tmp/climate-pulse-previous-latest.json             --current data/events/latest.json             --changed-ids "$CHANGED_EVENT_IDS"
+
+      - name: Enrich hazard exposure
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' && steps.refresh.outputs.incremental_refresh != 'true' }}
+        env:
+          CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
+        run: python scripts/run_hazard_enrichment.py
+
+      - name: Align wildfire episode metrics
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' && steps.refresh.outputs.incremental_refresh != 'true' }}
+        run: python scripts/sync_wildfire_episode_metrics.py
+
+      - name: Finalize wildfire visibility
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' && steps.refresh.outputs.incremental_refresh != 'true' }}
+        run: python scripts/finalize_wildfire_display.py
+
+      - name: Persist mapped footprints
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' && steps.refresh.outputs.incremental_refresh != 'true' }}
+        run: python scripts/enrich_event_footprints.py
+
+      - name: Enrich supplemental asset exposure
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' && steps.refresh.outputs.incremental_refresh != 'true' }}
+        env:
+          CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
+        run: python scripts/enrich_asset_exposure.py
+
+      - name: Enrich climate context
+        if: ${{ steps.refresh.outputs.climate_refresh == 'true' && steps.ee.outputs.configured == 'true' }}
+        env:
+          EE_PROJECT: ${{ vars.EE_PROJECT || secrets.EE_PROJECT || secrets.GEE_PROJECT_ID }}
+          EE_SERVICE_ACCOUNT_JSON: ${{ secrets.EE_SERVICE_ACCOUNT_JSON || secrets.GEE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/run_climate_context_enrichment.py
+
+      - name: Verify and synchronize climate coverage
+        if: ${{ steps.refresh.outputs.climate_refresh == 'true' && steps.ee.outputs.configured == 'true' }}
+        run: python scripts/sync_climate_context_refs.py
+
+      - name: Suppress timestamp-only climate product churn
+        if: ${{ steps.refresh.outputs.climate_refresh == 'true' && steps.ee.outputs.configured == 'true' }}
+        run: python scripts/stabilize_climate_products.py
+
+      - name: Update daily ledger
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' || steps.refresh.outputs.maintenance_refresh == 'true' }}
+        run: python scripts/update_daily_ledger.py
+
+      - name: Enforce population-exposure semantics
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' }}
+        run: python scripts/enforce_population_exposure_policy.py
+
+      - name: Build rolling reports
+        if: ${{ steps.refresh.outputs.full_refresh == 'true' || steps.refresh.outputs.maintenance_refresh == 'true' }}
+        env:
+          CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
+        run: python scripts/run_periodic_reports.py --mode rolling
+
+      - name: Stage and detect product changes
+        id: products
+        if: ${{ steps.refresh.outputs.any_refresh == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'No material product changes remain after stabilization.'
+          else
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+            git diff --cached --stat
+          fi
+
+      - name: Commit generated products
+        if: ${{ steps.products.outputs.changed == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'climate-pulse-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "data: refresh Climate Pulse products $(date -u +'%Y-%m-%dT%H:%MZ')"
+          git pull --rebase origin main
+          git push origin HEAD:main
