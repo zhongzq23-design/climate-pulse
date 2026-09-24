@@ -11,9 +11,9 @@ import scripts.refresh_gate as gate
 class HistoricalRefreshGateDiagnosticTests(unittest.TestCase):
     def test_20260917_semantic_projection_reduces_or_matches_broad_churn(self):
         previous_path = Path("data/events/archive/2026/09/17/003329Z.json")
-        current_path = Path("data/events/latest.json")
+        current_path = Path("data/events/archive/2026/09/17/082921Z.json")
         if not previous_path.exists() or not current_path.exists():
-            self.skipTest("historical production snapshots are not present")
+            self.skipTest("pinned historical production snapshots are not present")
         previous = json.loads(previous_path.read_text(encoding="utf-8"))
         current = json.loads(current_path.read_text(encoding="utf-8"))
         semantic, _ = gate.changed_source_ids(previous, current)
