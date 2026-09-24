@@ -15,6 +15,7 @@ concurrency:
 jobs:
   monitor:
     runs-on: ubuntu-latest
+    environment: production-secrets
     timeout-minutes: 45
     steps:
       - name: Checkout latest main
@@ -23,10 +24,20 @@ jobs:
           fetch-depth: 1
           ref: main
 
+      - name: Checkout isolated production data
+        uses: actions/checkout@v4
+        with:
+          ref: production-data
+          path: .production-data
+          fetch-depth: 1
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Restore latest production state
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports data/reference/crops/cropgrids_2020 data/reference/climate/cru_ts_4.10 data/reference/landcover/modis_mcd12c1_2024 data/reference/population
 
       - name: Detect Earth Engine configuration
         id: ee
@@ -63,11 +74,7 @@ jobs:
 
       - name: Revert source-polling churn when source state is unchanged
         if: ${{ steps.refresh.outputs.full_refresh != 'true' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          git reset --hard HEAD
-          git clean -fd data/events/archive
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports data/reference/crops/cropgrids_2020 data/reference/climate/cru_ts_4.10 data/reference/landcover/modis_mcd12c1_2024 data/reference/population
 
       - name: Report no-op refresh
         if: ${{ steps.refresh.outputs.any_refresh != 'true' }}
@@ -171,9 +178,14 @@ jobs:
           CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
         run: python scripts/run_periodic_reports.py --mode rolling
 
+      - name: Publish generated products into isolated data checkout
+        if: ${{ steps.refresh.outputs.any_refresh == 'true' }}
+        run: python scripts/production_data_branch.py publish --store .production-data --paths data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports
+
       - name: Stage and detect product changes
         id: products
         if: ${{ steps.refresh.outputs.any_refresh == 'true' }}
+        working-directory: .production-data
         shell: bash
         run: |
           set -euo pipefail
@@ -188,11 +200,12 @@ jobs:
 
       - name: Commit generated products
         if: ${{ steps.products.outputs.changed == 'true' }}
+        working-directory: .production-data
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'climate-pulse-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m "data: refresh Climate Pulse products $(date -u +'%Y-%m-%dT%H:%MZ')"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          git pull --rebase origin production-data
+          git push origin HEAD:production-data

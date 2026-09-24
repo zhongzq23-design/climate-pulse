@@ -37,6 +37,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+      - name: Checkout isolated production data
+        uses: actions/checkout@v4
+        with:
+          ref: production-data
+          path: .production-data
+          fetch-depth: 1
+      - name: Overlay latest isolated production data
+        run: python scripts/production_data_branch.py restore --store .production-data --paths data/events data/exposure/population data/exposure/assets data/footprints data/climate/event_timeseries data/history/daily data/reports reports data/reference/crops/cropgrids_2020 data/reference/climate/cru_ts_4.10 data/reference/landcover/modis_mcd12c1_2024 data/reference/population
       - name: Validate public science copy
         run: python scripts/check_public_science_copy.py
       - name: Build filtered Pages artifact
