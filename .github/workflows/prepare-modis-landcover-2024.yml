@@ -1,0 +1,48 @@
+name: Prepare NASA MODIS 2024 landcover reference
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: climate-pulse-production-write-lock
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/climate-pulse/modis
+          key: mcd12c1-v061-2024-a2024001
+      - run: python -m pip install --disable-pip-version-check numpy rasterio pyproj pyhdf
+      - name: Build landcover reference
+        env:
+          CLIMATE_PULSE_CACHE_DIR: /home/runner/.cache/climate-pulse
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: python scripts/prepare_modis_landcover_2024.py
+      - name: Commit derived reference when built
+        run: |
+          set -euo pipefail
+          if [ ! -f data/reference/landcover/modis_mcd12c1_2024/land_forest_area_ha_0p05.tif ]; then
+            echo 'MODIS reference not built; EARTHDATA_TOKEN may not be configured.'
+            exit 0
+          fi
+          git config user.name 'climate-pulse-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/reference/landcover/modis_mcd12c1_2024
+          git diff --cached --quiet && exit 0
+          git commit -m 'data: prepare NASA MODIS 2024 land and forest reference'
+          git pull --rebase origin main
+          git push origin main
