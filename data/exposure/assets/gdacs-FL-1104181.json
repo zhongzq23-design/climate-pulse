@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "event_id": "gdacs-FL-1104181",
+  "event_type": "Flood",
+  "title": "Flood in Mali",
+  "region": "Mali",
+  "calculated_at": "2026-09-24T16:39:00Z",
+  "exposure": {
+    "hazard": "flood",
+    "gdacs_event_id": "1104181",
+    "gdacs_episode_id": 1,
+    "footprint_method": "GDACS reported flood event/affected-area polygon · center-aligned context feature",
+    "quality": "mapped_event_footprint",
+    "potentially_affected_population": 4650735,
+    "potentially_affected_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "potentially_affected_population_method": "GHSL 2025 residential population inside the QC-passed unsimplified GDACS reported flood event-area polygon",
+    "potentially_affected_population_interpretation": "Potentially affected population is a Climate Pulse spatial context estimate, not source-reported affected population and not observed inundation.",
+    "metric_provenance": {
+      "potentially_affected_population": {
+        "source": "Climate Pulse / JRC GHSL 2025",
+        "method": "derived spatial overlap of population with a reported flood event-area context polygon",
+        "derived_by_climate_pulse": true
+      }
+    },
+    "potential_gdp_exposure_proxy_usd": 5094237762,
+    "gdp_proxy_reference_year": 2024,
+    "gdp_proxy_indicator": "World Bank WDI NY.GDP.PCAP.CD (GDP per capita, current US$)",
+    "gdp_proxy_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "gdp_proxy_population_coverage_pct": 100.0,
+    "gdp_proxy_method": "sum over countries: GHSL population inside hazard footprint × WDI 2024 GDP per capita",
+    "gdp_proxy_country_components": [
+      {
+        "country": "Mali",
+        "iso3": "MLI",
+        "population_basis": 4626132,
+        "gdp_per_capita_usd_2024": 1093.25,
+        "proxy_usd": 5057529599
+      },
+      {
+        "country": "Côte d'Ivoire",
+        "iso3": "CIV",
+        "population_basis": 6804,
+        "gdp_per_capita_usd_2024": 2727.89,
+        "proxy_usd": 18560588
+      },
+      {
+        "country": "Burkina Faso",
+        "iso3": "BFA",
+        "population_basis": 16870,
+        "gdp_per_capita_usd_2024": 982.49,
+        "proxy_usd": 16574659
+      },
+      {
+        "country": "Guinea",
+        "iso3": "GIN",
+        "population_basis": 928,
+        "gdp_per_capita_usd_2024": 1694.95,
+        "proxy_usd": 1572917
+      }
+    ],
+    "gdp_proxy_interpretation": "Economic activity exposure proxy only; not observed loss, asset damage, business interruption, or a gridded local-GDP estimate."
+  }
+}
