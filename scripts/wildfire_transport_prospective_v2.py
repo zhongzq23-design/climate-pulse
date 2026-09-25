@@ -94,14 +94,21 @@ def select_current(snapshot, now, min_area, freshness_hours, candidate_limit):
 
 
 
-def choose_recent_ifs_run(ee, reference_now, horizon_hours=12, max_cycle_age_hours=36.0):
-    """Choose the newest IFS cycle with a complete 0..horizon lead sequence.
 
-    Selection is based on creation_time rather than forecast_time because the
-    Earth Engine IFS collection has shown forecast_time latency/semantics that
-    can temporarily hide otherwise available lead-0 images. We require lead 0,
-    the requested horizon, and at least two lead times. Newest eligible cycle
-    wins; older cycles are considered only as bounded fallback.
+def choose_forward_ifs_window(
+    ee,
+    reference_now,
+    horizon_hours=12,
+    max_cycle_age_hours=36.0,
+    max_start_offset_hours=3.1,
+):
+    """Choose a real IFS forecast window centered on freeze time.
+
+    A prospective freeze must not advect current fire seeds with a stale
+    0..12 h window from many hours earlier. For each recent IFS cycle, find the
+    forecast lead whose valid time is nearest the freeze time, require that
+    this valid time is within max_start_offset_hours, and require a complete
+    3-hourly window extending exactly horizon_hours from that lead.
     """
     now_ms = int(reference_now.timestamp() * 1000)
     floor_ms = now_ms - int(float(max_cycle_age_hours) * 3_600_000)
@@ -114,28 +121,69 @@ def choose_recent_ifs_run(ee, reference_now, horizon_hours=12, max_cycle_age_hou
     raw_creations = base.aggregate_array("creation_time").getInfo() or []
     creations = sorted({int(x) for x in raw_creations if x is not None}, reverse=True)
     diagnostics = []
+    candidates = []
+
     for creation_ms in creations[:24]:
         run = base.filter(ee.Filter.eq("creation_time", creation_ms)).sort("forecast_hours")
         available = sorted(
             {int(x) for x in (run.aggregate_array("forecast_hours").getInfo() or []) if x is not None}
         )
-        leads = [x for x in available if 0 <= x <= int(horizon_hours)]
-        age_h = (now_ms - creation_ms) / 3_600_000.0
-        diagnostics.append(
-            {
-                "creation_time": p.millis_to_iso(creation_ms),
-                "cycle_age_hours": round(age_h, 3),
-                "available_leads_0_horizon": leads,
-            }
-        )
-        if 0 in leads and int(horizon_hours) in leads and len(leads) >= 2:
-            return run, creation_ms, creation_ms, leads, age_h, diagnostics
+        if len(available) < 2:
+            diagnostics.append(
+                {
+                    "creation_time": p.millis_to_iso(creation_ms),
+                    "cycle_age_hours": round((now_ms - creation_ms) / 3_600_000.0, 3),
+                    "reason": "insufficient_available_leads",
+                    "available_leads_head": available[:16],
+                }
+            )
+            continue
 
-    raise RuntimeError(
-        "No recent IFS cycle with required lead 0 and "
-        f"{int(horizon_hours)} h within {float(max_cycle_age_hours):.1f} h; "
-        f"diagnostics={diagnostics[:8]}"
-    )
+        now_rel_h = (now_ms - creation_ms) / 3_600_000.0
+        start_lead = min(available, key=lambda x: abs(float(x) - now_rel_h))
+        start_offset_h = float(start_lead) - now_rel_h
+        end_lead = int(start_lead) + int(horizon_hours)
+        required = list(range(int(start_lead), int(end_lead) + 1, 3))
+        complete = all(x in available for x in required)
+
+        diag = {
+            "creation_time": p.millis_to_iso(creation_ms),
+            "cycle_age_hours": round((now_ms - creation_ms) / 3_600_000.0, 3),
+            "nearest_start_lead": int(start_lead),
+            "start_valid_time": p.millis_to_iso(creation_ms + int(start_lead) * 3_600_000),
+            "start_offset_hours": round(start_offset_h, 3),
+            "required_leads": required,
+            "complete_window": bool(complete),
+            "available_leads_head": available[:20],
+        }
+        diagnostics.append(diag)
+
+        if abs(start_offset_h) > float(max_start_offset_hours) or not complete:
+            continue
+
+        candidates.append(
+            (
+                abs(start_offset_h),
+                -creation_ms,
+                run,
+                creation_ms,
+                required,
+                start_offset_h,
+            )
+        )
+
+    if not candidates:
+        raise RuntimeError(
+            "No recent IFS cycle provides a complete forward transport window "
+            f"within ±{float(max_start_offset_hours):.1f} h of freeze time and "
+            f"covering {int(horizon_hours)} h; diagnostics={diagnostics[:8]}"
+        )
+
+    candidates.sort(key=lambda x: (x[0], x[1]))
+    _, _, run, creation_ms, leads, start_offset_h = candidates[0]
+    cycle_age_h = (now_ms - creation_ms) / 3_600_000.0
+    return run, creation_ms, leads, start_offset_h, cycle_age_h, diagnostics
+
 
 
 def build_prediction(event, perimeter, seeds, tracks, leads, locked, reference_time):
@@ -173,8 +221,8 @@ def freeze(args):
         raise SystemExit("no fresh QC-passed wildfire candidates")
 
     ee, _project = p.initialize_ee()
-    run, creation_ms, base_ms, leads, cycle_age_h, ifs_diagnostics = choose_recent_ifs_run(ee, now, 12)
-    target_h = float(leads[-1])
+    run, creation_ms, leads, start_offset_h, cycle_age_h, ifs_diagnostics = choose_forward_ifs_window(ee, now, 12)
+    target_h = 12.0
     records = []
     frozen_count = 0
     attempted = 0
@@ -230,9 +278,11 @@ def freeze(args):
                 "seed_meta": seed_meta,
                 "ifs": {
                     "creation_time": p.millis_to_iso(creation_ms),
-                    "base_time": p.millis_to_iso(base_ms),
+                    "window_start_valid_time": p.millis_to_iso(creation_ms + int(leads[0]) * 3_600_000),
+                    "window_end_valid_time": p.millis_to_iso(creation_ms + int(leads[-1]) * 3_600_000),
                     "leads_used_hours": leads,
                     "target_hours": target_h,
+                    "window_start_offset_hours_from_freeze": round(float(start_offset_h), 3),
                     "cycle_age_hours_at_freeze": round(float(cycle_age_h), 3),
                     "selection_diagnostics": ifs_diagnostics[:8],
                     "wind_stats": wind,
@@ -308,6 +358,7 @@ def freeze(args):
                 "candidate_count": len(candidates),
                 "ifs_creation_time": p.millis_to_iso(creation_ms),
                 "ifs_cycle_age_hours": round(float(cycle_age_h), 3),
+                "ifs_window_start_offset_hours": round(float(start_offset_h), 3),
                 "ifs_leads": leads,
                 "attempted": attempted,
                 "target": int(args.max_events),
