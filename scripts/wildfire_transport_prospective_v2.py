@@ -11,8 +11,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from shapely.geometry import mapping
 import probe_wildfire_downwind as p
 import probe_wildfire_downwind_satellite_validation as sat
+import wildfire_transport_score_v1 as score
 
 ROOT=Path(__file__).resolve().parents[1]
 LOCK=ROOT/"data/reference/wildfire_transport_score_v1/locked_config.json"
@@ -48,7 +50,7 @@ def freeze(args):
     snap=load(ROOT/"data/events/latest.json"); locked=load(LOCK)
     events=select_current(snap,args.max_events,args.min_area_ha)
     if not events: raise SystemExit("no eligible current wildfires")
-    ee,project=p.initialize_ee(); now=datetime.now(timezone.utc)
+    ee,_project=p.initialize_ee(); now=datetime.now(timezone.utc)
     records=[]
     for e in events:
         try:
@@ -56,15 +58,18 @@ def freeze(args):
             seeds,seed_meta=p.collect_fire_seeds(ee,e,perimeter,now,250.0,12)
             run,creation_ms,base_ms,leads,target_h=sat.choose_ifs_run(ee,now,12)
             tracks,wind=sat.simulate_100m(ee,run,leads,seeds)
-            baseline=p.corridor_geometry(e,tracks,50.0)
+            baseline=p.corridor_geometry(tracks,e,50.0)
+            params=locked.get("parameters") or {}
+            cfg={"config_id":locked["locked_config_id"],"sigma_km":params["sigma_km"],"travel_tau_h":params["travel_tau_h"],"frp_weighting":params["frp_weighting"],"competitor_masking":params["competitor_masking"]}
+            scored,score_meta=score.score_geometry(e,seeds,tracks,leads,baseline,cfg,now,competitor_wgs=None)
             payload={
               "event":{"id":e["id"],"lat":e["lat"],"lon":e["lon"],"burned_area_ha":e.get("burned_area_ha")},
-              "frozen_at":p.iso(now),"ee_project":project,
+              "frozen_at":p.iso(now),
               "perimeter_source":source,"episode":episode,
               "seeds":seeds,"seed_meta":seed_meta,
               "ifs":{"creation_time":p.millis_to_iso(creation_ms),"base_time":p.millis_to_iso(base_ms),"leads_used_hours":leads,"target_hours":target_h,"wind_stats":wind},
-              "baseline":{"family":"V4b","wind":"IFS 100 m","max_horizon_h":12,"buffer_km":50},
-              "transport_score_lock":locked,
+              "baseline":{"family":"V4b","wind":"IFS 100 m","max_horizon_h":12,"buffer_km":50,"geometry":mapping(baseline)},
+              "transport_score":{"lock":locked,"geometry":mapping(scored),"geometry_meta":score_meta},
               "guardrail":"Outcome-blind prospective prediction freeze; no satellite outcome inspected and no retuning authorized."
             }
             payload["prediction_sha256"]=digest(payload)
