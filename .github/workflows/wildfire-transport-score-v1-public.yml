@@ -32,6 +32,8 @@ jobs:
             scripts/wildfire_transport_score_v1.py \
             scripts/run_wildfire_transport_score_v1.py \
             scripts/validate_wildfire_transport_score_satellite_v1.py
+      - name: Audit entire public worktree for credential material
+        run: python scripts/audit_public_secrets.py
       - name: Enforce public secret boundary
         shell: bash
         run: |
