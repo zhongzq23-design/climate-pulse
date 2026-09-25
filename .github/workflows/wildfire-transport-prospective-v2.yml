@@ -44,7 +44,9 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git config user.name 'climate-pulse-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m "research: freeze prospective wildfire transport predictions"
           git fetch origin research-data
-          git rebase origin/research-data
-          git push origin HEAD:research-data
+          git switch -C research-data origin/research-data
+          git checkout HEAD@{1} -- "$FROZEN_OUTPUT"
+          git add "$FROZEN_OUTPUT"
+          git commit -m "research: freeze prospective wildfire transport predictions"
+          git push origin research-data
