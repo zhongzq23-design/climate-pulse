@@ -59,7 +59,7 @@ jobs:
           persist-credentials: false
 
       - name: Inspect fresh wildfire snapshot without secrets
-        run: python scripts/wildfire_transport_prospective_v2.py inspect --snapshot .production-data/data/events/latest.json --footprint-root .production-data
+        run: python scripts/wildfire_transport_prospective_v2.py inspect --snapshot .production-data/data/events/latest.json --footprint-root .production-data --min-valid 12
 
       - name: Validate prospective wildfire import closure and local geometry
         env:
