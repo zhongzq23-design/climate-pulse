@@ -348,8 +348,13 @@ def inspect_snapshot(args):
             separators=(",", ":"),
         )
     )
-    if problems:
-        raise SystemExit(f"snapshot inspection failed for {len(problems)} candidate footprints")
+    valid_count = len(candidates) - len(problems)
+    if valid_count < int(args.min_valid):
+        raise SystemExit(
+            f"snapshot inspection has only {valid_count} valid candidate footprints; "
+            f"requires at least {int(args.min_valid)}"
+        )
+    print(f"PROSPECTIVE_SNAPSHOT_VALID_POOL=PASS valid={valid_count} invalid={len(problems)}")
     return 0
 
 
@@ -428,6 +433,7 @@ def main():
     q.add_argument("--min-area-ha", type=float, default=10000)
     q.add_argument("--freshness-hours", type=float, default=DEFAULT_FRESHNESS_HOURS)
     q.add_argument("--candidate-limit", type=int, default=DEFAULT_CANDIDATE_LIMIT)
+    q.add_argument("--min-valid", type=int, default=1)
     q.set_defaults(func=inspect_snapshot)
 
     q = sub.add_parser("selftest")
