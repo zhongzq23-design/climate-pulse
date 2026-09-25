@@ -1,0 +1,55 @@
+name: Wildfire transport score v1 public
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Public replay mode
+        required: true
+        default: smoke
+        type: choice
+        options:
+          - smoke
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile migrated research code
+        run: |
+          python -m py_compile \
+            scripts/probe_wildfire_downwind.py \
+            scripts/probe_wildfire_downwind_satellite_validation.py \
+            scripts/probe_wildfire_downwind_satellite_validation_v3.py \
+            scripts/wildfire_transport_score_v1.py \
+            scripts/run_wildfire_transport_score_v1.py \
+            scripts/validate_wildfire_transport_score_satellite_v1.py
+      - name: Enforce public secret boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE 'ghp_[A-Za-z0-9]{20,}|github_pat_|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|"private_key"[[:space:]]*:[[:space:]]*"[^"]+' \
+            scripts/probe_wildfire_downwind.py \
+            scripts/probe_wildfire_downwind_satellite_validation.py \
+            scripts/probe_wildfire_downwind_satellite_validation_v3.py \
+            scripts/wildfire_transport_score_v1.py \
+            scripts/run_wildfire_transport_score_v1.py \
+            scripts/validate_wildfire_transport_score_satellite_v1.py \
+            docs/WILDFIRE_TRANSPORT_SCORE_V1.md; then
+            echo 'Potential embedded credential detected.'
+            exit 1
+          fi
+          echo 'PUBLIC_RESEARCH_SECRET_SCAN=PASS'
+      - name: Record migration boundary
+        run: |
+          echo 'Research code is public and credential-free.'
+          echo 'Earth Engine credentials, when a later compute replay is enabled, must be supplied only through the protected production-secrets environment.'
+          echo 'Frozen private Actions artifacts are intentionally not fetched by this public workflow.'
