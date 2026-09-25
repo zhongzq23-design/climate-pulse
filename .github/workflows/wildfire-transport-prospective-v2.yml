@@ -3,8 +3,7 @@ name: Wildfire transport prospective v2
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
   group: wildfire-transport-prospective-v2
@@ -12,13 +11,18 @@ concurrency:
 
 jobs:
   freeze:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     environment: production-secrets
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Checkout trusted main without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
+          persist-credentials: false
+
       - name: Checkout isolated production data
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -26,44 +30,116 @@ jobs:
           path: .production-data
           fetch-depth: 1
           persist-credentials: false
+
       - name: Restore fresh event and footprint data before secret use
         run: python scripts/production_data_branch.py restore --store .production-data --paths data/events data/footprints
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
+
       - name: Install pinned dependencies
         run: python -m pip install --disable-pip-version-check earthengine-api==1.7.45 shapely==2.1.2 pyproj==3.8.0 numpy==2.5.3 rasterio==1.5.1
+
       - name: Preflight import closure and local geometry without secrets
         env:
           PYTHONPATH: scripts
         run: |
           python -c "import wildfire_transport_prospective_v2; print('PROSPECTIVE_IMPORT_CLOSURE=PASS')"
           python scripts/wildfire_transport_prospective_v2.py selftest
+          python scripts/wildfire_transport_prospective_v2.py inspect \
+            --snapshot data/events/latest.json \
+            --footprint-root . \
+            --min-valid 12
+
       - name: Freeze current wildfire predictions before outcomes
         env:
           GEE_PROJECT_ID: ${{ vars.EE_PROJECT || secrets.EE_PROJECT || secrets.GEE_PROJECT_ID }}
           GEE_SERVICE_ACCOUNT_JSON: ${{ secrets.EE_SERVICE_ACCOUNT_JSON || secrets.GEE_SERVICE_ACCOUNT_JSON }}
         run: |
           stamp="$(date -u +'%Y%m%dT%H%M%SZ')"
-          out="data/research/wildfire_transport_prospective_v2/frozen/$stamp.json"
+          out="/tmp/prospective-freeze.json"
           python scripts/wildfire_transport_prospective_v2.py freeze --output "$out"
           python scripts/wildfire_transport_prospective_v2.py verify --input "$out"
-          echo "FROZEN_OUTPUT=$out" >> "$GITHUB_ENV"
-          cp "$out" /tmp/prospective-freeze.json
+
+      - name: Upload immutable freeze handoff
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wildfire-prospective-freeze-${{ github.run_id }}
+          path: /tmp/prospective-freeze.json
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: freeze
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout isolated research data branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: research-data
+          fetch-depth: 1
+
+      - name: Download verified freeze handoff
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: wildfire-prospective-freeze-${{ github.run_id }}
+          path: .freeze-artifact
+
+      - name: Validate handoff and materialize one JSON only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          src = Path('.freeze-artifact/prospective-freeze.json')
+          doc = json.loads(src.read_text(encoding='utf-8'))
+          if doc.get('experiment') != 'WILDFIRE_TRANSPORT_PROSPECTIVE_V2':
+              raise SystemExit('unexpected prospective artifact experiment')
+          rows = [x for x in (doc.get('records') or []) if isinstance(x, dict)]
+          frozen = [x for x in rows if isinstance(x.get('prediction_sha256'), str)]
+          if not frozen:
+              raise SystemExit('prospective handoff contains no frozen predictions')
+          if any(len(x['prediction_sha256']) != 64 for x in frozen):
+              raise SystemExit('prospective handoff contains invalid prediction hash')
+          raw = src.read_text(encoding='utf-8')
+          forbidden = [
+              r'gh[pousr]_[A-Za-z0-9]{20,}',
+              r'github_pat_[A-Za-z0-9_]{20,}',
+              r'AIza[A-Za-z0-9_-]{20,}',
+              r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',
+              r'"private_key"\s*:\s*"-----BEGIN',
+          ]
+          for pattern in forbidden:
+              if re.search(pattern, raw):
+                  raise SystemExit('credential-like material detected in prospective handoff')
+          frozen_at = str(doc.get('frozen_at') or '')
+          stamp = re.sub(r'[^0-9TZ]', '', frozen_at)
+          if not stamp:
+              raise SystemExit('prospective handoff missing frozen_at')
+          target = Path('data/research/wildfire_transport_prospective_v2/frozen') / f'{stamp}.json'
+          if target.exists():
+              raise SystemExit(f'refusing to overwrite existing freeze: {target}')
+          target.parent.mkdir(parents=True, exist_ok=True)
+          target.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as handle:
+              handle.write('TARGET_FREEZE=' + target.as_posix() + '\n')
+          print(f'PROSPECTIVE_HANDOFF=PASS frozen={len(frozen)} target={target}')
+          PY
+
       - name: Commit immutable prediction freeze
         shell: bash
         run: |
           set -euo pipefail
-          git add "$FROZEN_OUTPUT"
-          if git diff --cached --quiet; then exit 0; fi
-          git reset --hard HEAD
-          git clean -fd
+          git add "$TARGET_FREEZE"
           git config user.name 'climate-pulse-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git fetch origin research-data
-          git switch -C research-data origin/research-data
-          mkdir -p "$(dirname "$FROZEN_OUTPUT")"
-          cp /tmp/prospective-freeze.json "$FROZEN_OUTPUT"
-          git add "$FROZEN_OUTPUT"
           git commit -m "research: freeze prospective wildfire transport predictions"
-          git push origin research-data
+          git pull --rebase origin research-data
+          git push origin HEAD:research-data
