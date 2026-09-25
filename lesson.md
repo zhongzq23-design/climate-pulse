@@ -584,3 +584,72 @@ Future climate-context changes must demonstrate that:
 ### Fix adopted
 
 Climate Pulse now runs climate enrichment through a wrapper that constructs the de-duplicated public event union, executes the existing CRU/IFS enrichment against that union, restores both snapshot views with synchronized references and fails closed on any uncovered canonical event. A second synchronization/coverage gate runs before public build, and regression tests cover canonical-only, events-only and missing-reference cases.
+
+
+---
+
+## 2026-09-25 — Public-repository secret hardening closeout
+
+### Scope
+
+This closeout covers the migration of Climate Pulse secret-bearing automation into a public repository and the final hardening of Earth Engine credential handling, protected code execution and generated-data publication.
+
+### Final architecture
+
+The repository now separates trusted executable code from automatically generated production data:
+
+- `main` is the trusted code and workflow authority.
+- `main` is protected by the active `Protect main` ruleset.
+- Changes to `main` require a pull request and the GitHub Actions `validate` status check.
+- Force pushes and branch deletion are blocked.
+- Automated production jobs do not push generated data to `main`.
+- Generated data and reports are written to the data-only `production-data` branch.
+- The `production-data` branch is intentionally limited to `README.md`, `data/` and `reports/`; automated synchronization rejects unauthorized paths and symlinks.
+- GitHub Pages checks out trusted `main`, overlays the allowlisted latest products from `production-data`, validates public scientific copy, runs the fail-closed public-artifact secret scan, and only then uploads the Pages artifact.
+
+### Secret boundary
+
+Earth Engine credentials are no longer stored as repository-level Actions secrets.
+
+The active secret path is:
+
+`protected main -> production-secrets environment -> EE_SERVICE_ACCOUNT_JSON -> trusted workflow`
+
+The `production-secrets` environment is restricted to the selected branch `main`; administrator bypass is disabled. Repository Secrets are empty.
+
+Secret-bearing workflows explicitly reference `environment: production-secrets`. The Earth Engine service-account JSON remains encrypted by GitHub and is never committed to repository contents or generated public artifacts.
+
+### Verification evidence
+
+The following checks were completed before closeout:
+
+- Repository workflows, Git history, extant branches and open PR material were scanned for common real credential patterns; no real embedded credential was found.
+- The Pages artifact builder now performs content-level scanning for service-account JSON/private-key material, PEM private keys, GitHub tokens, Google API/OAuth tokens, AWS keys, Slack tokens and long Bearer tokens.
+- Python packages installed by Actions were pinned to explicit versions for the current workflow set.
+- PR #3, which added artifact secret scanning and dependency pinning, passed `Validate Climate Pulse` and was merged.
+- PR #4, which isolated automated writes into `production-data` and added the `production-secrets` environment boundary, passed the full validation suite and was merged.
+- Post-merge Pages deployment succeeded using trusted `main` plus the `production-data` overlay.
+- `production-data` was subsequently updated successfully by `github-actions[bot]`, demonstrating that scheduled production writes no longer require direct writes to `main`.
+- The `Protect main` ruleset is active and GitHub reports `main` as protected.
+- After repository-level secrets were empty, the manual `Validate secret-dependent climate access` workflow was run again from `main` and completed successfully with `EE_IFS_7DAY_PROBE=PASS`, proving that Earth Engine access works through the restricted Environment Secret alone.
+
+### Non-regression rules
+
+Future changes must not weaken these boundaries:
+
+1. Do not place real service-account JSON, private keys or tokens in repository files, commits, PR bodies, comments, test fixtures or generated Pages artifacts.
+2. Do not move `EE_SERVICE_ACCOUNT_JSON` back to Repository Secrets while the repository remains public.
+3. Secret-bearing jobs must remain bound to `production-secrets` and must execute trusted code from `main`.
+4. Automated production jobs must not reintroduce direct pushes to `main`.
+5. New automated output paths must be explicitly allowlisted in the production-data synchronization contract before use.
+6. `production-data` must remain data-only and must not become an alternate executable workflow branch.
+7. Pages publication must keep the pre-upload content-level secret scan.
+8. Changes to `main` must continue to pass the required `validate` status check through the protected-branch PR path.
+
+### Residual risk accepted at closeout
+
+No additional restriction was added to `production-data` beyond the current data-only synchronization boundary. The repository owner explicitly chose not to address the separate scenario of the owner's own GitHub account being compromised at this time. This is treated as an accepted account-security/data-integrity residual risk, not an unresolved Earth Engine credential-leak path.
+
+### Closeout status
+
+**CLOSED — public-repository Earth Engine credential leakage hardening is complete under the current threat model.**
