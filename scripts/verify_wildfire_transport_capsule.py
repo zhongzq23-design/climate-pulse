@@ -7,8 +7,7 @@ CAP=ROOT/"data/reference/wildfire_transport_score_v1"
 MAN=CAP/"manifest.sha256"
 def main():
     if not MAN.exists():
-        print("FROZEN_CAPSULE=NOT_YET_MATERIALIZED")
-        return 0
+        raise SystemExit("FROZEN_CAPSULE_MANIFEST_MISSING")
     rows=[]
     for raw in MAN.read_text(encoding="utf-8").splitlines():
         raw=raw.strip()
