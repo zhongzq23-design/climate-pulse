@@ -64,15 +64,19 @@ jobs:
           import wildfire_transport_prospective_v2 as v2
 
           ee, _ = p.initialize_ee()
-          run, creation_ms, base_ms, leads, age_h, diagnostics = v2.choose_recent_ifs_run(
+          run, creation_ms, leads, start_offset_h, age_h, diagnostics = v2.choose_forward_ifs_window(
               ee, datetime.now(timezone.utc), 12
           )
-          assert 0 in leads and 12 in leads and len(leads) >= 2, leads
+          assert len(leads) == 5 and leads[-1] - leads[0] == 12, leads
+          assert abs(start_offset_h) <= 3.1, start_offset_h
           assert age_h <= 36.0, age_h
-          print('IFS_TRANSPORT_SELECTOR=PASS')
+          print('IFS_FORWARD_WINDOW_SELECTOR=PASS')
           print('IFS_CREATION_TIME=' + str(p.millis_to_iso(creation_ms)))
           print('IFS_CYCLE_AGE_HOURS=' + str(round(age_h, 3)))
+          print('IFS_WINDOW_START_OFFSET_HOURS=' + str(round(start_offset_h, 3)))
           print('IFS_LEADS=' + ','.join(str(x) for x in leads))
+          print('IFS_WINDOW_START=' + str(p.millis_to_iso(creation_ms + leads[0] * 3600000)))
+          print('IFS_WINDOW_END=' + str(p.millis_to_iso(creation_ms + leads[-1] * 3600000)))
           print('IFS_DIAGNOSTICS=' + str(diagnostics[:4]))
           PY
           python scripts/wildfire_transport_prospective_v2.py freeze --output /tmp/prospective-diagnostic.json
