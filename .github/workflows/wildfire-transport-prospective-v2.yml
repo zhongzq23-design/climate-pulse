@@ -36,6 +36,7 @@ jobs:
           python scripts/wildfire_transport_prospective_v2.py freeze --output "$out"
           python scripts/wildfire_transport_prospective_v2.py verify --input "$out"
           echo "FROZEN_OUTPUT=$out" >> "$GITHUB_ENV"
+          cp "$out" /tmp/prospective-freeze.json
       - name: Commit immutable prediction freeze
         shell: bash
         run: |
@@ -46,7 +47,8 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git fetch origin research-data
           git switch -C research-data origin/research-data
-          git checkout HEAD@{1} -- "$FROZEN_OUTPUT"
+          mkdir -p "$(dirname "$FROZEN_OUTPUT")"
+          cp /tmp/prospective-freeze.json "$FROZEN_OUTPUT"
           git add "$FROZEN_OUTPUT"
           git commit -m "research: freeze prospective wildfire transport predictions"
           git push origin research-data
