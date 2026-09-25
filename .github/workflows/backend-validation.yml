@@ -48,6 +48,14 @@ jobs:
           scripts/refresh_gate_v2.py
           scripts/run_incremental_event_refresh.py
           scripts/stabilize_climate_products.py
+          scripts/wildfire_transport_prospective_v2.py
+
+      - name: Validate prospective wildfire import closure and local geometry
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python -c "import wildfire_transport_prospective_v2; print('PROSPECTIVE_IMPORT_CLOSURE=PASS')"
+          python scripts/wildfire_transport_prospective_v2.py selftest
 
       - name: Validate committed CRU monthly normals
         run: |
