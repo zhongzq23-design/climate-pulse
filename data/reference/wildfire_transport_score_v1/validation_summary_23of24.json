@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "experiment": "WILDFIRE_TRANSPORT_SCORE_V1_SATELLITE_VALIDATION",
+  "status": "historical_partial_summary_23_of_24",
+  "frozen_validation_universe": 24,
+  "completed_events_in_preserved_summary": 23,
+  "missing_replay_event": "gdacs-WF-1031562",
+  "event_level": {
+    "s5p_co": {
+      "eligible_events": 20,
+      "positive_improvement_events": 7,
+      "median_transport_minus_baseline_contrast": -0.0000531,
+      "bootstrap_95ci": [
+        -0.000187,
+        0.00000502
+      ],
+      "role": "primary"
+    },
+    "maiac_aod047": {
+      "eligible_events": 13,
+      "positive_improvement_events": 3,
+      "median_transport_minus_baseline_contrast": -0.0016,
+      "bootstrap_95ci": [
+        -0.0033,
+        -0.00028
+      ],
+      "role": "supportive"
+    },
+    "s5p_aai": {
+      "eligible_events": 23,
+      "positive_improvement_events": 12,
+      "median_transport_minus_baseline_contrast": 0.00232,
+      "bootstrap_95ci": [
+        -0.00856,
+        0.01593
+      ],
+      "role": "diagnostic"
+    }
+  },
+  "interpretation": "The locked continuous transport score did not demonstrate improvement over equal-area V4b in the preserved independent validation summary; no retuning is authorized from these outcomes.",
+  "provenance": {
+    "private_source_run_id": 35072057812,
+    "artifact_name": "transport-score-v1-24-summary"
+  },
+  "guardrail": "Not PM2.5 concentration, dose, affected-population, health-impact, exact-plume-boundary, or causal-attribution validation."
+}
