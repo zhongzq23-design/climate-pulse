@@ -19,20 +19,20 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Checkout latest main
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 1
           ref: main
 
       - name: Checkout isolated production data
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: production-data
           path: .production-data
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
 
@@ -94,7 +94,7 @@ jobs:
 
       - name: Restore GHSL population cache
         if: ${{ steps.refresh.outputs.full_refresh == 'true' && (steps.refresh.outputs.incremental_refresh != 'true' || steps.refresh.outputs.changed_event_count != '0') }}
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/climate-pulse/population
           key: ghsl-wup-pop-r2025a-e2025-1km-v1
