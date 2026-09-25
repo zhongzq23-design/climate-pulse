@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: research-data
+          ref: main
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
@@ -33,6 +33,8 @@ jobs:
         run: |
           stamp="$(date -u +'%Y%m%dT%H%M%SZ')"
           out="data/research/wildfire_transport_prospective_v2/frozen/$stamp.json"
+          git fetch --depth=1 origin research-data
+          git checkout origin/research-data -- data/research/wildfire_transport_prospective_v2 2>/dev/null || true
           python scripts/wildfire_transport_prospective_v2.py freeze --output "$out"
           python scripts/wildfire_transport_prospective_v2.py verify --input "$out"
           echo "FROZEN_OUTPUT=$out" >> "$GITHUB_ENV"
@@ -45,4 +47,6 @@ jobs:
           git config user.name 'climate-pulse-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m "research: freeze prospective wildfire transport predictions"
+          git fetch origin research-data
+          git rebase origin/research-data
           git push origin HEAD:research-data
