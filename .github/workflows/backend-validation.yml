@@ -48,6 +48,25 @@ jobs:
           scripts/refresh_gate_v2.py
           scripts/run_incremental_event_refresh.py
           scripts/stabilize_climate_products.py
+          scripts/wildfire_transport_prospective_v2.py
+
+      - name: Checkout fresh production data for prospective preflight
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: production-data
+          path: .production-data
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Inspect fresh wildfire snapshot without secrets
+        run: python scripts/wildfire_transport_prospective_v2.py inspect --snapshot .production-data/data/events/latest.json --footprint-root .production-data --min-valid 12
+
+      - name: Validate prospective wildfire import closure and local geometry
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python -c "import wildfire_transport_prospective_v2; print('PROSPECTIVE_IMPORT_CLOSURE=PASS')"
+          python scripts/wildfire_transport_prospective_v2.py selftest
 
       - name: Validate committed CRU monthly normals
         run: |
