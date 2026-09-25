@@ -13,7 +13,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from shapely.geometry import mapping
+from shapely.geometry import mapping, shape
 
 import probe_wildfire_downwind as p
 import probe_wildfire_downwind_satellite_validation as sat
@@ -290,6 +290,69 @@ def verify(args):
     return 0
 
 
+
+def inspect_snapshot(args):
+    snapshot_path = Path(args.snapshot)
+    footprint_root = Path(args.footprint_root)
+    snapshot = load(snapshot_path)
+    now = datetime.now(timezone.utc)
+    candidates = select_current(
+        snapshot,
+        now,
+        args.min_area_ha,
+        args.freshness_hours,
+        args.candidate_limit,
+    )
+    problems = []
+    rows = []
+    for event in candidates:
+        fp = event.get("footprint") if isinstance(event.get("footprint"), dict) else {}
+        rel = str(fp.get("path") or "")
+        path = footprint_root / rel
+        status = "ok"
+        reason = None
+        try:
+            if not rel:
+                raise RuntimeError("missing footprint path")
+            if not path.is_file() or path.is_symlink():
+                raise RuntimeError(f"footprint is missing, non-file, or symlink: {rel}")
+            doc = load(path)
+            geom = shape(doc.get("geometry"))
+            if geom.is_empty or not geom.is_valid:
+                raise RuntimeError("stored footprint geometry is empty or invalid")
+        except Exception as exc:  # noqa: BLE001
+            status = "invalid"
+            reason = f"{type(exc).__name__}: {str(exc)[:500]}"
+            problems.append({"event_id": event.get("id"), "reason": reason})
+        rows.append(
+            {
+                "event_id": event.get("id"),
+                "last_detection": event.get("last_detection"),
+                "burned_area_ha": event.get("burned_area_ha"),
+                "footprint": rel,
+                "status": status,
+                "reason": reason,
+            }
+        )
+    print(
+        "PROSPECTIVE_SNAPSHOT_INSPECT "
+        + json.dumps(
+            {
+                "snapshot": str(snapshot_path),
+                "generated_at": snapshot.get("generated_at"),
+                "freshness_hours": float(args.freshness_hours),
+                "candidate_count": len(candidates),
+                "invalid_count": len(problems),
+                "candidates": rows,
+            },
+            separators=(",", ":"),
+        )
+    )
+    if problems:
+        raise SystemExit(f"snapshot inspection failed for {len(problems)} candidate footprints")
+    return 0
+
+
 def selftest(_args):
     locked = load(LOCK)
     now = datetime(2026, 9, 25, 12, 0, tzinfo=timezone.utc)
@@ -358,6 +421,14 @@ def main():
     q = sub.add_parser("verify")
     q.add_argument("--input", required=True)
     q.set_defaults(func=verify)
+
+    q = sub.add_parser("inspect")
+    q.add_argument("--snapshot", required=True)
+    q.add_argument("--footprint-root", required=True)
+    q.add_argument("--min-area-ha", type=float, default=10000)
+    q.add_argument("--freshness-hours", type=float, default=DEFAULT_FRESHNESS_HOURS)
+    q.add_argument("--candidate-limit", type=int, default=DEFAULT_CANDIDATE_LIMIT)
+    q.set_defaults(func=inspect_snapshot)
 
     q = sub.add_parser("selftest")
     q.set_defaults(func=selftest)
