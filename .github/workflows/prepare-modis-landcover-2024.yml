@@ -16,22 +16,22 @@ jobs:
     environment: production-secrets
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
           ref: main
       - name: Checkout isolated production data
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: production-data
           path: .production-data
           fetch-depth: 1
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
       - name: Restore latest generated reference
         run: python scripts/production_data_branch.py restore --store .production-data --paths data/reference/landcover/modis_mcd12c1_2024
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/climate-pulse/modis
           key: mcd12c1-v061-2024-a2024001
