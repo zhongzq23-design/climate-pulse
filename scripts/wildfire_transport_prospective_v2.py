@@ -13,7 +13,6 @@ from typing import Any
 
 import probe_wildfire_downwind as p
 import probe_wildfire_downwind_satellite_validation as sat
-import probe_wildfire_downwind_satellite_validation_v3 as satv3
 
 ROOT=Path(__file__).resolve().parents[1]
 LOCK=ROOT/"data/reference/wildfire_transport_score_v1/locked_config.json"
