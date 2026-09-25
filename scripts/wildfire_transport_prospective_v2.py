@@ -93,6 +93,51 @@ def select_current(snapshot, now, min_area, freshness_hours, candidate_limit):
     return out[: int(candidate_limit)]
 
 
+
+def choose_recent_ifs_run(ee, reference_now, horizon_hours=12, max_cycle_age_hours=36.0):
+    """Choose the newest IFS cycle with a complete 0..horizon lead sequence.
+
+    Selection is based on creation_time rather than forecast_time because the
+    Earth Engine IFS collection has shown forecast_time latency/semantics that
+    can temporarily hide otherwise available lead-0 images. We require lead 0,
+    the requested horizon, and at least two lead times. Newest eligible cycle
+    wins; older cycles are considered only as bounded fallback.
+    """
+    now_ms = int(reference_now.timestamp() * 1000)
+    floor_ms = now_ms - int(float(max_cycle_age_hours) * 3_600_000)
+    base = (
+        ee.ImageCollection(p.IFS_DATASET)
+        .filter(ee.Filter.eq("model", "ifs"))
+        .filter(ee.Filter.gte("creation_time", floor_ms))
+        .filter(ee.Filter.lte("creation_time", now_ms))
+    )
+    raw_creations = base.aggregate_array("creation_time").getInfo() or []
+    creations = sorted({int(x) for x in raw_creations if x is not None}, reverse=True)
+    diagnostics = []
+    for creation_ms in creations[:24]:
+        run = base.filter(ee.Filter.eq("creation_time", creation_ms)).sort("forecast_hours")
+        available = sorted(
+            {int(x) for x in (run.aggregate_array("forecast_hours").getInfo() or []) if x is not None}
+        )
+        leads = [x for x in available if 0 <= x <= int(horizon_hours)]
+        age_h = (now_ms - creation_ms) / 3_600_000.0
+        diagnostics.append(
+            {
+                "creation_time": p.millis_to_iso(creation_ms),
+                "cycle_age_hours": round(age_h, 3),
+                "available_leads_0_horizon": leads,
+            }
+        )
+        if 0 in leads and int(horizon_hours) in leads and len(leads) >= 2:
+            return run, creation_ms, creation_ms, leads, age_h, diagnostics
+
+    raise RuntimeError(
+        "No recent IFS cycle with required lead 0 and "
+        f"{int(horizon_hours)} h within {float(max_cycle_age_hours):.1f} h; "
+        f"diagnostics={diagnostics[:8]}"
+    )
+
+
 def build_prediction(event, perimeter, seeds, tracks, leads, locked, reference_time):
     baseline = p.corridor_geometry(tracks, event, 50.0)
     if baseline.is_empty or not baseline.is_valid:
@@ -128,7 +173,8 @@ def freeze(args):
         raise SystemExit("no fresh QC-passed wildfire candidates")
 
     ee, _project = p.initialize_ee()
-    run, creation_ms, base_ms, leads, target_h = sat.choose_ifs_run(ee, now, 12)
+    run, creation_ms, base_ms, leads, cycle_age_h, ifs_diagnostics = choose_recent_ifs_run(ee, now, 12)
+    target_h = float(leads[-1])
     records = []
     frozen_count = 0
     attempted = 0
@@ -187,6 +233,8 @@ def freeze(args):
                     "base_time": p.millis_to_iso(base_ms),
                     "leads_used_hours": leads,
                     "target_hours": target_h,
+                    "cycle_age_hours_at_freeze": round(float(cycle_age_h), 3),
+                    "selection_diagnostics": ifs_diagnostics[:8],
                     "wind_stats": wind,
                 },
                 "baseline": {
@@ -258,6 +306,9 @@ def freeze(args):
         json.dumps(
             {
                 "candidate_count": len(candidates),
+                "ifs_creation_time": p.millis_to_iso(creation_ms),
+                "ifs_cycle_age_hours": round(float(cycle_age_h), 3),
+                "ifs_leads": leads,
                 "attempted": attempted,
                 "target": int(args.max_events),
                 "frozen": frozen_count,
