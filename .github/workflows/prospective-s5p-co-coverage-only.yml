@@ -1,0 +1,115 @@
+name: One-time prospective S5P CO coverage only
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/prospective-s5p-co-coverage-only.yml'
+      - 'scripts/probe_prospective_s5p_co_coverage.py'
+
+permissions:
+  contents: read
+
+jobs:
+  coverage-only:
+    runs-on: ubuntu-latest
+    environment: production-secrets
+    timeout-minutes: 25
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Checkout isolated research data
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: research-data
+          path: .research-data
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Stage exact frozen batch before secret use
+        run: |
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+
+          src = Path('.research-data/data/research/wildfire_transport_prospective_v2/frozen/20260925T200833Z.json')
+          doc = json.loads(src.read_text(encoding='utf-8'))
+          if doc.get('experiment') != 'WILDFIRE_TRANSPORT_PROSPECTIVE_V2':
+              raise SystemExit('unexpected freeze experiment')
+          rows = [x for x in (doc.get('records') or []) if isinstance(x, dict) and x.get('prediction_sha256')]
+          if len(rows) != 12:
+              raise SystemExit(f'expected 12 frozen predictions, found {len(rows)}')
+          shutil.copy2(src, '/tmp/prospective-freeze.json')
+          print('PROSPECTIVE_FREEZE_STAGE=PASS records=12')
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pinned dependencies
+        run: python -m pip install --disable-pip-version-check earthengine-api==1.7.45 shapely==2.1.2 pyproj==3.8.0 numpy==2.5.3 rasterio==1.5.1
+
+      - name: Run S5P CO valid-mask coverage probe only
+        env:
+          GEE_PROJECT_ID: ${{ vars.EE_PROJECT || secrets.EE_PROJECT || secrets.GEE_PROJECT_ID }}
+          GEE_SERVICE_ACCOUNT_JSON: ${{ secrets.EE_SERVICE_ACCOUNT_JSON || secrets.GEE_SERVICE_ACCOUNT_JSON }}
+          PYTHONPATH: scripts
+        run: |
+          python scripts/probe_prospective_s5p_co_coverage.py \
+            --freeze-json /tmp/prospective-freeze.json \
+            --output /tmp/s5p-co-coverage-only.json
+
+      - name: Enforce no-outcome output contract
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+
+          path = Path('/tmp/s5p-co-coverage-only.json')
+          doc = json.loads(path.read_text(encoding='utf-8'))
+          if doc.get('probe') != 'PROSPECTIVE_S5P_CO_COVERAGE_ONLY':
+              raise SystemExit('unexpected probe output')
+          if len(doc.get('events') or []) != 12:
+              raise SystemExit('coverage probe did not return 12 events')
+          forbidden_key_fragments = (
+              'downwind_mean', 'control_mean', 'upwind_mean', 'percentile',
+              'contrast', 'directional_support', 'rank_among',
+              'high_signal', 'co_value', 'column_number_density_value',
+          )
+          def walk(x):
+              if isinstance(x, dict):
+                  for k, v in x.items():
+                      lk = str(k).lower()
+                      if any(fragment in lk for fragment in forbidden_key_fragments):
+                          raise SystemExit(f'outcome-like key forbidden in availability output: {k}')
+                      walk(v)
+              elif isinstance(x, list):
+                  for v in x:
+                      walk(v)
+          walk(doc)
+          raw = path.read_text(encoding='utf-8')
+          secret_patterns = [
+              r'gh[pousr]_[A-Za-z0-9]{20,}',
+              r'github_pat_[A-Za-z0-9_]{20,}',
+              r'AIza[A-Za-z0-9_-]{20,}',
+              r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',
+              r'"private_key"\s*:\s*"-----BEGIN',
+          ]
+          if any(re.search(p, raw) for p in secret_patterns):
+              raise SystemExit('credential-like material detected')
+          print('S5P_CO_COVERAGE_ONLY_OUTPUT_CONTRACT=PASS')
+          PY
+
+      - name: Upload coverage-only evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: s5p-co-coverage-only-${{ github.run_id }}
+          path: /tmp/s5p-co-coverage-only.json
+          if-no-files-found: error
+          retention-days: 3
