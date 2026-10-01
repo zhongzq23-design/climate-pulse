@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "event_id": "gdacs-FL-1104205",
+  "event_type": "Flood",
+  "title": "Flood in Chad",
+  "region": "Chad",
+  "calculated_at": "2026-10-01T15:36:50Z",
+  "exposure": {
+    "hazard": "flood",
+    "gdacs_event_id": "1104205",
+    "gdacs_episode_id": 1,
+    "footprint_method": "GDACS reported flood event/affected-area polygon · center-aligned context feature",
+    "quality": "mapped_event_footprint",
+    "potentially_affected_population": 1956115,
+    "potentially_affected_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "potentially_affected_population_method": "GHSL 2025 residential population inside the QC-passed unsimplified GDACS reported flood event-area polygon",
+    "potentially_affected_population_interpretation": "Potentially affected population is a Climate Pulse spatial context estimate, not source-reported affected population and not observed inundation.",
+    "metric_provenance": {
+      "potentially_affected_population": {
+        "source": "Climate Pulse / JRC GHSL 2025",
+        "method": "derived spatial overlap of population with a reported flood event-area context polygon",
+        "derived_by_climate_pulse": true
+      }
+    },
+    "potential_gdp_exposure_proxy_usd": 1937365131,
+    "gdp_proxy_reference_year": 2024,
+    "gdp_proxy_indicator": "World Bank WDI NY.GDP.PCAP.CD (GDP per capita, current US$)",
+    "gdp_proxy_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "gdp_proxy_population_coverage_pct": 100.0,
+    "gdp_proxy_method": "sum over countries: GHSL population inside hazard footprint × WDI 2024 GDP per capita",
+    "gdp_proxy_country_components": [
+      {
+        "country": "Chad",
+        "iso3": "TCD",
+        "population_basis": 1933668,
+        "gdp_per_capita_usd_2024": 980.67,
+        "proxy_usd": 1896286934
+      },
+      {
+        "country": "Cameroon",
+        "iso3": "CMR",
+        "population_basis": 22447,
+        "gdp_per_capita_usd_2024": 1830.01,
+        "proxy_usd": 41078197
+      }
+    ],
+    "gdp_proxy_interpretation": "Economic activity exposure proxy only; not observed loss, asset damage, business interruption, or a gridded local-GDP estimate."
+  }
+}
