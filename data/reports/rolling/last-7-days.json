@@ -5,36 +5,36 @@
   "label": "Rolling 7 days",
   "frozen": false,
   "publication_status": "complete_preview",
-  "generated_at": "2026-10-10T20:08:12Z",
+  "generated_at": "2026-10-11T05:58:28Z",
   "period": {
-    "start": "2026-10-04",
-    "end": "2026-10-10",
+    "start": "2026-10-05",
+    "end": "2026-10-11",
     "timezone": "UTC"
   },
   "data_coverage": {
     "requested_days": 7,
     "days_with_ledger": 7,
-    "monitor_runs": 20,
+    "monitor_runs": 18,
     "ledger_files": [
-      "data/history/daily/2026/10/04.json",
       "data/history/daily/2026/10/05.json",
       "data/history/daily/2026/10/06.json",
       "data/history/daily/2026/10/07.json",
       "data/history/daily/2026/10/08.json",
       "data/history/daily/2026/10/09.json",
-      "data/history/daily/2026/10/10.json"
+      "data/history/daily/2026/10/10.json",
+      "data/history/daily/2026/10/11.json"
     ],
     "missing_dates": [],
     "complete": true,
     "day_coverage_pct": 100.0,
     "expected_monitor_runs_nominal": 21,
-    "monitor_run_coverage_pct": 95.2
+    "monitor_run_coverage_pct": 85.7
   },
   "metrics": {
     "unique_mapped_population_exposed": {
-      "raw_value": 13178,
+      "raw_value": 10690,
       "by_hazard_raw": {
-        "Wildfire": 13178
+        "Wildfire": 10690
       },
       "included_hazards": [
         "Wildfire"
@@ -44,13 +44,13 @@
       "interpretation": "Cross-hazard headline excludes context-grade flood event areas and risk-grade drought areas; it is mapped exposure, not verified unique affected individuals."
     },
     "flood_reported_event_area_population_context": {
-      "raw_value": 494631904,
+      "raw_value": 490146739,
       "geometry_grade": "context_grade",
       "method": "GHSL 2025 population inside the union of public/significant GDACS reported flood event/affected-area polygons",
       "interpretation": "Context only: these polygons are not observed inundation extent and are excluded from the cross-hazard exposure headline."
     },
     "event_deduped_source_population_sum": {
-      "raw_value": 6461873,
+      "raw_value": 20471241,
       "contributing_events": 11,
       "method": "maximum preferred source/model population metric per public/significant stable event, then event-level sum",
       "interpretation": "Stable events are counted once but people shared by different events may still be counted more than once; secondary diagnostic only."
@@ -62,58 +62,58 @@
       "interpretation": "Spatial crop exposure/context, not confirmed crop damage or crop loss."
     },
     "wildfire_burned_area": {
-      "unique_mapped_union_km2": 819.9,
-      "unique_mapped_union_ha": 81995,
-      "source_event_deduped_ha": 81384,
+      "unique_mapped_union_km2": 809.0,
+      "unique_mapped_union_ha": 80897,
+      "source_event_deduped_ha": 80306,
       "source_contributing_events": 6,
       "headline": "unique_mapped_union_ha"
     },
     "event_counts": {
-      "total_unique_events": 70,
+      "total_unique_events": 67,
       "by_hazard": {
         "Drought": 12,
-        "Flood": 42,
+        "Flood": 39,
         "Storm": 10,
         "Wildfire": 6
       },
       "by_max_alert": {
-        "Green": 55,
-        "Orange": 7,
+        "Green": 53,
+        "Orange": 6,
         "Red": 2,
         "Unclassified": 6
       }
     },
     "lifecycle_counts": {
-      "New & resolved this period": 2,
-      "New this period": 20,
-      "Ongoing": 29,
-      "Resolved this period": 19
+      "New & resolved this period": 3,
+      "New this period": 19,
+      "Ongoing": 27,
+      "Resolved this period": 18
     },
     "mapped_event_counts_by_hazard": {
       "Drought": 12,
-      "Flood": 40,
+      "Flood": 37,
       "Storm": 5,
       "Wildfire": 6
     },
     "geometry_semantics_counts": {
-      "context_grade:Flood": 177,
-      "context_grade:Storm": 26,
+      "context_grade:Flood": 176,
+      "context_grade:Storm": 27,
       "exposure_grade:Wildfire": 22,
       "risk_grade:Drought": 84
     }
   },
   "event_universe": {
     "headline": "public_significant",
-    "all_monitored_count": 162,
-    "public_significant_count": 70
+    "all_monitored_count": 155,
+    "public_significant_count": 67
   },
   "all_monitored_event_counts": {
-    "total_unique_events": 162,
+    "total_unique_events": 155,
     "by_hazard": {
       "Drought": 12,
-      "Flood": 42,
-      "Storm": 19,
-      "Wildfire": 89
+      "Flood": 39,
+      "Storm": 18,
+      "Wildfire": 86
     }
   },
   "events": [
@@ -124,21 +124,21 @@
       "region": "Mexico",
       "public_significant": true,
       "max_alert_level": "Red",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T15:35:20Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_wind_39kt",
-      "preferred_population_peak_raw": 519741,
+      "preferred_population_peak_raw": 739730,
       "preferred_population_metric_latest": "population_wind_39kt",
-      "preferred_population_latest_raw": 519741,
-      "period_mapped_footprint_union_km2": 719356.4,
-      "additional_mapped_area_after_first_observed_day_km2": 152008.9,
+      "preferred_population_latest_raw": 739730,
+      "period_mapped_footprint_union_km2": 719363.6,
+      "additional_mapped_area_after_first_observed_day_km2": 152016.1,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -149,7 +149,7 @@
       "region": "Mexico",
       "public_significant": true,
       "max_alert_level": "Red",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -174,48 +174,23 @@
       "region": "United States",
       "public_significant": true,
       "max_alert_level": "Orange",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T06:05:42Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_wind_39kt",
       "preferred_population_peak_raw": 5914183,
       "preferred_population_metric_latest": "population_wind_39kt",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 1198079.1,
-      "additional_mapped_area_after_first_observed_day_km2": 187664.0,
+      "period_mapped_footprint_union_km2": 1198712.4,
+      "additional_mapped_area_after_first_observed_day_km2": 188297.2,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:DR:1027449",
-      "type": "Drought",
-      "title": "Drought in The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
-      "region": "The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
-      "public_significant": true,
-      "max_alert_level": "Orange",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 885129.5,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 884209
     },
     {
       "stable_id": "gdacs:DR:1027465",
@@ -231,7 +206,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-14T16:28:19Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -256,7 +231,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-14T16:28:19Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -281,7 +256,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -293,18 +268,43 @@
       "agricultural_drought_impact_area_km2_max": 1759971
     },
     {
+      "stable_id": "gdacs:DR:1027449",
+      "type": "Drought",
+      "title": "Drought in The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
+      "region": "The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
+      "public_significant": true,
+      "max_alert_level": "Orange",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 885129.5,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 884209
+    },
+    {
       "stable_id": "gdacs:FL:1104121",
       "type": "Flood",
       "title": "Flood in India",
       "region": "India",
       "public_significant": true,
       "max_alert_level": "Orange",
-      "days_observed": 6,
+      "days_observed": 5,
       "lifecycle": {
-        "label": "Ongoing",
+        "label": "Resolved this period",
         "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
         "first_seen": "2026-09-05T03:52:37Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -318,27 +318,27 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:FL:1104081",
-      "type": "Flood",
-      "title": "Flood in China",
-      "region": "China",
+      "stable_id": "gdacs:TC:1001329",
+      "type": "Storm",
+      "title": "Tropical Cyclone RACHEL-26",
+      "region": "Mexico",
       "public_significant": true,
-      "max_alert_level": "Orange",
-      "days_observed": 1,
+      "max_alert_level": "Green",
+      "days_observed": 7,
       "lifecycle": {
-        "label": "Resolved this period",
+        "label": "Ongoing",
         "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-04T19:40:49Z"
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-27T14:01:32Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 66.9,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "preferred_population_metric_peak": "population_wind_39kt",
+      "preferred_population_peak_raw": 13795177,
+      "preferred_population_metric_latest": "population_wind_39kt",
+      "preferred_population_latest_raw": 13795177,
+      "period_mapped_footprint_union_km2": 3006576.7,
+      "additional_mapped_area_after_first_observed_day_km2": 1309958.6,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -356,14 +356,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_wind_39kt",
       "preferred_population_peak_raw": 10256,
       "preferred_population_metric_latest": "population_wind_39kt",
       "preferred_population_latest_raw": 41,
-      "period_mapped_footprint_union_km2": 6726386.3,
-      "additional_mapped_area_after_first_observed_day_km2": 1613505.1,
+      "period_mapped_footprint_union_km2": 6712227.6,
+      "additional_mapped_area_after_first_observed_day_km2": 1469524.3,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -381,19 +381,19 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-03T19:15:22Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 6659,
+      "preferred_population_peak_raw": 6724,
       "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 6659,
-      "period_mapped_footprint_union_km2": 129.7,
-      "additional_mapped_area_after_first_observed_day_km2": 13.3,
-      "burned_area_ha_max": 12878,
+      "preferred_population_latest_raw": 6724,
+      "period_mapped_footprint_union_km2": 138.5,
+      "additional_mapped_area_after_first_observed_day_km2": 20.7,
+      "burned_area_ha_max": 13721,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032052",
+      "stable_id": "gdacs:WF:1032672",
       "type": "Wildfire",
       "title": "Forest fires in Mozambique",
       "region": "Mozambique",
@@ -401,45 +401,20 @@
       "max_alert_level": "Green",
       "days_observed": 1,
       "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
+        "label": "New this period",
+        "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-27T19:46:43Z",
-        "last_seen": "2026-10-04T19:40:49Z"
+        "resolved_this_period": false,
+        "first_seen": "2026-10-11T05:53:01Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 4195,
+      "preferred_population_peak_raw": 1723,
       "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 4195,
-      "period_mapped_footprint_union_km2": 142.8,
+      "preferred_population_latest_raw": 1723,
+      "period_mapped_footprint_union_km2": 123.0,
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 14174,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:TC:1001329",
-      "type": "Storm",
-      "title": "Tropical Cyclone RACHEL-26",
-      "region": "Mexico",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-27T14:01:32Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_wind_39kt",
-      "preferred_population_peak_raw": 3391,
-      "preferred_population_metric_latest": "population_wind_39kt",
-      "preferred_population_latest_raw": 3391,
-      "period_mapped_footprint_union_km2": 3093005.3,
-      "additional_mapped_area_after_first_observed_day_km2": 1383283.3,
-      "burned_area_ha_max": null,
+      "burned_area_ha_max": 12253,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -449,7 +424,7 @@
       "region": "Mozambique",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -474,7 +449,7 @@
       "region": "Zambia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -499,14 +474,14 @@
       "region": "Indonesia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 4,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-08T06:11:02Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 886,
@@ -524,14 +499,14 @@
       "region": "Indonesia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T06:05:42Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 428,
@@ -541,81 +516,6 @@
       "additional_mapped_area_after_first_observed_day_km2": 0.7,
       "burned_area_ha_max": 10733,
       "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:DR:1023877",
-      "type": "Drought",
-      "title": "Drought in Venezuela",
-      "region": "Venezuela",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 1042986.1,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 1043274
-    },
-    {
-      "stable_id": "gdacs:DR:1027575",
-      "type": "Drought",
-      "title": "Drought in Southern India",
-      "region": "Southern India",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 537994.5,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 537380
-    },
-    {
-      "stable_id": "gdacs:DR:1018546",
-      "type": "Drought",
-      "title": "Drought in Mexico, United States",
-      "region": "Mexico, United States",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 497568.6,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 497162
     },
     {
       "stable_id": "gdacs:DR:1018431",
@@ -631,7 +531,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -641,6 +541,31 @@
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": 97655
+    },
+    {
+      "stable_id": "gdacs:FL:1103888",
+      "type": "Flood",
+      "title": "Flood in United States",
+      "region": "United States",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 5,
+      "lifecycle": {
+        "label": "Resolved this period",
+        "new_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-09T20:57:31Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 152.8,
+      "additional_mapped_area_after_first_observed_day_km2": 59.1,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": null
     },
     {
       "stable_id": "gdacs:DR:1027491",
@@ -656,7 +581,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -681,7 +606,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -706,7 +631,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -731,7 +656,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -743,13 +668,88 @@
       "agricultural_drought_impact_area_km2_max": 98332
     },
     {
+      "stable_id": "gdacs:DR:1023877",
+      "type": "Drought",
+      "title": "Drought in Venezuela",
+      "region": "Venezuela",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 1042986.1,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 1043274
+    },
+    {
+      "stable_id": "gdacs:DR:1027575",
+      "type": "Drought",
+      "title": "Drought in Southern India",
+      "region": "Southern India",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 537994.5,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 537380
+    },
+    {
+      "stable_id": "gdacs:DR:1018546",
+      "type": "Drought",
+      "title": "Drought in Mexico, United States",
+      "region": "Mexico, United States",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 497568.6,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 497162
+    },
+    {
       "stable_id": "gdacs:FL:1104168",
       "type": "Flood",
       "title": "Flood in Indonesia",
       "region": "Indonesia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -781,7 +781,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -793,35 +793,10 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:FL:1104053",
+      "stable_id": "gdacs:FL:1104122",
       "type": "Flood",
-      "title": "Flood in Italy",
-      "region": "Italy",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 1618.7,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:FL:1103888",
-      "type": "Flood",
-      "title": "Flood in United States",
-      "region": "United States",
+      "title": "Flood in Thailand",
+      "region": "Thailand",
       "public_significant": true,
       "max_alert_level": "Green",
       "days_observed": 6,
@@ -831,14 +806,14 @@
         "ongoing": false,
         "resolved_this_period": true,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-09T20:57:31Z"
+        "last_seen": "2026-10-10T20:06:02Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 152.8,
-      "additional_mapped_area_after_first_observed_day_km2": 59.1,
+      "period_mapped_footprint_union_km2": 5210.8,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -849,7 +824,7 @@
       "region": "Myanmar",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -874,12 +849,12 @@
       "region": "Malaysia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 7,
+      "days_observed": 6,
       "lifecycle": {
-        "label": "Ongoing",
+        "label": "Resolved this period",
         "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
         "first_seen": "2026-10-03T13:26:53Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -899,7 +874,7 @@
       "region": "Cambodia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -931,7 +906,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-17T16:27:44Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -943,38 +918,13 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:FL:1104122",
-      "type": "Flood",
-      "title": "Flood in Thailand",
-      "region": "Thailand",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 5210.8,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
       "stable_id": "gdacs:FL:1104206",
       "type": "Flood",
       "title": "Flood in Islamic Republic of Iran",
       "region": "Islamic Republic of Iran",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -999,7 +949,7 @@
       "region": "Chad",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 4,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -1024,7 +974,7 @@
       "region": "Panama",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -1056,14 +1006,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 9060.0,
-      "additional_mapped_area_after_first_observed_day_km2": 8523.4,
+      "period_mapped_footprint_union_km2": 8523.5,
+      "additional_mapped_area_after_first_observed_day_km2": 8026.5,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -1081,14 +1031,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-01T15:29:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 23.0,
-      "additional_mapped_area_after_first_observed_day_km2": 22.3,
+      "period_mapped_footprint_union_km2": 22.3,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -1099,7 +1049,7 @@
       "region": "Ghana",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -1124,7 +1074,7 @@
       "region": "Democratic Republic of Congo",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -1156,14 +1106,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T14:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
       "period_mapped_footprint_union_km2": 185.7,
-      "additional_mapped_area_after_first_observed_day_km2": 149.4,
+      "additional_mapped_area_after_first_observed_day_km2": 108.4,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -1174,7 +1124,7 @@
       "region": "Ecuador",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -1206,14 +1156,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 63126.4,
-      "additional_mapped_area_after_first_observed_day_km2": 63056.7,
+      "period_mapped_footprint_union_km2": 63056.7,
+      "additional_mapped_area_after_first_observed_day_km2": 62978.8,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -1231,7 +1181,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T08:26:07Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1249,7 +1199,7 @@
       "region": "Türkiye",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -1281,38 +1231,13 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 34439.6,
-      "additional_mapped_area_after_first_observed_day_km2": 76.4,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:FL:1104197",
-      "type": "Flood",
-      "title": "Flood in Costa Rica",
-      "region": "Costa Rica",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-28T16:47:13Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 153.5,
+      "period_mapped_footprint_union_km2": 76.4,
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
@@ -1324,14 +1249,14 @@
       "region": "Mexico",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T05:47:27Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1349,14 +1274,14 @@
       "region": "Thailand",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T05:47:27Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1374,14 +1299,14 @@
       "region": "Portugal",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1424,14 +1349,14 @@
       "region": "Nicaragua",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1449,14 +1374,14 @@
       "region": "Philippines",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "Ongoing",
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1474,14 +1399,14 @@
       "region": "Honduras",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1499,14 +1424,14 @@
       "region": "Guatemala",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 6,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-06T06:26:38Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1524,14 +1449,14 @@
       "region": "Vietnam",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Ongoing",
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T08:26:07Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1549,14 +1474,14 @@
       "region": "Mauritania",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 4,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-08T15:40:39Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1574,14 +1499,14 @@
       "region": "Chile",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T06:14:36Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1599,14 +1524,14 @@
       "region": "Brazil",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T06:14:36Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1624,14 +1549,14 @@
       "region": "Slovenia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1649,14 +1574,14 @@
       "region": "Italy",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1674,14 +1599,14 @@
       "region": "Venezuela",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1699,14 +1624,14 @@
       "region": "Argentina",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1726,12 +1651,12 @@
       "max_alert_level": "",
       "days_observed": 7,
       "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-04T14:06:17Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1771,17 +1696,17 @@
       "stable_id": "eonet:TC:EONET_24875",
       "type": "Storm",
       "title": "Hurricane Rachel",
-      "region": "24.10°, -122.20°",
+      "region": "28.50°, -117.00°",
       "public_significant": true,
       "max_alert_level": "",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Ongoing",
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-28T05:29:25Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1801,10 +1726,10 @@
       "max_alert_level": "",
       "days_observed": 5,
       "lifecycle": {
-        "label": "New this period",
+        "label": "New & resolved this period",
         "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": false,
+        "resolved_this_period": true,
         "first_seen": "2026-10-06T15:15:08Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -1824,14 +1749,14 @@
       "region": "32.00°, -86.50°",
       "public_significant": true,
       "max_alert_level": "",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T15:35:20Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -1876,21 +1801,21 @@
       "region": "Mexico",
       "public_significant": true,
       "max_alert_level": "Red",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T15:35:20Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_wind_39kt",
-      "preferred_population_peak_raw": 519741,
+      "preferred_population_peak_raw": 739730,
       "preferred_population_metric_latest": "population_wind_39kt",
-      "preferred_population_latest_raw": 519741,
-      "period_mapped_footprint_union_km2": 719356.4,
-      "additional_mapped_area_after_first_observed_day_km2": 152008.9,
+      "preferred_population_latest_raw": 739730,
+      "period_mapped_footprint_union_km2": 719363.6,
+      "additional_mapped_area_after_first_observed_day_km2": 152016.1,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -1901,7 +1826,7 @@
       "region": "Mexico",
       "public_significant": true,
       "max_alert_level": "Red",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -1926,48 +1851,23 @@
       "region": "United States",
       "public_significant": true,
       "max_alert_level": "Orange",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T06:05:42Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_wind_39kt",
       "preferred_population_peak_raw": 5914183,
       "preferred_population_metric_latest": "population_wind_39kt",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 1198079.1,
-      "additional_mapped_area_after_first_observed_day_km2": 187664.0,
+      "period_mapped_footprint_union_km2": 1198712.4,
+      "additional_mapped_area_after_first_observed_day_km2": 188297.2,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:DR:1027449",
-      "type": "Drought",
-      "title": "Drought in The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
-      "region": "The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
-      "public_significant": true,
-      "max_alert_level": "Orange",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 885129.5,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 884209
     },
     {
       "stable_id": "gdacs:DR:1027465",
@@ -1983,7 +1883,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-14T16:28:19Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -2008,7 +1908,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-14T16:28:19Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -2033,7 +1933,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -2045,18 +1945,43 @@
       "agricultural_drought_impact_area_km2_max": 1759971
     },
     {
+      "stable_id": "gdacs:DR:1027449",
+      "type": "Drought",
+      "title": "Drought in The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
+      "region": "The Bahamas, Belize, Costa Rica, Cuba, Dominican Republic, Guatemala, Honduras, Haiti, Mexico, Nicaragua, El Salvador",
+      "public_significant": true,
+      "max_alert_level": "Orange",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 885129.5,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 884209
+    },
+    {
       "stable_id": "gdacs:FL:1104121",
       "type": "Flood",
       "title": "Flood in India",
       "region": "India",
       "public_significant": true,
       "max_alert_level": "Orange",
-      "days_observed": 6,
+      "days_observed": 5,
       "lifecycle": {
-        "label": "Ongoing",
+        "label": "Resolved this period",
         "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
         "first_seen": "2026-09-05T03:52:37Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -2070,27 +1995,27 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:FL:1104081",
-      "type": "Flood",
-      "title": "Flood in China",
-      "region": "China",
+      "stable_id": "gdacs:TC:1001329",
+      "type": "Storm",
+      "title": "Tropical Cyclone RACHEL-26",
+      "region": "Mexico",
       "public_significant": true,
-      "max_alert_level": "Orange",
-      "days_observed": 1,
+      "max_alert_level": "Green",
+      "days_observed": 7,
       "lifecycle": {
-        "label": "Resolved this period",
+        "label": "Ongoing",
         "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-04T19:40:49Z"
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-27T14:01:32Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 66.9,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "preferred_population_metric_peak": "population_wind_39kt",
+      "preferred_population_peak_raw": 13795177,
+      "preferred_population_metric_latest": "population_wind_39kt",
+      "preferred_population_latest_raw": 13795177,
+      "period_mapped_footprint_union_km2": 3006576.7,
+      "additional_mapped_area_after_first_observed_day_km2": 1309958.6,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -2108,14 +2033,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_wind_39kt",
       "preferred_population_peak_raw": 10256,
       "preferred_population_metric_latest": "population_wind_39kt",
       "preferred_population_latest_raw": 41,
-      "period_mapped_footprint_union_km2": 6726386.3,
-      "additional_mapped_area_after_first_observed_day_km2": 1613505.1,
+      "period_mapped_footprint_union_km2": 6712227.6,
+      "additional_mapped_area_after_first_observed_day_km2": 1469524.3,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -2133,65 +2058,15 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-03T19:15:22Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 6659,
+      "preferred_population_peak_raw": 6724,
       "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 6659,
-      "period_mapped_footprint_union_km2": 129.7,
-      "additional_mapped_area_after_first_observed_day_km2": 13.3,
-      "burned_area_ha_max": 12878,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032052",
-      "type": "Wildfire",
-      "title": "Forest fires in Mozambique",
-      "region": "Mozambique",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-27T19:46:43Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 4195,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 4195,
-      "period_mapped_footprint_union_km2": 142.8,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 14174,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:TC:1001329",
-      "type": "Storm",
-      "title": "Tropical Cyclone RACHEL-26",
-      "region": "Mexico",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-27T14:01:32Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_wind_39kt",
-      "preferred_population_peak_raw": 3391,
-      "preferred_population_metric_latest": "population_wind_39kt",
-      "preferred_population_latest_raw": 3391,
-      "period_mapped_footprint_union_km2": 3093005.3,
-      "additional_mapped_area_after_first_observed_day_km2": 1383283.3,
-      "burned_area_ha_max": null,
+      "preferred_population_latest_raw": 6724,
+      "period_mapped_footprint_union_km2": 138.5,
+      "additional_mapped_area_after_first_observed_day_km2": 20.7,
+      "burned_area_ha_max": 13721,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2201,14 +2076,14 @@
       "region": "Indonesia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T06:05:42Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 1774,
@@ -2220,28 +2095,53 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1032672",
+      "type": "Wildfire",
+      "title": "Forest fires in Mozambique",
+      "region": "Mozambique",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "lifecycle": {
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-11T05:53:01Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 1723,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 1723,
+      "period_mapped_footprint_union_km2": 123.0,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": 12253,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1032578",
       "type": "Wildfire",
       "title": "Forest fires in Indonesia",
       "region": "Indonesia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T06:14:36Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 1576,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 1576,
-      "period_mapped_footprint_union_km2": 108.3,
-      "additional_mapped_area_after_first_observed_day_km2": 2.5,
-      "burned_area_ha_max": 10752,
+      "period_mapped_footprint_union_km2": 109.3,
+      "additional_mapped_area_after_first_observed_day_km2": 3.5,
+      "burned_area_ha_max": 10845,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2251,22 +2151,22 @@
       "region": "Zambia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T20:57:31Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 1213,
+      "preferred_population_peak_raw": 1289,
       "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 1213,
-      "period_mapped_footprint_union_km2": 143.0,
-      "additional_mapped_area_after_first_observed_day_km2": 1.4,
-      "burned_area_ha_max": 14234,
+      "preferred_population_latest_raw": 1289,
+      "period_mapped_footprint_union_km2": 165.8,
+      "additional_mapped_area_after_first_observed_day_km2": 24.2,
+      "burned_area_ha_max": 16467,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2276,7 +2176,7 @@
       "region": "Mozambique",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2301,7 +2201,7 @@
       "region": "Zambia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2326,14 +2226,14 @@
       "region": "Indonesia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 4,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-08T06:11:02Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 886,
@@ -2351,14 +2251,14 @@
       "region": "Papua New Guinea, Indonesia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T15:35:20Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 632,
@@ -2370,7 +2270,7 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032301",
+      "stable_id": "gdacs:WF:1032671",
       "type": "Wildfire",
       "title": "Forest fires in Mozambique",
       "region": "Mozambique",
@@ -2378,20 +2278,20 @@
       "max_alert_level": "Green",
       "days_observed": 1,
       "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
+        "label": "New this period",
+        "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-28T16:47:13Z",
-        "last_seen": "2026-10-04T19:40:49Z"
+        "resolved_this_period": false,
+        "first_seen": "2026-10-11T05:53:01Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 551,
+      "preferred_population_peak_raw": 590,
       "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 551,
-      "period_mapped_footprint_union_km2": 157.9,
+      "preferred_population_latest_raw": 590,
+      "period_mapped_footprint_union_km2": 106.5,
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 15718,
+      "burned_area_ha_max": 10604,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2408,14 +2308,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T14:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 526,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 526,
       "period_mapped_footprint_union_km2": 122.8,
-      "additional_mapped_area_after_first_observed_day_km2": 2.2,
+      "additional_mapped_area_after_first_observed_day_km2": 1.5,
       "burned_area_ha_max": 12197,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -2426,22 +2326,22 @@
       "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T05:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 444,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 444,
-      "period_mapped_footprint_union_km2": 105.2,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 10439,
+      "period_mapped_footprint_union_km2": 106.1,
+      "additional_mapped_area_after_first_observed_day_km2": 0.9,
+      "burned_area_ha_max": 10525,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2451,14 +2351,14 @@
       "region": "Indonesia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T06:05:42Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 428,
@@ -2476,7 +2376,7 @@
       "region": "Zambia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2495,13 +2395,38 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1032657",
+      "type": "Wildfire",
+      "title": "Forest fires in Brazil",
+      "region": "Brazil",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 2,
+      "lifecycle": {
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-10T05:57:40Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 291,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 291,
+      "period_mapped_footprint_union_km2": 196.1,
+      "additional_mapped_area_after_first_observed_day_km2": 42.0,
+      "burned_area_ha_max": 19516,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1032482",
       "type": "Wildfire",
       "title": "Forest fires in Papua New Guinea",
       "region": "Papua New Guinea",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2528,10 +2453,10 @@
       "max_alert_level": "Green",
       "days_observed": 4,
       "lifecycle": {
-        "label": "New this period",
+        "label": "New & resolved this period",
         "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": false,
+        "resolved_this_period": true,
         "first_seen": "2026-10-07T15:35:20Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -2551,22 +2476,47 @@
       "region": "Papua New Guinea",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T15:20:22Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 108,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 108,
-      "period_mapped_footprint_union_km2": 336.0,
-      "additional_mapped_area_after_first_observed_day_km2": 60.5,
-      "burned_area_ha_max": 33369,
+      "period_mapped_footprint_union_km2": 356.3,
+      "additional_mapped_area_after_first_observed_day_km2": 80.8,
+      "burned_area_ha_max": 35379,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032525",
+      "type": "Wildfire",
+      "title": "Forest fires in Brazil",
+      "region": "Brazil",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 5,
+      "lifecycle": {
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-07T06:05:42Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 75,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 75,
+      "period_mapped_footprint_union_km2": 223.2,
+      "additional_mapped_area_after_first_observed_day_km2": 99.8,
+      "burned_area_ha_max": 22158,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2576,7 +2526,7 @@
       "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2595,10 +2545,10 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032525",
+      "stable_id": "gdacs:WF:1032645",
       "type": "Wildfire",
-      "title": "Forest fires in Brazil",
-      "region": "Brazil",
+      "title": "Forest fires in Angola",
+      "region": "Angola",
       "public_significant": false,
       "max_alert_level": "Green",
       "days_observed": 4,
@@ -2607,41 +2557,16 @@
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
-        "first_seen": "2026-10-07T06:05:42Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 46,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 46,
-      "period_mapped_footprint_union_km2": 206.3,
-      "additional_mapped_area_after_first_observed_day_km2": 82.9,
-      "burned_area_ha_max": 20485,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032645",
-      "type": "Wildfire",
-      "title": "Forest fires in Angola",
-      "region": "Angola",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 3,
-      "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": false,
         "first_seen": "2026-10-08T21:21:55Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 45,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 45,
-      "period_mapped_footprint_union_km2": 114.6,
-      "additional_mapped_area_after_first_observed_day_km2": 2.3,
-      "burned_area_ha_max": 11437,
+      "period_mapped_footprint_union_km2": 115.1,
+      "additional_mapped_area_after_first_observed_day_km2": 2.8,
+      "burned_area_ha_max": 11473,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2658,7 +2583,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-29T05:48:12Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 41,
@@ -2683,14 +2608,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 39,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 39,
-      "period_mapped_footprint_union_km2": 326.5,
-      "additional_mapped_area_after_first_observed_day_km2": 5.5,
+      "period_mapped_footprint_union_km2": 326.4,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": 32444,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -2701,7 +2626,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2720,10 +2645,10 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032521",
+      "stable_id": "gdacs:WF:1032524",
       "type": "Wildfire",
-      "title": "Forest fires in Indonesia",
-      "region": "Indonesia",
+      "title": "Forest fires in Brazil",
+      "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
       "days_observed": 2,
@@ -2732,8 +2657,33 @@
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
+        "first_seen": "2026-10-10T05:57:40Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 32,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 32,
+      "period_mapped_footprint_union_km2": 144.1,
+      "additional_mapped_area_after_first_observed_day_km2": 15.9,
+      "burned_area_ha_max": 14280,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032521",
+      "type": "Wildfire",
+      "title": "Forest fires in Indonesia",
+      "region": "Indonesia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 3,
+      "lifecycle": {
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
+        "resolved_this_period": false,
         "first_seen": "2026-10-09T20:57:31Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 28,
@@ -2742,31 +2692,6 @@
       "period_mapped_footprint_union_km2": 101.3,
       "additional_mapped_area_after_first_observed_day_km2": 0.5,
       "burned_area_ha_max": 10047,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032657",
-      "type": "Wildfire",
-      "title": "Forest fires in Brazil",
-      "region": "Brazil",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-10T05:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 25,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 25,
-      "period_mapped_footprint_union_km2": 154.1,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 15341,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2783,19 +2708,19 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T14:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 23,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 23,
-      "period_mapped_footprint_union_km2": 632.6,
-      "additional_mapped_area_after_first_observed_day_km2": 95.3,
+      "period_mapped_footprint_union_km2": 632.5,
+      "additional_mapped_area_after_first_observed_day_km2": 35.2,
       "burned_area_ha_max": 62909,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032524",
+      "stable_id": "gdacs:WF:1032633",
       "type": "Wildfire",
       "title": "Forest fires in Brazil",
       "region": "Brazil",
@@ -2807,16 +2732,41 @@
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
-        "first_seen": "2026-10-10T05:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "first_seen": "2026-10-11T05:53:01Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 19,
+      "preferred_population_peak_raw": 16,
       "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 19,
-      "period_mapped_footprint_union_km2": 128.2,
+      "preferred_population_latest_raw": 16,
+      "period_mapped_footprint_union_km2": 102.4,
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 12705,
+      "burned_area_ha_max": 10149,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032689",
+      "type": "Wildfire",
+      "title": "Forest fires in Brazil",
+      "region": "Brazil",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 2,
+      "lifecycle": {
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-10T05:57:40Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 14,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 14,
+      "period_mapped_footprint_union_km2": 153.5,
+      "additional_mapped_area_after_first_observed_day_km2": 45.5,
+      "burned_area_ha_max": 15284,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2826,7 +2776,7 @@
       "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2851,12 +2801,12 @@
       "region": "Paraguay",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 7,
+      "days_observed": 6,
       "lifecycle": {
-        "label": "Ongoing",
+        "label": "Resolved this period",
         "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
         "first_seen": "2026-09-29T05:48:12Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -2864,34 +2814,9 @@
       "preferred_population_peak_raw": 12,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 12,
-      "period_mapped_footprint_union_km2": 159.3,
+      "period_mapped_footprint_union_km2": 159.2,
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": 15811,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032689",
-      "type": "Wildfire",
-      "title": "Forest fires in Brazil",
-      "region": "Brazil",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-10T05:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 12,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 12,
-      "period_mapped_footprint_union_km2": 108.0,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 10739,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -2901,14 +2826,14 @@
       "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 6,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-06T15:15:08Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 11,
@@ -2926,7 +2851,7 @@
       "region": "Tanzania",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -2951,14 +2876,14 @@
       "region": "Indonesia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T05:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 9,
@@ -2976,14 +2901,14 @@
       "region": "Indonesia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 6,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-06T06:26:38Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 6,
@@ -2992,31 +2917,6 @@
       "period_mapped_footprint_union_km2": 188.2,
       "additional_mapped_area_after_first_observed_day_km2": 23.7,
       "burned_area_ha_max": 18682,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032113",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 3,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-06T21:01:14Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 5,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 5,
-      "period_mapped_footprint_union_km2": 1368.9,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 135571,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -3045,13 +2945,38 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1032113",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 2,
+      "lifecycle": {
+        "label": "Resolved this period",
+        "new_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
+        "first_seen": "2026-09-24T16:31:14Z",
+        "last_seen": "2026-10-06T21:01:14Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 5,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 5,
+      "period_mapped_footprint_union_km2": 1368.9,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": 135571,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1032323",
       "type": "Wildfire",
       "title": "Forest fires in Brazil",
       "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3076,7 +3001,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3095,6 +3020,31 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1032656",
+      "type": "Wildfire",
+      "title": "Forest fires in Brazil",
+      "region": "Brazil",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "lifecycle": {
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-11T05:53:01Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 4,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 4,
+      "period_mapped_footprint_union_km2": 108.6,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": 10813,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1032385",
       "type": "Wildfire",
       "title": "Forest fires in Australia",
@@ -3108,14 +3058,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-25T00:37:11Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 3,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 3,
       "period_mapped_footprint_union_km2": 410.7,
-      "additional_mapped_area_after_first_observed_day_km2": 96.1,
+      "additional_mapped_area_after_first_observed_day_km2": 71.8,
       "burned_area_ha_max": 40646,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -3133,14 +3083,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-29T20:51:30Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 3,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 3,
-      "period_mapped_footprint_union_km2": 240.6,
-      "additional_mapped_area_after_first_observed_day_km2": 14.9,
+      "period_mapped_footprint_union_km2": 240.5,
+      "additional_mapped_area_after_first_observed_day_km2": 7.1,
       "burned_area_ha_max": 23836,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -3151,22 +3101,22 @@
       "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T05:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 3,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 3,
-      "period_mapped_footprint_union_km2": 112.8,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 11215,
+      "period_mapped_footprint_union_km2": 113.1,
+      "additional_mapped_area_after_first_observed_day_km2": 0.4,
+      "burned_area_ha_max": 11253,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -3178,10 +3128,10 @@
       "max_alert_level": "Green",
       "days_observed": 1,
       "lifecycle": {
-        "label": "New this period",
+        "label": "New & resolved this period",
         "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": false,
+        "resolved_this_period": true,
         "first_seen": "2026-10-10T14:29:53Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -3201,7 +3151,7 @@
       "region": "Angola",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3226,7 +3176,7 @@
       "region": "Angola",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3253,10 +3203,10 @@
       "max_alert_level": "Green",
       "days_observed": 3,
       "lifecycle": {
-        "label": "New this period",
+        "label": "New & resolved this period",
         "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": false,
+        "resolved_this_period": true,
         "first_seen": "2026-10-08T21:21:55Z",
         "last_seen": "2026-10-10T14:29:53Z"
       },
@@ -3276,7 +3226,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3301,7 +3251,7 @@
       "region": "Papua New Guinea",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 4,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3326,22 +3276,22 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 1,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 1,
-      "period_mapped_footprint_union_km2": 313.9,
-      "additional_mapped_area_after_first_observed_day_km2": 206.2,
-      "burned_area_ha_max": 31063,
+      "period_mapped_footprint_union_km2": 314.8,
+      "additional_mapped_area_after_first_observed_day_km2": 207.1,
+      "burned_area_ha_max": 31138,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -3351,14 +3301,14 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T15:35:20Z",
-        "last_seen": "2026-10-10T05:57:40Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 1,
@@ -3376,14 +3326,14 @@
       "region": "Indonesia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 4,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-08T06:11:02Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 1,
@@ -3395,13 +3345,163 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:DR:1018431",
+      "type": "Drought",
+      "title": "Drought in Madagascar",
+      "region": "Madagascar",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 97671.4,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 97655
+    },
+    {
+      "stable_id": "gdacs:FL:1103888",
+      "type": "Flood",
+      "title": "Flood in United States",
+      "region": "United States",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 5,
+      "lifecycle": {
+        "label": "Resolved this period",
+        "new_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-09T20:57:31Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 152.8,
+      "additional_mapped_area_after_first_observed_day_km2": 59.1,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:DR:1027491",
+      "type": "Drought",
+      "title": "Drought in China, Kazakhstan, Mongolia, Russia",
+      "region": "China, Kazakhstan, Mongolia, Russia",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 343659.4,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 341951
+    },
+    {
+      "stable_id": "gdacs:DR:1018545",
+      "type": "Drought",
+      "title": "Drought in Brunei, Indonesia, Cambodia, Malaysia, Papua New Guinea, Philippines, Thailand, Vietnam",
+      "region": "Brunei, Indonesia, Cambodia, Malaysia, Papua New Guinea, Philippines, Thailand, Vietnam",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 1263729.1,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 1265206
+    },
+    {
+      "stable_id": "gdacs:DR:1015915",
+      "type": "Drought",
+      "title": "Drought in Brazil",
+      "region": "Brazil",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-24T16:31:14Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 343362.9,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 343349
+    },
+    {
+      "stable_id": "gdacs:DR:1018344",
+      "type": "Drought",
+      "title": "Drought in Angola, Democratic Republic of Congo, Republic of Congo, Gabon",
+      "region": "Angola, Democratic Republic of Congo, Republic of Congo, Gabon",
+      "public_significant": true,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-05T03:52:37Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": null,
+      "preferred_population_peak_raw": null,
+      "preferred_population_metric_latest": null,
+      "preferred_population_latest_raw": null,
+      "period_mapped_footprint_union_km2": 98335.3,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
+      "agricultural_drought_impact_area_km2_max": 98332
+    },
+    {
       "stable_id": "gdacs:TC:1001327",
       "type": "Storm",
       "title": "Tropical Cyclone SURIGAE-26",
       "region": "Japan",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3433,7 +3533,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -3458,7 +3558,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -3483,7 +3583,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -3495,203 +3595,53 @@
       "agricultural_drought_impact_area_km2_max": 497162
     },
     {
-      "stable_id": "gdacs:DR:1018431",
-      "type": "Drought",
-      "title": "Drought in Madagascar",
-      "region": "Madagascar",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 97671.4,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 97655
-    },
-    {
-      "stable_id": "gdacs:DR:1027491",
-      "type": "Drought",
-      "title": "Drought in China, Kazakhstan, Mongolia, Russia",
-      "region": "China, Kazakhstan, Mongolia, Russia",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 343659.4,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 341951
-    },
-    {
-      "stable_id": "gdacs:DR:1018545",
-      "type": "Drought",
-      "title": "Drought in Brunei, Indonesia, Cambodia, Malaysia, Papua New Guinea, Philippines, Thailand, Vietnam",
-      "region": "Brunei, Indonesia, Cambodia, Malaysia, Papua New Guinea, Philippines, Thailand, Vietnam",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 1263729.1,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 1265206
-    },
-    {
-      "stable_id": "gdacs:DR:1015915",
-      "type": "Drought",
-      "title": "Drought in Brazil",
-      "region": "Brazil",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 343362.9,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 343349
-    },
-    {
-      "stable_id": "gdacs:DR:1018344",
-      "type": "Drought",
-      "title": "Drought in Angola, Democratic Republic of Congo, Republic of Congo, Gabon",
-      "region": "Angola, Democratic Republic of Congo, Republic of Congo, Gabon",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 98335.3,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": 98332
-    },
-    {
-      "stable_id": "gdacs:TC:1001321",
+      "stable_id": "gdacs:TC:1001333",
       "type": "Storm",
-      "title": "Tropical Cyclone NOLO-26",
-      "region": "United States",
+      "title": "Tropical Cyclone KOGUMA-26",
+      "region": "24.50°, 148.20°",
       "public_significant": false,
       "max_alert_level": "Green",
       "days_observed": 7,
       "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
         "resolved_this_period": false,
-        "first_seen": "2026-09-13T22:47:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "first_seen": "2026-10-05T05:47:27Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_wind_39kt",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_wind_39kt",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 3157243.9,
-      "additional_mapped_area_after_first_observed_day_km2": 96907.1,
+      "period_mapped_footprint_union_km2": 3780414.3,
+      "additional_mapped_area_after_first_observed_day_km2": 2785470.4,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032321",
+      "stable_id": "gdacs:WF:1032528",
       "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
+      "title": "Forest fires in Indonesia",
+      "region": "Indonesia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 7,
       "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
+        "label": "New this period",
+        "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-04T19:40:49Z"
+        "resolved_this_period": false,
+        "first_seen": "2026-10-05T05:47:27Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 346.5,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 34329,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032410",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-29T05:48:12Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 108.2,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 10730,
+      "period_mapped_footprint_union_km2": 135.7,
+      "additional_mapped_area_after_first_observed_day_km2": 26.8,
+      "burned_area_ha_max": 13487,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -3701,7 +3651,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3720,88 +3670,13 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032437",
-      "type": "Wildfire",
-      "title": "Forest fires in Angola",
-      "region": "Angola",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-27T19:46:43Z",
-        "last_seen": "2026-10-04T05:58:46Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 174.2,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 17294,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032427",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 2,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-28T16:47:13Z",
-        "last_seen": "2026-10-05T17:10:53Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 135.0,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 13410,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032408",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 2,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-26T16:29:43Z",
-        "last_seen": "2026-10-05T17:10:53Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 193.9,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 19246,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
       "stable_id": "gdacs:WF:1032403",
       "type": "Wildfire",
       "title": "Forest fires in Australia",
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3826,7 +3701,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3845,38 +3720,13 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032518",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-03T13:26:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 988.5,
-      "additional_mapped_area_after_first_observed_day_km2": 814.3,
-      "burned_area_ha_max": 97617,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
       "stable_id": "gdacs:WF:1032451",
       "type": "Wildfire",
       "title": "Forest fires in Australia",
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -3895,7 +3745,7 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032498",
+      "stable_id": "gdacs:WF:1032518",
       "type": "Wildfire",
       "title": "Forest fires in Australia",
       "region": "Australia",
@@ -3907,16 +3757,41 @@
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
-        "first_seen": "2026-10-01T21:03:28Z",
+        "first_seen": "2026-10-03T13:26:53Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 988.5,
+      "additional_mapped_area_after_first_observed_day_km2": 754.9,
+      "burned_area_ha_max": 97617,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032478",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 6,
+      "lifecycle": {
+        "label": "Resolved this period",
+        "new_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
+        "first_seen": "2026-09-30T05:37:37Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 256.7,
-      "additional_mapped_area_after_first_observed_day_km2": 80.5,
-      "burned_area_ha_max": 25504,
+      "period_mapped_footprint_union_km2": 639.5,
+      "additional_mapped_area_after_first_observed_day_km2": 45.7,
+      "burned_area_ha_max": 63348,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -3933,19 +3808,19 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-01T15:29:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 524.8,
-      "additional_mapped_area_after_first_observed_day_km2": 175.2,
-      "burned_area_ha_max": 51978,
+      "period_mapped_footprint_union_km2": 525.5,
+      "additional_mapped_area_after_first_observed_day_km2": 162.0,
+      "burned_area_ha_max": 52053,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1032478",
+      "stable_id": "gdacs:WF:1032498",
       "type": "Wildfire",
       "title": "Forest fires in Australia",
       "region": "Australia",
@@ -3957,66 +3832,16 @@
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
-        "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "first_seen": "2026-10-01T21:03:28Z",
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 639.7,
-      "additional_mapped_area_after_first_observed_day_km2": 94.6,
-      "burned_area_ha_max": 63348,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032506",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 6,
-      "lifecycle": {
-        "label": "New & resolved this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-10-04T05:58:46Z",
-        "last_seen": "2026-10-09T06:14:36Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 117.6,
-      "additional_mapped_area_after_first_observed_day_km2": 8.8,
-      "burned_area_ha_max": 11664,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032508",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-03T13:26:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 308.7,
-      "additional_mapped_area_after_first_observed_day_km2": 156.3,
-      "burned_area_ha_max": 30546,
+      "period_mapped_footprint_union_km2": 261.2,
+      "additional_mapped_area_after_first_observed_day_km2": 69.0,
+      "burned_area_ha_max": 25951,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -4033,15 +3858,140 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-02T05:44:29Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 286.5,
-      "additional_mapped_area_after_first_observed_day_km2": 137.7,
-      "burned_area_ha_max": 28332,
+      "period_mapped_footprint_union_km2": 299.3,
+      "additional_mapped_area_after_first_observed_day_km2": 116.0,
+      "burned_area_ha_max": 29609,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032508",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-03T13:26:53Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 314.5,
+      "additional_mapped_area_after_first_observed_day_km2": 130.3,
+      "burned_area_ha_max": 31119,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032506",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 5,
+      "lifecycle": {
+        "label": "Resolved this period",
+        "new_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
+        "first_seen": "2026-10-04T05:58:46Z",
+        "last_seen": "2026-10-09T06:14:36Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 117.6,
+      "additional_mapped_area_after_first_observed_day_km2": 1.1,
+      "burned_area_ha_max": 11664,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032544",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "New this period",
+        "new_this_period": true,
+        "ongoing": false,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-05T05:47:27Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 197.7,
+      "additional_mapped_area_after_first_observed_day_km2": 46.5,
+      "burned_area_ha_max": 19595,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032546",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-10-04T14:06:17Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 261.2,
+      "additional_mapped_area_after_first_observed_day_km2": 110.9,
+      "burned_area_ha_max": 25824,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:TC:1001321",
+      "type": "Storm",
+      "title": "Tropical Cyclone NOLO-26",
+      "region": "United States",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 7,
+      "lifecycle": {
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
+        "resolved_this_period": false,
+        "first_seen": "2026-09-13T22:47:14Z",
+        "last_seen": "2026-10-11T05:53:01Z"
+      },
+      "preferred_population_metric_peak": "population_wind_39kt",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_wind_39kt",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 3058924.0,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -4051,7 +4001,7 @@
       "region": "Indonesia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4083,7 +4033,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -4095,53 +4045,28 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:FL:1104053",
+      "stable_id": "gdacs:FL:1104122",
       "type": "Flood",
-      "title": "Flood in Italy",
-      "region": "Italy",
+      "title": "Flood in Thailand",
+      "region": "Thailand",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 6,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
         "ongoing": false,
         "resolved_this_period": true,
         "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-04T19:40:49Z"
+        "last_seen": "2026-10-10T20:06:02Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 1618.7,
+      "period_mapped_footprint_union_km2": 5210.8,
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032285",
-      "type": "Wildfire",
-      "title": "Forest fires in Brazil",
-      "region": "Brazil",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-26T16:29:43Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 259.1,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 25799,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -4151,7 +4076,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4176,7 +4101,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4195,38 +4120,13 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:FL:1103888",
-      "type": "Flood",
-      "title": "Flood in United States",
-      "region": "United States",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 6,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-09T20:57:31Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 152.8,
-      "additional_mapped_area_after_first_observed_day_km2": 59.1,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
       "stable_id": "gdacs:FL:1104011",
       "type": "Flood",
       "title": "Flood in Myanmar",
       "region": "Myanmar",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4251,12 +4151,12 @@
       "region": "Malaysia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 7,
+      "days_observed": 6,
       "lifecycle": {
-        "label": "Ongoing",
+        "label": "Resolved this period",
         "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
         "first_seen": "2026-10-03T13:26:53Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -4276,7 +4176,7 @@
       "region": "Cambodia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4301,7 +4201,7 @@
       "region": "15.00°, -123.00°",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 4,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4326,7 +4226,7 @@
       "region": "Brazil",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 4,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4358,7 +4258,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-17T16:27:44Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -4370,38 +4270,13 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:FL:1104122",
-      "type": "Flood",
-      "title": "Flood in Thailand",
-      "region": "Thailand",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "Ongoing",
-        "new_this_period": false,
-        "ongoing": true,
-        "resolved_this_period": false,
-        "first_seen": "2026-09-05T03:52:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 5210.8,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
       "stable_id": "gdacs:FL:1104206",
       "type": "Flood",
       "title": "Flood in Islamic Republic of Iran",
       "region": "Islamic Republic of Iran",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4426,7 +4301,7 @@
       "region": "Chad",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 4,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4451,7 +4326,7 @@
       "region": "Panama",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4483,14 +4358,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 9060.0,
-      "additional_mapped_area_after_first_observed_day_km2": 8523.4,
+      "period_mapped_footprint_union_km2": 8523.5,
+      "additional_mapped_area_after_first_observed_day_km2": 8026.5,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -4508,14 +4383,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-01T15:29:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 23.0,
-      "additional_mapped_area_after_first_observed_day_km2": 22.3,
+      "period_mapped_footprint_union_km2": 22.3,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -4526,7 +4401,7 @@
       "region": "Ghana",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4551,7 +4426,7 @@
       "region": "Democratic Republic of Congo",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4576,7 +4451,7 @@
       "region": "Tanzania",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4601,7 +4476,7 @@
       "region": "33.40°, -43.60°",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 3,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4633,14 +4508,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T14:57:40Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
       "period_mapped_footprint_union_km2": 185.7,
-      "additional_mapped_area_after_first_observed_day_km2": 149.4,
+      "additional_mapped_area_after_first_observed_day_km2": 108.4,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -4651,7 +4526,7 @@
       "region": "Ecuador",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4683,14 +4558,14 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-30T05:37:37Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 63126.4,
-      "additional_mapped_area_after_first_observed_day_km2": 63056.7,
+      "period_mapped_footprint_union_km2": 63056.7,
+      "additional_mapped_area_after_first_observed_day_km2": 62978.8,
       "burned_area_ha_max": null,
       "agricultural_drought_impact_area_km2_max": null
     },
@@ -4708,7 +4583,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T08:26:07Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -4726,7 +4601,7 @@
       "region": "23.70°, -48.20°",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4751,7 +4626,7 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 1,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4776,7 +4651,7 @@
       "region": "Türkiye",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 2,
       "lifecycle": {
         "label": "Resolved this period",
         "new_this_period": false,
@@ -4795,31 +4670,6 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
-      "stable_id": "gdacs:WF:1031990",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-16T16:27:19Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 360.2,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 35667,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
       "stable_id": "gdacs:FL:1104178",
       "type": "Flood",
       "title": "Flood in Guinea",
@@ -4833,165 +4683,15 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
       "preferred_population_metric_latest": null,
       "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 34439.6,
-      "additional_mapped_area_after_first_observed_day_km2": 76.4,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:FL:1104197",
-      "type": "Flood",
-      "title": "Flood in Costa Rica",
-      "region": "Costa Rica",
-      "public_significant": true,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-28T16:47:13Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": null,
-      "preferred_population_peak_raw": null,
-      "preferred_population_metric_latest": null,
-      "preferred_population_latest_raw": null,
-      "period_mapped_footprint_union_km2": 153.5,
+      "period_mapped_footprint_union_km2": 76.4,
       "additional_mapped_area_after_first_observed_day_km2": 0.0,
       "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:TC:1001324",
-      "type": "Storm",
-      "title": "Tropical Cyclone ODALYS-26",
-      "region": "22.80°, -123.10°",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 1,
-      "lifecycle": {
-        "label": "Resolved this period",
-        "new_this_period": false,
-        "ongoing": false,
-        "resolved_this_period": true,
-        "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-04T19:40:49Z"
-      },
-      "preferred_population_metric_peak": "population_wind_39kt",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_wind_39kt",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 866958.8,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032546",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 7,
-      "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-04T14:06:17Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 259.6,
-      "additional_mapped_area_after_first_observed_day_km2": 144.5,
-      "burned_area_ha_max": 25666,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:TC:1001333",
-      "type": "Storm",
-      "title": "Tropical Cyclone KOGUMA-26",
-      "region": "22.90°, 149.60°",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 6,
-      "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-05T05:47:27Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_wind_39kt",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_wind_39kt",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 3674095.3,
-      "additional_mapped_area_after_first_observed_day_km2": 2679151.5,
-      "burned_area_ha_max": null,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032528",
-      "type": "Wildfire",
-      "title": "Forest fires in Indonesia",
-      "region": "Indonesia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 6,
-      "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-05T05:47:27Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 135.7,
-      "additional_mapped_area_after_first_observed_day_km2": 26.8,
-      "burned_area_ha_max": 13487,
-      "agricultural_drought_impact_area_km2_max": null
-    },
-    {
-      "stable_id": "gdacs:WF:1032544",
-      "type": "Wildfire",
-      "title": "Forest fires in Australia",
-      "region": "Australia",
-      "public_significant": false,
-      "max_alert_level": "Green",
-      "days_observed": 6,
-      "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
-        "resolved_this_period": false,
-        "first_seen": "2026-10-05T05:47:27Z",
-        "last_seen": "2026-10-10T20:06:02Z"
-      },
-      "preferred_population_metric_peak": "population_direct",
-      "preferred_population_peak_raw": 0,
-      "preferred_population_metric_latest": "population_direct",
-      "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 197.7,
-      "additional_mapped_area_after_first_observed_day_km2": 46.5,
-      "burned_area_ha_max": 19595,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -5001,14 +4701,14 @@
       "region": "Mexico",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T05:47:27Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5026,14 +4726,14 @@
       "region": "Thailand",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T05:47:27Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5045,28 +4745,78 @@
       "agricultural_drought_impact_area_km2_max": null
     },
     {
+      "stable_id": "gdacs:WF:1032408",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "lifecycle": {
+        "label": "Resolved this period",
+        "new_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
+        "first_seen": "2026-09-26T16:29:43Z",
+        "last_seen": "2026-10-05T17:10:53Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 193.9,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": 19246,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
+      "stable_id": "gdacs:WF:1032427",
+      "type": "Wildfire",
+      "title": "Forest fires in Australia",
+      "region": "Australia",
+      "public_significant": false,
+      "max_alert_level": "Green",
+      "days_observed": 1,
+      "lifecycle": {
+        "label": "Resolved this period",
+        "new_this_period": false,
+        "ongoing": false,
+        "resolved_this_period": true,
+        "first_seen": "2026-09-28T16:47:13Z",
+        "last_seen": "2026-10-05T17:10:53Z"
+      },
+      "preferred_population_metric_peak": "population_direct",
+      "preferred_population_peak_raw": 0,
+      "preferred_population_metric_latest": "population_direct",
+      "preferred_population_latest_raw": 0,
+      "period_mapped_footprint_union_km2": 135.0,
+      "additional_mapped_area_after_first_observed_day_km2": 0.0,
+      "burned_area_ha_max": 13410,
+      "agricultural_drought_impact_area_km2_max": null
+    },
+    {
       "stable_id": "gdacs:WF:1032548",
       "type": "Wildfire",
       "title": "Forest fires in Papua New Guinea",
       "region": "Papua New Guinea",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 157.6,
-      "additional_mapped_area_after_first_observed_day_km2": 50.8,
-      "burned_area_ha_max": 15645,
+      "period_mapped_footprint_union_km2": 158.5,
+      "additional_mapped_area_after_first_observed_day_km2": 51.6,
+      "burned_area_ha_max": 15711,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -5076,14 +4826,14 @@
       "region": "Portugal",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5126,14 +4876,14 @@
       "region": "Nicaragua",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5151,14 +4901,14 @@
       "region": "Philippines",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "Ongoing",
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5176,14 +4926,14 @@
       "region": "Honduras",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 6,
+      "days_observed": 7,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-05T17:10:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5201,14 +4951,14 @@
       "region": "Guatemala",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 5,
+      "days_observed": 6,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-06T06:26:38Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5251,14 +5001,14 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T06:05:42Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
@@ -5276,14 +5026,14 @@
       "region": "Vietnam",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Ongoing",
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-05T08:26:07Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5301,14 +5051,14 @@
       "region": "Papua New Guinea",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 4,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-08T06:11:02Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
@@ -5351,14 +5101,14 @@
       "region": "Bolivia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 4,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-08T15:40:39Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
@@ -5376,14 +5126,14 @@
       "region": "Mauritania",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 3,
+      "days_observed": 4,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-08T15:40:39Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5401,14 +5151,14 @@
       "region": "Chile",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T06:14:36Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5426,14 +5176,14 @@
       "region": "Brazil",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T06:14:36Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5476,22 +5226,22 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T15:20:22Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 113.9,
-      "additional_mapped_area_after_first_observed_day_km2": 4.7,
-      "burned_area_ha_max": 11308,
+      "period_mapped_footprint_union_km2": 115.4,
+      "additional_mapped_area_after_first_observed_day_km2": 6.2,
+      "burned_area_ha_max": 11452,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -5501,22 +5251,22 @@
       "region": "Mongolia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T15:20:22Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 402.2,
-      "additional_mapped_area_after_first_observed_day_km2": 39.6,
-      "burned_area_ha_max": 40072,
+      "period_mapped_footprint_union_km2": 514.0,
+      "additional_mapped_area_after_first_observed_day_km2": 151.5,
+      "burned_area_ha_max": 51125,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -5526,22 +5276,22 @@
       "region": "Mozambique",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 2,
+      "days_observed": 3,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-09T20:57:31Z",
-        "last_seen": "2026-10-10T05:57:40Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 102.8,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 10245,
+      "period_mapped_footprint_union_km2": 116.5,
+      "additional_mapped_area_after_first_observed_day_km2": 13.7,
+      "burned_area_ha_max": 11557,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -5551,22 +5301,22 @@
       "region": "Papua New Guinea",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 118.2,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 11815,
+      "period_mapped_footprint_union_km2": 122.5,
+      "additional_mapped_area_after_first_observed_day_km2": 4.3,
+      "burned_area_ha_max": 12231,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -5576,14 +5326,14 @@
       "region": "Papua New Guinea",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
@@ -5601,22 +5351,22 @@
       "region": "Australia",
       "public_significant": false,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": "population_direct",
       "preferred_population_peak_raw": 0,
       "preferred_population_metric_latest": "population_direct",
       "preferred_population_latest_raw": 0,
-      "period_mapped_footprint_union_km2": 110.1,
-      "additional_mapped_area_after_first_observed_day_km2": 0.0,
-      "burned_area_ha_max": 10948,
+      "period_mapped_footprint_union_km2": 130.0,
+      "additional_mapped_area_after_first_observed_day_km2": 19.9,
+      "burned_area_ha_max": 12909,
       "agricultural_drought_impact_area_km2_max": null
     },
     {
@@ -5626,14 +5376,14 @@
       "region": "Slovenia",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5651,14 +5401,14 @@
       "region": "Italy",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5676,14 +5426,14 @@
       "region": "Venezuela",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5701,14 +5451,14 @@
       "region": "Argentina",
       "public_significant": true,
       "max_alert_level": "Green",
-      "days_observed": 1,
+      "days_observed": 2,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-10T14:29:53Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5723,7 +5473,7 @@
       "stable_id": "eonet:TC:EONET_24786",
       "type": "Storm",
       "title": "Hurricane Nolo",
-      "region": "30.90°, 146.20°",
+      "region": "31.00°, 145.60°",
       "public_significant": false,
       "max_alert_level": "",
       "days_observed": 7,
@@ -5733,7 +5483,7 @@
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-24T16:31:14Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5753,12 +5503,12 @@
       "max_alert_level": "",
       "days_observed": 7,
       "lifecycle": {
-        "label": "New this period",
-        "new_this_period": true,
-        "ongoing": false,
+        "label": "Ongoing",
+        "new_this_period": false,
+        "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-10-04T14:06:17Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5823,17 +5573,17 @@
       "stable_id": "eonet:TC:EONET_24875",
       "type": "Storm",
       "title": "Hurricane Rachel",
-      "region": "24.10°, -122.20°",
+      "region": "28.50°, -117.00°",
       "public_significant": true,
       "max_alert_level": "",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "Ongoing",
         "new_this_period": false,
         "ongoing": true,
         "resolved_this_period": false,
         "first_seen": "2026-09-28T05:29:25Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
@@ -5853,10 +5603,10 @@
       "max_alert_level": "",
       "days_observed": 5,
       "lifecycle": {
-        "label": "New this period",
+        "label": "New & resolved this period",
         "new_this_period": true,
         "ongoing": false,
-        "resolved_this_period": false,
+        "resolved_this_period": true,
         "first_seen": "2026-10-06T15:15:08Z",
         "last_seen": "2026-10-10T20:06:02Z"
       },
@@ -5876,14 +5626,14 @@
       "region": "32.00°, -86.50°",
       "public_significant": true,
       "max_alert_level": "",
-      "days_observed": 4,
+      "days_observed": 5,
       "lifecycle": {
         "label": "New this period",
         "new_this_period": true,
         "ongoing": false,
         "resolved_this_period": false,
         "first_seen": "2026-10-07T15:35:20Z",
-        "last_seen": "2026-10-10T20:06:02Z"
+        "last_seen": "2026-10-11T05:53:01Z"
       },
       "preferred_population_metric_peak": null,
       "preferred_population_peak_raw": null,
