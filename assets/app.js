@@ -36,7 +36,7 @@ function fmtCoord(v, pos, neg) {
 }
 function fmtHa(v) {
   const n = +v;
-  return Number.isFinite(n) ? `${Math.round(n).toLocaleString()} ha` : '–';
+  return Number.isFinite(n) ? `${Math.round(n).toLocaleString('en-US')} ha` : '–';
 }
 function setSourceStatus(key, status, count = 0, error = '') {
   Object.assign(sourceState[key], { status, count, error });
@@ -248,12 +248,12 @@ async function refresh() {
   const snap = await cpLoadRepositorySnapshot();
   if (snap) {
     events = snap.events;
-    $('lastUpdated').textContent = `Repository snapshot · ${snap.generated_at ? new Date(snap.generated_at).toLocaleString() : 'versioned data'}`;
+    $('lastUpdated').textContent = `Repository snapshot · ${snap.generated_at ? new Date(snap.generated_at).toLocaleString('en-US') : 'versioned data'}`;
     Object.keys(sourceState).forEach(k => setSourceStatus(k, 'live', events.filter(e => e.origin === k).length));
   } else {
     const out = await cpLoadLive(setSourceStatus);
     events = out.events;
-    $('lastUpdated').textContent = `Live feeds · ${new Date(out.generated_at).toLocaleString()}`;
+    $('lastUpdated').textContent = `Live feeds · ${new Date(out.generated_at).toLocaleString('en-US')}`;
   }
   selected = events[0]?.id || null;
   expanded = null;
