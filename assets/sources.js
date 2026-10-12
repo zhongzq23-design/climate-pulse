@@ -145,7 +145,7 @@ function cpParseGdacs(data, diag) {
       id: `gdacs-${q.eventtype || 'EV'}-${id}`, source_id: id, origin: 'gdacs', title: q.name || `${type} in ${region}`, type,
       region: String(region), lat: p.lat, lon: p.lon, status: 'Recent', updated: cpDateLabel(q.todate || q.fromdate),
       priority: cpPriority(q.alertlevel), climate_link: 'Not assessed',
-      summary: cpTruncate(`${Number.isFinite(ha) ? `Burned area: ${Math.round(ha).toLocaleString()} ha. ` : ''}${sev || `${type} event tracked by GDACS.`}${q.alertlevel ? ` Alert level: ${q.alertlevel}.` : ''}`),
+      summary: cpTruncate(`${Number.isFinite(ha) ? `Burned area: ${Math.round(ha).toLocaleString('en-US')} ha. ` : ''}${sev || `${type} event tracked by GDACS.`}${q.alertlevel ? ` Alert level: ${q.alertlevel}.` : ''}`),
       source: `GDACS${q.alertlevel ? ` · ${q.alertlevel}` : ''}`,
       source_url: `https://www.gdacs.org/report.aspx?eventid=${encodeURIComponent(id)}&eventtype=${encodeURIComponent(q.eventtype || '')}`,
       event_date: q.todate || q.fromdate || null, burned_area_ha: ha

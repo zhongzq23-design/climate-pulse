@@ -5,15 +5,15 @@
 // spatial context. Exposure never means observed harm.
 (() => {
   const hasNum = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
-  const fmtPop = v => hasNum(v) ? Math.round(Number(v)).toLocaleString() : '–';
-  const fmtArea = v => hasNum(v) ? `${Number(v).toLocaleString(undefined, { maximumFractionDigits: 1 })} km²` : '–';
+  const fmtPop = v => hasNum(v) ? Math.round(Number(v)).toLocaleString('en-US') : '–';
+  const fmtArea = v => hasNum(v) ? `${Number(v).toLocaleString('en-US', { maximumFractionDigits: 1 })} km²` : '–';
   const fmtGDP = v => {
     if (!hasNum(v)) return '–';
     const x = Number(v), ax = Math.abs(x);
     if (ax >= 1e12) return `$${(x / 1e12).toFixed(ax >= 10e12 ? 1 : 2)}T`;
     if (ax >= 1e9) return `$${(x / 1e9).toFixed(ax >= 10e9 ? 1 : 2)}B`;
     if (ax >= 1e6) return `$${(x / 1e6).toFixed(ax >= 10e6 ? 1 : 2)}M`;
-    return `$${Math.round(x).toLocaleString()}`;
+    return `$${Math.round(x).toLocaleString('en-US')}`;
   };
 
   function alertLevel(e) {

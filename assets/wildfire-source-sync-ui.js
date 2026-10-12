@@ -8,8 +8,13 @@
     const s = String(value || '').slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return String(value || '–');
     const d = new Date(`${s}T00:00:00Z`);
-    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
   };
+
+  // Also expose the pure date formatter for locale-independent Node regression tests.
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { formatWildfireDate: fmtDate };
+  }
 
   function metricSource(e, key) {
     const x = e?.exposure || {};
