@@ -4,7 +4,7 @@
   "event_type": "Wildfire",
   "title": "Forest fires in Central African Republic, Sudan",
   "region": "Central African Republic, Sudan",
-  "calculated_at": "2026-10-27T05:28:02Z",
+  "calculated_at": "2026-10-27T14:36:25Z",
   "population_reference": {
     "dataset": "JRC GHSL GHS-WUP-POP R2025A",
     "epoch": 2025,
@@ -12,15 +12,25 @@
     "interpretation": "Population exposure, not observed casualties or economic loss"
   },
   "hazard": "wildfire",
+  "gdacs_event_id": "1033080",
+  "gdacs_episode_id": 6,
+  "footprint_method": "GDACS burned-area/event polygon",
+  "population_direct": 0,
+  "population_within_5km": 0,
+  "quality": "high_spatial_reference_fallback",
   "metric_provenance": {
-    "burned_area_ha": {
-      "source": "GDACS/GWIS",
-      "source_field": "severitytext",
-      "method": "source_reported_current_episode",
-      "derived_by_climate_pulse": false,
-      "gdacs_episode_id": 6
+    "population_direct": {
+      "source": "Climate Pulse",
+      "source_field": "population_direct",
+      "method": "GDACS mapped fire polygon × JRC GHSL 2025",
+      "derived_by_climate_pulse": true
+    },
+    "population_within_5km": {
+      "source": "Climate Pulse",
+      "source_field": "population_within_5km",
+      "method": "GDACS mapped fire polygon + 5 km × JRC GHSL 2025",
+      "derived_by_climate_pulse": true
     }
   },
-  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
-  "burned_area_ha": 12758.0
+  "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation."
 }
