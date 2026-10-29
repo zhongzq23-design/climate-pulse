@@ -1,6 +1,6 @@
 {
   "schema_version": "1.5",
-  "generated_at": "2026-10-28T15:09:42Z",
+  "generated_at": "2026-10-29T05:53:35Z",
   "monitor": {
     "cadence": "3x daily",
     "schedule_utc": [
@@ -25,8 +25,10 @@
           21
         ]
       ],
-      "recovered_source_events": 54,
-      "errors": []
+      "recovered_source_events": 32,
+      "errors": [
+        "8-14d:TimeoutError:The read operation timed out"
+      ]
     },
     "wildfire_identity_policy": "distinct wildfire source IDs are published individually; proximity does not merge or cluster fires",
     "storm_display_rule": "CEMS activation OR GDACS Orange/Red OR populated GDACS TC footprint; EONET-only fallback uses populated 300 km center buffer",
@@ -44,7 +46,7 @@
       "no_polygon_behavior": "do not display a footprint panel or polygon-derived exposure metric"
     },
     "asset_exposure": {
-      "calculated_at": "2026-10-28T15:24:28Z",
+      "calculated_at": "2026-10-29T05:58:08Z",
       "drought": "mapped area; MODIS 2024 land/forest area and FAO CROPGRIDS 2020 crop physical area when prepared",
       "wildfire": "MODIS 2024 forest area within mapped wildfire footprint when prepared",
       "flood_population": "GHSL 2025 population inside the QC-passed GDACS reported flood event-area polygon; labelled potentially affected population, not confirmed impact",
@@ -78,18 +80,12 @@
     },
     "incremental_event_refresh": {
       "version": "INCREMENTAL_EVENT_REFRESH_V1",
-      "changed_canonical_event_count": 10,
+      "changed_canonical_event_count": 4,
       "changed_canonical_event_ids": [
         "eonet-EONET_25589",
         "eonet-EONET_25728",
         "eonet-EONET_25729",
-        "gdacs-WF-1032901",
-        "gdacs-WF-1032994",
-        "gdacs-WF-1033006",
-        "gdacs-WF-1033013",
-        "gdacs-WF-1033021",
-        "gdacs-WF-1033028",
-        "gdacs-WF-1033095"
+        "gdacs-WF-1032948"
       ],
       "strategy": "reuse unchanged published products; run existing expensive event enrichers only on changed canonical events; rebuild global display afterward"
     }
@@ -97,12 +93,12 @@
   "source_status": {
     "eonet": {
       "status": "ok",
-      "relevant_count": 6,
+      "relevant_count": 5,
       "error": null
     },
     "gdacs": {
       "status": "stale_carry_forward",
-      "relevant_count": 97,
+      "relevant_count": 104,
       "error": "TimeoutError: The read operation timed out"
     },
     "cems": {
@@ -125,21 +121,21 @@
       "origin": "eonet",
       "title": "Tropical Cyclone Arnab",
       "type": "Storm",
-      "region": "16.20°, 81.60°",
-      "lat": 16.2,
-      "lon": 81.6,
+      "region": "16.40°, 81.80°",
+      "lat": 16.4,
+      "lon": 81.8,
       "status": "Open",
-      "updated": "Updated 15 h ago",
+      "updated": "Updated 1 day ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
       "source": "NASA EONET",
       "source_url": "https://www.metoc.navy.mil/jtwc/products/io0226.tcw",
-      "event_date": "2026-10-28T00:00:00Z",
-      "source_updated_at": "2026-10-28T00:00:00Z",
+      "event_date": "2026-10-28T06:00:00Z",
+      "source_updated_at": "2026-10-28T06:00:00Z",
       "event_start": "2026-10-25T18:00:00Z",
       "event_end": null,
-      "last_detection": "2026-10-28T00:00:00Z"
+      "last_detection": "2026-10-28T06:00:00Z"
     },
     {
       "id": "eonet-EONET_25730",
@@ -169,43 +165,21 @@
       "origin": "eonet",
       "title": "Super Typhoon In-fa",
       "type": "Storm",
-      "region": "15.10°, 158.90°",
-      "lat": 15.1,
-      "lon": 158.9,
+      "region": "15.90°, 154.60°",
+      "lat": 15.9,
+      "lon": 154.6,
       "status": "Open",
-      "updated": "Updated 9 h ago",
+      "updated": "Updated 6 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
       "source": "NASA EONET",
       "source_url": "https://www.metoc.navy.mil/jtwc/products/wp3026.tcw",
-      "event_date": "2026-10-28T06:00:00Z",
-      "source_updated_at": "2026-10-28T06:00:00Z",
+      "event_date": "2026-10-29T00:00:00Z",
+      "source_updated_at": "2026-10-29T00:00:00Z",
       "event_start": "2026-10-23T18:00:00Z",
       "event_end": null,
-      "last_detection": "2026-10-28T06:00:00Z"
-    },
-    {
-      "id": "eonet-EONET_25589",
-      "source_id": "EONET_25589",
-      "origin": "eonet",
-      "title": "Hurricane Vance",
-      "type": "Storm",
-      "region": "18.00°, -108.60°",
-      "lat": 18.0,
-      "lon": -108.6,
-      "status": "Open",
-      "updated": "Updated 9 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Storm event tracked by NASA EONET.",
-      "source": "NASA EONET",
-      "source_url": "https://www.metoc.navy.mil/jtwc/products/ep2226.tcw",
-      "event_date": "2026-10-28T06:00:00Z",
-      "source_updated_at": "2026-10-28T06:00:00Z",
-      "event_start": "2026-10-21T18:00:00Z",
-      "event_end": null,
-      "last_detection": "2026-10-28T06:00:00Z"
+      "last_detection": "2026-10-29T00:00:00Z"
     },
     {
       "id": "eonet-EONET_25339",
@@ -217,7 +191,7 @@
       "lat": 31.2,
       "lon": 127.4,
       "status": "Open",
-      "updated": "Updated 3 days ago",
+      "updated": "Updated 4 days ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
@@ -230,26 +204,26 @@
       "last_detection": "2026-10-25T18:00:00Z"
     },
     {
-      "id": "eonet-EONET_25457",
-      "source_id": "EONET_25457",
+      "id": "eonet-EONET_25589",
+      "source_id": "EONET_25589",
       "origin": "eonet",
-      "title": "Tropical Cyclone Agueda",
+      "title": "Hurricane Vance",
       "type": "Storm",
-      "region": "-5.70°, 47.70°",
-      "lat": -5.7,
-      "lon": 47.7,
+      "region": "20.70°, -108.40°",
+      "lat": 20.7,
+      "lon": -108.4,
       "status": "Open",
-      "updated": "Updated 5 days ago",
+      "updated": "Updated 6 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
       "source": "NASA EONET",
-      "source_url": "https://www.metoc.navy.mil/jtwc/products/sh0227.tcw",
-      "event_date": "2026-10-23T18:00:00Z",
-      "source_updated_at": "2026-10-23T18:00:00Z",
-      "event_start": "2026-10-20T06:00:00Z",
+      "source_url": "https://www.metoc.navy.mil/jtwc/products/ep2226.tcw",
+      "event_date": "2026-10-29T00:00:00Z",
+      "source_updated_at": "2026-10-29T00:00:00Z",
+      "event_start": "2026-10-21T18:00:00Z",
       "event_end": null,
-      "last_detection": "2026-10-23T18:00:00Z"
+      "last_detection": "2026-10-29T00:00:00Z"
     },
     {
       "id": "gdacs-TC-1001343",
@@ -2642,6 +2616,29 @@
       "event_end": "2026-10-24T00:00:00",
       "last_detection": "2026-10-24T00:00:00",
       "burned_area_ha": 13672.0
+    },
+    {
+      "id": "gdacs-WF-1032948",
+      "source_id": "1032948",
+      "origin": "gdacs",
+      "title": "Forest fires in Zambia",
+      "type": "Wildfire",
+      "region": "Zambia",
+      "lat": -14.7415,
+      "lon": 25.957,
+      "status": "Recent",
+      "updated": "Updated 2 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Burned area: 18,151 ha. Green impact for forestfire in 18151 ha Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1032948&eventtype=WF",
+      "event_date": "2026-10-27T14:26:41",
+      "source_updated_at": "2026-10-27T14:26:41",
+      "event_start": "2026-10-14T00:00:00",
+      "event_end": "2026-10-23T00:00:00",
+      "last_detection": "2026-10-23T00:00:00",
+      "burned_area_ha": 18151.0
     }
   ],
   "canonical_events": [
@@ -2651,21 +2648,21 @@
       "origin": "eonet",
       "title": "Super Typhoon In-fa",
       "type": "Storm",
-      "region": "15.10°, 158.90°",
-      "lat": 15.1,
-      "lon": 158.9,
+      "region": "15.90°, 154.60°",
+      "lat": 15.9,
+      "lon": 154.6,
       "status": "Open",
-      "updated": "Updated 9 h ago",
+      "updated": "Updated 6 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
       "source": "NASA EONET",
       "source_url": "https://www.metoc.navy.mil/jtwc/products/wp3026.tcw",
-      "event_date": "2026-10-28T06:00:00Z",
-      "source_updated_at": "2026-10-28T06:00:00Z",
+      "event_date": "2026-10-29T00:00:00Z",
+      "source_updated_at": "2026-10-29T00:00:00Z",
       "event_start": "2026-10-23T18:00:00Z",
       "event_end": null,
-      "last_detection": "2026-10-28T06:00:00Z",
+      "last_detection": "2026-10-29T00:00:00Z",
       "source_urls": [
         "https://www.metoc.navy.mil/jtwc/products/wp3026.tcw"
       ],
@@ -2706,21 +2703,21 @@
       "origin": "eonet",
       "title": "Hurricane Vance",
       "type": "Storm",
-      "region": "18.00°, -108.60°",
-      "lat": 18.0,
-      "lon": -108.6,
+      "region": "20.70°, -108.40°",
+      "lat": 20.7,
+      "lon": -108.4,
       "status": "Open",
-      "updated": "Updated 9 h ago",
+      "updated": "Updated 6 h ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
       "source": "NASA EONET",
       "source_url": "https://www.metoc.navy.mil/jtwc/products/ep2226.tcw",
-      "event_date": "2026-10-28T06:00:00Z",
-      "source_updated_at": "2026-10-28T06:00:00Z",
+      "event_date": "2026-10-29T00:00:00Z",
+      "source_updated_at": "2026-10-29T00:00:00Z",
       "event_start": "2026-10-21T18:00:00Z",
       "event_end": null,
-      "last_detection": "2026-10-28T06:00:00Z",
+      "last_detection": "2026-10-29T00:00:00Z",
       "source_urls": [
         "https://www.metoc.navy.mil/jtwc/products/ep2226.tcw"
       ],
@@ -2733,7 +2730,7 @@
       "exposure": {
         "hazard": "storm",
         "footprint_method": "300_km_point_population_fallback",
-        "population_within_300km_of_center": 0,
+        "population_within_300km_of_center": 585556,
         "quality": "screening",
         "metric_provenance": {
           "population_within_300km_of_center": {
@@ -2745,7 +2742,7 @@
         }
       },
       "display_rule": "eonet_center_within_300km_of_populated_land",
-      "display_eligible": false,
+      "display_eligible": true,
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/eonet-EONET_25589.json",
@@ -2753,9 +2750,68 @@
           "tmp",
           "pre"
         ],
-        "grid_lat": 20.25,
-        "grid_lon": -105.75,
-        "grid_distance_km": 390.2,
+        "grid_lat": 21.75,
+        "grid_lon": -106.75,
+        "grid_distance_km": 207.1,
+        "recent_status": "ready"
+      }
+    },
+    {
+      "id": "eonet-EONET_25729",
+      "source_id": "EONET_25729",
+      "origin": "eonet",
+      "title": "Tropical Cyclone Arnab",
+      "type": "Storm",
+      "region": "16.40°, 81.80°",
+      "lat": 16.4,
+      "lon": 81.8,
+      "status": "Open",
+      "updated": "Updated 1 day ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Storm event tracked by NASA EONET.",
+      "source": "NASA EONET",
+      "source_url": "https://www.metoc.navy.mil/jtwc/products/io0226.tcw",
+      "event_date": "2026-10-28T06:00:00Z",
+      "source_updated_at": "2026-10-28T06:00:00Z",
+      "event_start": "2026-10-25T18:00:00Z",
+      "event_end": null,
+      "last_detection": "2026-10-28T06:00:00Z",
+      "source_urls": [
+        "https://www.metoc.navy.mil/jtwc/products/io0226.tcw"
+      ],
+      "source_members": [
+        {
+          "origin": "eonet",
+          "source_id": "EONET_25729"
+        }
+      ],
+      "exposure": {
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 43951946,
+        "quality": "screening",
+        "metric_provenance": {
+          "population_within_300km_of_center": {
+            "source": "Climate Pulse",
+            "source_field": "population_within_300km_of_center",
+            "method": "300 km centre proximity × JRC GHSL 2025",
+            "derived_by_climate_pulse": true
+          }
+        }
+      },
+      "display_rule": "eonet_center_within_300km_of_populated_land",
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/eonet-EONET_25729.json",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 16.25,
+        "grid_lon": 81.75,
+        "grid_distance_km": 17.5,
         "recent_status": "ready"
       }
     },
@@ -2790,7 +2846,6 @@
           "source_id": "1033013"
         }
       ],
-      "alert_level": "Green",
       "exposure": {
         "hazard": "wildfire",
         "gdacs_event_id": "1033013",
@@ -2815,8 +2870,13 @@
         },
         "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation."
       },
-      "display_eligible": false,
-      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1033013.json",
+        "source": "GDACS",
+        "method": "gdacs_wildfire_event_polygon_unverified",
+        "qc_status": "failed"
+      },
       "footprint_qc": {
         "status": "failed",
         "reason": "burned_area_source_provenance_not_verified_gdacs_gwis;burned_area_and_footprint_episode_not_aligned",
@@ -2832,13 +2892,9 @@
         "relative_area_difference_pct": 0.93,
         "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
       },
-      "footprint": {
-        "status": "ready",
-        "path": "data/footprints/gdacs-WF-1033013.json",
-        "source": "GDACS",
-        "method": "gdacs_wildfire_event_polygon_unverified",
-        "qc_status": "failed"
-      },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "alert_level": "Green",
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1033013.json",
@@ -2884,7 +2940,6 @@
           "source_id": "1032994"
         }
       ],
-      "alert_level": "Green",
       "exposure": {
         "hazard": "wildfire",
         "population_direct": 0,
@@ -2932,8 +2987,13 @@
         },
         "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation."
       },
-      "display_eligible": false,
-      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1032994.json",
+        "source": "GDACS",
+        "method": "gdacs_wildfire_event_polygon_unverified",
+        "qc_status": "failed"
+      },
       "footprint_qc": {
         "status": "failed",
         "reason": "burned_area_source_provenance_not_verified_gdacs_gwis;burned_area_and_footprint_episode_not_aligned",
@@ -2949,13 +3009,9 @@
         "relative_area_difference_pct": 0.77,
         "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
       },
-      "footprint": {
-        "status": "ready",
-        "path": "data/footprints/gdacs-WF-1032994.json",
-        "source": "GDACS",
-        "method": "gdacs_wildfire_event_polygon_unverified",
-        "qc_status": "failed"
-      },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "alert_level": "Green",
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1032994.json",
@@ -3001,7 +3057,6 @@
           "source_id": "1033021"
         }
       ],
-      "alert_level": "Green",
       "exposure": {
         "hazard": "wildfire",
         "population_direct": 46,
@@ -3057,15 +3112,12 @@
         "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
         "burned_area_ha": 33969.0
       },
-      "display_eligible": false,
-      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
-      "source_metrics": {
-        "wildfire_current_episode_id": 17,
-        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
-        "wildfire_burned_area_ha": 33969.0,
-        "wildfire_start_date": "2026-10-20",
-        "wildfire_last_detection": "2026-10-26",
-        "wildfire_duration_days": 6
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1033021.json",
+        "source": "GDACS",
+        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
+        "qc_status": "pass"
       },
       "footprint_qc": {
         "status": "pass",
@@ -3082,13 +3134,17 @@
         "relative_area_difference_pct": 0.95,
         "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
       },
-      "footprint": {
-        "status": "ready",
-        "path": "data/footprints/gdacs-WF-1033021.json",
-        "source": "GDACS",
-        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
-        "qc_status": "pass"
+      "source_metrics": {
+        "wildfire_current_episode_id": 17,
+        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
+        "wildfire_burned_area_ha": 33969.0,
+        "wildfire_start_date": "2026-10-20",
+        "wildfire_last_detection": "2026-10-26",
+        "wildfire_duration_days": 6
       },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "alert_level": "Green",
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1033021.json",
@@ -3134,7 +3190,6 @@
           "source_id": "1033006"
         }
       ],
-      "alert_level": "Green",
       "exposure": {
         "hazard": "wildfire",
         "gdacs_event_id": "1033006",
@@ -3167,15 +3222,12 @@
         "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
         "burned_area_ha": 16509.0
       },
-      "display_eligible": false,
-      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
-      "source_metrics": {
-        "wildfire_current_episode_id": 13,
-        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
-        "wildfire_burned_area_ha": 16509.0,
-        "wildfire_start_date": "2026-10-20",
-        "wildfire_last_detection": "2026-10-26",
-        "wildfire_duration_days": 6
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1033006.json",
+        "source": "GDACS",
+        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
+        "qc_status": "pass"
       },
       "footprint_qc": {
         "status": "pass",
@@ -3192,13 +3244,17 @@
         "relative_area_difference_pct": 0.0,
         "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
       },
-      "footprint": {
-        "status": "ready",
-        "path": "data/footprints/gdacs-WF-1033006.json",
-        "source": "GDACS",
-        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
-        "qc_status": "pass"
+      "source_metrics": {
+        "wildfire_current_episode_id": 13,
+        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
+        "wildfire_burned_area_ha": 16509.0,
+        "wildfire_start_date": "2026-10-20",
+        "wildfire_last_detection": "2026-10-26",
+        "wildfire_duration_days": 6
       },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "alert_level": "Green",
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1033006.json",
@@ -3244,7 +3300,6 @@
           "source_id": "1033095"
         }
       ],
-      "alert_level": "Green",
       "exposure": {
         "hazard": "wildfire",
         "population_direct": 0,
@@ -3300,15 +3355,12 @@
         "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
         "burned_area_ha": 15164.0
       },
-      "display_eligible": false,
-      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
-      "source_metrics": {
-        "wildfire_current_episode_id": 12,
-        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
-        "wildfire_burned_area_ha": 15164.0,
-        "wildfire_start_date": "2026-10-20",
-        "wildfire_last_detection": "2026-10-26",
-        "wildfire_duration_days": 6
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1033095.json",
+        "source": "GDACS",
+        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
+        "qc_status": "pass"
       },
       "footprint_qc": {
         "status": "pass",
@@ -3325,13 +3377,17 @@
         "relative_area_difference_pct": 0.74,
         "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
       },
-      "footprint": {
-        "status": "ready",
-        "path": "data/footprints/gdacs-WF-1033095.json",
-        "source": "GDACS",
-        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
-        "qc_status": "pass"
+      "source_metrics": {
+        "wildfire_current_episode_id": 12,
+        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
+        "wildfire_burned_area_ha": 15164.0,
+        "wildfire_start_date": "2026-10-20",
+        "wildfire_last_detection": "2026-10-26",
+        "wildfire_duration_days": 6
       },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "alert_level": "Green",
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1033095.json",
@@ -3377,7 +3433,6 @@
           "source_id": "1033028"
         }
       ],
-      "alert_level": "Green",
       "exposure": {
         "hazard": "wildfire",
         "gdacs_event_id": "1033028",
@@ -3402,8 +3457,13 @@
         },
         "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation."
       },
-      "display_eligible": false,
-      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1033028.json",
+        "source": "GDACS",
+        "method": "gdacs_wildfire_event_polygon_unverified",
+        "qc_status": "failed"
+      },
       "footprint_qc": {
         "status": "failed",
         "reason": "burned_area_source_provenance_not_verified_gdacs_gwis;burned_area_and_footprint_episode_not_aligned",
@@ -3419,13 +3479,9 @@
         "relative_area_difference_pct": 0.01,
         "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
       },
-      "footprint": {
-        "status": "ready",
-        "path": "data/footprints/gdacs-WF-1033028.json",
-        "source": "GDACS",
-        "method": "gdacs_wildfire_event_polygon_unverified",
-        "qc_status": "failed"
-      },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "alert_level": "Green",
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1033028.json",
@@ -3437,65 +3493,6 @@
         "grid_lat": -19.25,
         "grid_lon": 48.25,
         "grid_distance_km": 12.9,
-        "recent_status": "ready"
-      }
-    },
-    {
-      "id": "eonet-EONET_25729",
-      "source_id": "EONET_25729",
-      "origin": "eonet",
-      "title": "Tropical Cyclone Arnab",
-      "type": "Storm",
-      "region": "16.20°, 81.60°",
-      "lat": 16.2,
-      "lon": 81.6,
-      "status": "Open",
-      "updated": "Updated 15 h ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Storm event tracked by NASA EONET.",
-      "source": "NASA EONET",
-      "source_url": "https://www.metoc.navy.mil/jtwc/products/io0226.tcw",
-      "event_date": "2026-10-28T00:00:00Z",
-      "source_updated_at": "2026-10-28T00:00:00Z",
-      "event_start": "2026-10-25T18:00:00Z",
-      "event_end": null,
-      "last_detection": "2026-10-28T00:00:00Z",
-      "source_urls": [
-        "https://www.metoc.navy.mil/jtwc/products/io0226.tcw"
-      ],
-      "source_members": [
-        {
-          "origin": "eonet",
-          "source_id": "EONET_25729"
-        }
-      ],
-      "exposure": {
-        "hazard": "storm",
-        "footprint_method": "300_km_point_population_fallback",
-        "population_within_300km_of_center": 42926441,
-        "quality": "screening",
-        "metric_provenance": {
-          "population_within_300km_of_center": {
-            "source": "Climate Pulse",
-            "source_field": "population_within_300km_of_center",
-            "method": "300 km centre proximity × JRC GHSL 2025",
-            "derived_by_climate_pulse": true
-          }
-        }
-      },
-      "display_rule": "eonet_center_within_300km_of_populated_land",
-      "display_eligible": true,
-      "climate_context": {
-        "status": "ready",
-        "path": "data/climate/event_timeseries/eonet-EONET_25729.json",
-        "variables": [
-          "tmp",
-          "pre"
-        ],
-        "grid_lat": 16.25,
-        "grid_lon": 81.75,
-        "grid_distance_km": 17.0,
         "recent_status": "ready"
       }
     },
@@ -3530,7 +3527,6 @@
           "source_id": "1032901"
         }
       ],
-      "alert_level": "Green",
       "exposure": {
         "hazard": "wildfire",
         "population_direct": 0,
@@ -3586,15 +3582,12 @@
         "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
         "burned_area_ha": 13672.0
       },
-      "display_eligible": false,
-      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
-      "source_metrics": {
-        "wildfire_current_episode_id": 12,
-        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
-        "wildfire_burned_area_ha": 13672.0,
-        "wildfire_start_date": "2026-10-13",
-        "wildfire_last_detection": "2026-10-24",
-        "wildfire_duration_days": 11
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1032901.json",
+        "source": "GDACS",
+        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
+        "qc_status": "pass"
       },
       "footprint_qc": {
         "status": "pass",
@@ -3611,13 +3604,17 @@
         "relative_area_difference_pct": 0.93,
         "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
       },
-      "footprint": {
-        "status": "ready",
-        "path": "data/footprints/gdacs-WF-1032901.json",
-        "source": "GDACS",
-        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
-        "qc_status": "pass"
+      "source_metrics": {
+        "wildfire_current_episode_id": 12,
+        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
+        "wildfire_burned_area_ha": 13672.0,
+        "wildfire_start_date": "2026-10-13",
+        "wildfire_last_detection": "2026-10-24",
+        "wildfire_duration_days": 11
       },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "alert_level": "Green",
       "climate_context": {
         "status": "ready",
         "path": "data/climate/event_timeseries/gdacs-WF-1032901.json",
@@ -3773,6 +3770,116 @@
         "grid_lat": -13.75,
         "grid_lon": 143.25,
         "grid_distance_km": 22.4,
+        "recent_status": "ready"
+      }
+    },
+    {
+      "id": "gdacs-WF-1032948",
+      "source_id": "1032948",
+      "origin": "gdacs",
+      "title": "Forest fires in Zambia",
+      "type": "Wildfire",
+      "region": "Zambia",
+      "lat": -14.7415,
+      "lon": 25.957,
+      "status": "Recent",
+      "updated": "Updated 2 days ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Burned area: 18,151 ha. Green impact for forestfire in 18,151 ha Alert level: Green.",
+      "source": "GDACS · Green",
+      "source_url": "https://www.gdacs.org/report.aspx?eventid=1032948&eventtype=WF",
+      "event_date": "2026-10-23",
+      "source_updated_at": "2026-10-27T14:26:41",
+      "event_start": "2026-10-14T00:00:00",
+      "event_end": "2026-10-23T00:00:00",
+      "last_detection": "2026-10-23T00:00:00",
+      "burned_area_ha": 18151.0,
+      "source_urls": [
+        "https://www.gdacs.org/report.aspx?eventid=1032948&eventtype=WF"
+      ],
+      "source_members": [
+        {
+          "origin": "gdacs",
+          "source_id": "1032948"
+        }
+      ],
+      "alert_level": "Green",
+      "exposure": {
+        "hazard": "wildfire",
+        "gdacs_event_id": "1032948",
+        "gdacs_episode_id": 10,
+        "footprint_method": "GDACS burned-area/event polygon",
+        "population_direct": 5,
+        "population_within_5km": 16,
+        "quality": "high_spatial_reference_fallback",
+        "metric_provenance": {
+          "population_direct": {
+            "source": "Climate Pulse",
+            "source_field": "population_direct",
+            "method": "GDACS mapped fire polygon × JRC GHSL 2025",
+            "derived_by_climate_pulse": true
+          },
+          "population_within_5km": {
+            "source": "Climate Pulse",
+            "source_field": "population_within_5km",
+            "method": "GDACS mapped fire polygon + 5 km × JRC GHSL 2025",
+            "derived_by_climate_pulse": true
+          },
+          "burned_area_ha": {
+            "source": "GDACS/GWIS",
+            "source_field": "severitytext",
+            "method": "source_reported_current_episode",
+            "derived_by_climate_pulse": false,
+            "gdacs_episode_id": 10
+          }
+        },
+        "interpretation": "Population exposure is modelled spatial exposure, not observed harm, casualties or evacuation.",
+        "burned_area_ha": 18151.0
+      },
+      "display_eligible": false,
+      "display_rule": "green_requires_current_episode_10000ha_and_population_within_5km_gte_10000",
+      "source_metrics": {
+        "wildfire_current_episode_id": 10,
+        "wildfire_episode_alignment": "Headline burned area and population exposure are aligned to the same GDACS episode.",
+        "wildfire_burned_area_ha": 18151.0,
+        "wildfire_start_date": "2026-10-14",
+        "wildfire_last_detection": "2026-10-23",
+        "wildfire_duration_days": 9
+      },
+      "footprint_qc": {
+        "status": "pass",
+        "reason": "episode_aligned_gdacs_gwis_burned_area_perimeter",
+        "semantic_role": "burned_area_perimeter",
+        "exposure_grade_eligible": true,
+        "source_authority_verified": true,
+        "episode_aligned": true,
+        "footprint_episode_id": 10,
+        "source_burned_area_episode_id": 10,
+        "source_burned_area_ha": 18151.0,
+        "mapped_polygon_area_ha": 18150.93,
+        "mapped_to_source_area_ratio": 1.0,
+        "relative_area_difference_pct": 0.0,
+        "area_integrity_rule": "0.5 <= mapped_polygon_area/source_burned_area <= 2.0; coarse integrity gate, not an uncertainty interval"
+      },
+      "footprint": {
+        "status": "ready",
+        "path": "data/footprints/gdacs-WF-1032948.json",
+        "source": "GDACS",
+        "method": "gdacs_gwis_episode_aligned_burned_area_perimeter_polygon",
+        "qc_status": "pass"
+      },
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/gdacs-WF-1032948.json",
+        "variables": [
+          "tmp",
+          "pre",
+          "vpd"
+        ],
+        "grid_lat": -14.75,
+        "grid_lon": 25.75,
+        "grid_distance_km": 22.3,
         "recent_status": "ready"
       }
     },
@@ -9044,65 +9151,6 @@
       }
     },
     {
-      "id": "eonet-EONET_25457",
-      "source_id": "EONET_25457",
-      "origin": "eonet",
-      "title": "Tropical Cyclone Agueda",
-      "type": "Storm",
-      "region": "-5.70°, 47.70°",
-      "lat": -5.7,
-      "lon": 47.7,
-      "status": "Open",
-      "updated": "Updated 5 days ago",
-      "priority": "Standard",
-      "climate_link": "Not assessed",
-      "summary": "Storm event tracked by NASA EONET.",
-      "source": "NASA EONET",
-      "source_url": "https://www.metoc.navy.mil/jtwc/products/sh0227.tcw",
-      "event_date": "2026-10-23T18:00:00Z",
-      "source_updated_at": "2026-10-23T18:00:00Z",
-      "event_start": "2026-10-20T06:00:00Z",
-      "event_end": null,
-      "last_detection": "2026-10-23T18:00:00Z",
-      "source_urls": [
-        "https://www.metoc.navy.mil/jtwc/products/sh0227.tcw"
-      ],
-      "source_members": [
-        {
-          "origin": "eonet",
-          "source_id": "EONET_25457"
-        }
-      ],
-      "exposure": {
-        "hazard": "storm",
-        "footprint_method": "300_km_point_population_fallback",
-        "population_within_300km_of_center": 0,
-        "quality": "screening",
-        "metric_provenance": {
-          "population_within_300km_of_center": {
-            "source": "Climate Pulse",
-            "source_field": "population_within_300km_of_center",
-            "method": "300 km centre proximity × JRC GHSL 2025",
-            "derived_by_climate_pulse": true
-          }
-        }
-      },
-      "display_eligible": false,
-      "display_rule": "eonet_center_within_300km_of_populated_land",
-      "climate_context": {
-        "status": "ready",
-        "path": "data/climate/event_timeseries/eonet-EONET_25457.json",
-        "variables": [
-          "tmp",
-          "pre"
-        ],
-        "grid_lat": -9.25,
-        "grid_lon": 46.25,
-        "grid_distance_km": 425.9,
-        "recent_status": "ready"
-      }
-    },
-    {
       "id": "gdacs-TC-1001342",
       "source_id": "1001342",
       "origin": "gdacs",
@@ -9830,26 +9878,85 @@
   ],
   "events": [
     {
+      "id": "eonet-EONET_25589",
+      "source_id": "EONET_25589",
+      "origin": "eonet",
+      "title": "Hurricane Vance",
+      "type": "Storm",
+      "region": "20.70°, -108.40°",
+      "lat": 20.7,
+      "lon": -108.4,
+      "status": "Open",
+      "updated": "Updated 6 h ago",
+      "priority": "Standard",
+      "climate_link": "Not assessed",
+      "summary": "Storm event tracked by NASA EONET.",
+      "source": "NASA EONET",
+      "source_url": "https://www.metoc.navy.mil/jtwc/products/ep2226.tcw",
+      "event_date": "2026-10-29T00:00:00Z",
+      "source_updated_at": "2026-10-29T00:00:00Z",
+      "event_start": "2026-10-21T18:00:00Z",
+      "event_end": null,
+      "last_detection": "2026-10-29T00:00:00Z",
+      "source_urls": [
+        "https://www.metoc.navy.mil/jtwc/products/ep2226.tcw"
+      ],
+      "source_members": [
+        {
+          "origin": "eonet",
+          "source_id": "EONET_25589"
+        }
+      ],
+      "exposure": {
+        "hazard": "storm",
+        "footprint_method": "300_km_point_population_fallback",
+        "population_within_300km_of_center": 585556,
+        "quality": "screening",
+        "metric_provenance": {
+          "population_within_300km_of_center": {
+            "source": "Climate Pulse",
+            "source_field": "population_within_300km_of_center",
+            "method": "300 km centre proximity × JRC GHSL 2025",
+            "derived_by_climate_pulse": true
+          }
+        }
+      },
+      "display_rule": "eonet_center_within_300km_of_populated_land",
+      "display_eligible": true,
+      "climate_context": {
+        "status": "ready",
+        "path": "data/climate/event_timeseries/eonet-EONET_25589.json",
+        "variables": [
+          "tmp",
+          "pre"
+        ],
+        "grid_lat": 21.75,
+        "grid_lon": -106.75,
+        "grid_distance_km": 207.1,
+        "recent_status": "ready"
+      }
+    },
+    {
       "id": "eonet-EONET_25729",
       "source_id": "EONET_25729",
       "origin": "eonet",
       "title": "Tropical Cyclone Arnab",
       "type": "Storm",
-      "region": "16.20°, 81.60°",
-      "lat": 16.2,
-      "lon": 81.6,
+      "region": "16.40°, 81.80°",
+      "lat": 16.4,
+      "lon": 81.8,
       "status": "Open",
-      "updated": "Updated 15 h ago",
+      "updated": "Updated 1 day ago",
       "priority": "Standard",
       "climate_link": "Not assessed",
       "summary": "Storm event tracked by NASA EONET.",
       "source": "NASA EONET",
       "source_url": "https://www.metoc.navy.mil/jtwc/products/io0226.tcw",
-      "event_date": "2026-10-28T00:00:00Z",
-      "source_updated_at": "2026-10-28T00:00:00Z",
+      "event_date": "2026-10-28T06:00:00Z",
+      "source_updated_at": "2026-10-28T06:00:00Z",
       "event_start": "2026-10-25T18:00:00Z",
       "event_end": null,
-      "last_detection": "2026-10-28T00:00:00Z",
+      "last_detection": "2026-10-28T06:00:00Z",
       "source_urls": [
         "https://www.metoc.navy.mil/jtwc/products/io0226.tcw"
       ],
@@ -9862,7 +9969,7 @@
       "exposure": {
         "hazard": "storm",
         "footprint_method": "300_km_point_population_fallback",
-        "population_within_300km_of_center": 42926441,
+        "population_within_300km_of_center": 43951946,
         "quality": "screening",
         "metric_provenance": {
           "population_within_300km_of_center": {
@@ -9884,7 +9991,7 @@
         ],
         "grid_lat": 16.25,
         "grid_lon": 81.75,
-        "grid_distance_km": 17.0,
+        "grid_distance_km": 17.5,
         "recent_status": "ready"
       }
     },
@@ -11524,16 +11631,16 @@
     }
   ],
   "hazard_exposure": {
-    "calculated_at": "2026-10-28T15:17:33Z",
+    "calculated_at": "2026-10-29T05:57:12Z",
     "wildfire_rule": "GDACS Orange/Red visible; Green requires burned area >= 10,000 ha AND population within 5 km > 10,000. GDACS/GWIS POP scalars are preferred; polygon × GHSL is fallback only.",
     "storm_rule": "GDACS advisory pop39/pop74/popstormsurge preferred; polygon × GHSL is fallback when structured source exposure is unavailable. Orange/Red remain visible.",
     "interpretation": "Exposure is not observed harm, casualties, displacement, crop loss or economic loss.",
     "diagnostics": {
-      "wildfire_enriched": 76,
+      "wildfire_enriched": 77,
       "wildfire_polygon_missing": 27,
-      "storm_enriched": 11,
-      "storm_visible": 4,
-      "storm_hidden_remote_or_unpopulated": 7
+      "storm_enriched": 10,
+      "storm_visible": 5,
+      "storm_hidden_remote_or_unpopulated": 5
     },
     "fallback_population_dataset": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025, used only for Climate Pulse population fallback calculations",
     "authority_policy": "source-first: GDACS/GWIS structured modelled exposure first; Climate Pulse-derived metrics only as fallback or clearly labelled supplemental context",
@@ -11546,7 +11653,7 @@
     "wildfire_source_alignment": "GDACS/GWIS current-episode headline metrics; event-list values are discovery metadata only."
   },
   "asset_exposure": {
-    "calculated_at": "2026-10-28T15:24:28Z",
+    "calculated_at": "2026-10-29T05:58:08Z",
     "drought": "mapped area; MODIS 2024 land/forest area and FAO CROPGRIDS 2020 crop physical area when prepared",
     "wildfire": "MODIS 2024 forest area within mapped wildfire footprint when prepared",
     "flood_population": "GHSL 2025 population inside the QC-passed GDACS reported flood event-area polygon; labelled potentially affected population, not confirmed impact",
@@ -11563,12 +11670,12 @@
   },
   "footprint_diagnostics": {
     "canonical": {
-      "eligible": 104,
-      "ready": 7,
+      "eligible": 105,
+      "ready": 8,
       "missing": 97,
       "flood_qc_pass": 0,
       "flood_qc_failed": 9,
-      "wildfire_qc_pass": 4,
+      "wildfire_qc_pass": 5,
       "wildfire_qc_failed": 3
     },
     "display": {
@@ -11580,12 +11687,12 @@
       "wildfire_qc_pass": 0,
       "wildfire_qc_failed": 0
     },
-    "unique_source_geometries": 7,
+    "unique_source_geometries": 8,
     "incremental_refresh_note": "Diagnostics rebuilt from merged published event state; only changed source geometries were refetched this run."
   },
   "wildfire_display_diagnostics": {
     "visible_canonical_wildfires": 4,
-    "hidden_canonical_wildfires": 72,
+    "hidden_canonical_wildfires": 73,
     "published_wildfire_clusters": 0,
     "green_boundary_policy": "inclusive at 10,000 people within 5 km to avoid source-rounding threshold flicker",
     "identity_policy": "one eligible wildfire event per explicit source identity; no proximity clustering"
