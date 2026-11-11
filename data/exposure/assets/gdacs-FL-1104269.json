@@ -4,14 +4,14 @@
   "event_type": "Flood",
   "title": "Flood in Democratic Republic of Congo",
   "region": "Democratic Republic of Congo",
-  "calculated_at": "2026-11-10T07:32:36Z",
+  "calculated_at": "2026-11-11T16:17:33Z",
   "exposure": {
     "hazard": "flood",
     "gdacs_event_id": "1104269",
-    "gdacs_episode_id": 1,
+    "gdacs_episode_id": 3,
     "footprint_method": "GDACS reported flood event/affected-area polygon · center-aligned context feature",
     "quality": "mapped_event_footprint",
-    "potentially_affected_population": 534013,
+    "potentially_affected_population": 2732981,
     "potentially_affected_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
     "potentially_affected_population_method": "GHSL 2025 residential population inside the QC-passed unsimplified GDACS reported flood event-area polygon",
     "potentially_affected_population_interpretation": "Potentially affected population is a Climate Pulse spatial context estimate, not source-reported affected population and not observed inundation.",
@@ -21,6 +21,29 @@
         "method": "derived spatial overlap of population with a reported flood event-area context polygon",
         "derived_by_climate_pulse": true
       }
-    }
+    },
+    "potential_gdp_exposure_proxy_usd": 27701595,
+    "gdp_proxy_reference_year": 2024,
+    "gdp_proxy_indicator": "World Bank WDI NY.GDP.PCAP.CD (GDP per capita, current US$)",
+    "gdp_proxy_population_reference": "JRC GHSL GHS-WUP-POP R2025A, epoch 2025",
+    "gdp_proxy_population_coverage_pct": 1.4,
+    "gdp_proxy_method": "sum over countries: GHSL population inside hazard footprint × WDI 2024 GDP per capita",
+    "gdp_proxy_country_components": [
+      {
+        "country": "Central African Republic",
+        "iso3": "CAF",
+        "population_basis": 33860,
+        "gdp_per_capita_usd_2024": 516.16,
+        "proxy_usd": 17477211
+      },
+      {
+        "country": "Republic of the Congo",
+        "iso3": "COG",
+        "population_basis": 4119,
+        "gdp_per_capita_usd_2024": 2482.25,
+        "proxy_usd": 10224384
+      }
+    ],
+    "gdp_proxy_interpretation": "Economic activity exposure proxy only; not observed loss, asset damage, business interruption, or a gridded local-GDP estimate."
   }
 }
